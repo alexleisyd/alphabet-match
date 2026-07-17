@@ -540,7 +540,7 @@
       }
       if(e >= 20 && (pos === 1 || pos === 3)) snare();
       // a touch louder as it gets livelier
-      music.gain.gain.setTargetAtTime(0.09 + (e/36)*0.05, actx.currentTime, 0.8);
+      music.gain.gain.setTargetAtTime(0.065 + (e/36)*0.035, actx.currentTime, 0.8);
     }
     music.beat++;
     music.beatTimer = setTimeout(nextBeat, spb*1000);
@@ -569,7 +569,7 @@
     music.chordIdx = 0;
     music.gain = ctx.createGain();
     music.gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    music.gain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 1.5);
+    music.gain.gain.linearRampToValueAtTime(0.065, ctx.currentTime + 1.5);
     music.gain.connect(ctx.destination);
     nextBeat();
     music.sparkTimer = setTimeout(sparkle, 2000);
