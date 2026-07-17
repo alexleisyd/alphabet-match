@@ -386,6 +386,7 @@
   var earnedThisRound = 0;
   var autoAdvanceTimer = null;
   var victoryDelayTimer = null;
+  var victorySpeechTimer = null;
 
   var $ = function(id){ return document.getElementById(id); };
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -637,18 +638,19 @@
   var speakTimer = null;
   var liveUtterances = [];
   var speakSession = 0;
-  function speakParts(parts){
+  function speakParts(parts, onDone){
     if(muted || !("speechSynthesis" in window)) return;
     try{
       window.speechSynthesis.cancel();
       clearTimeout(speakTimer);
       var session = ++speakSession;
       liveUtterances.length = 0;
-      speakTimer = setTimeout(function(){ speakChain(parts, 0, session); }, 150);
+      speakTimer = setTimeout(function(){ speakChain(parts, 0, session, onDone); }, 150);
     }catch(e){}
   }
-  function speakChain(parts, i, session){
-    if(session !== speakSession || i >= parts.length) return;
+  function speakChain(parts, i, session, onDone){
+    if(session !== speakSession) return;
+    if(i >= parts.length){ if(onDone) onDone(); return; }
     try{
       var p = parts[i];
       var u = new SpeechSynthesisUtterance(p.t);
@@ -661,7 +663,7 @@
       var next = function(){
         if(advanced) return;
         advanced = true;
-        setTimeout(function(){ speakChain(parts, i+1, session); }, 120);
+        setTimeout(function(){ speakChain(parts, i+1, session, onDone); }, 120);
       };
       u.onend = next;
       u.onerror = next;
@@ -965,6 +967,7 @@
   function newRound(){
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victoryDelayTimer);
+    clearTimeout(victorySpeechTimer);
     solvedThisRound = false;
     wrongTaps = 0;
     var letter = nextLetter();
@@ -1073,15 +1076,22 @@
 
     show("screen-victory");
     var sayWord = current.word.toLowerCase().replace("-", " ");
-    setTimeout(function(){
-      speakParts([
-        { t: pick(PRAISE), pitch: 1.3, rate: 1.05 },
-        { t: current.letter + " is for " + sayWord + "!", pitch: 1.1, rate: 0.85 }
-      ]);
-    }, reducedMotion ? 100 : 900);
 
     clearTimeout(autoAdvanceTimer);
-    autoAdvanceTimer = setTimeout(newRound, 3000);
+    clearTimeout(victorySpeechTimer);
+    if(muted || !("speechSynthesis" in window)){
+      // no narration to wait for — just give a bit longer to look at the word
+      autoAdvanceTimer = setTimeout(newRound, 5000);
+    }else{
+      victorySpeechTimer = setTimeout(function(){
+        speakParts([
+          { t: pick(PRAISE), pitch: 1.3, rate: 1.05 },
+          { t: current.letter + " is for " + sayWord + "!", pitch: 1.1, rate: 0.85 }
+        ], function(){
+          autoAdvanceTimer = setTimeout(newRound, 3000);
+        });
+      }, reducedMotion ? 100 : 900);
+    }
   }
 
   /* ---------------- wiring ---------------- */
