@@ -384,6 +384,8 @@
   var solvedThisRound = false;
   var wrongTaps = 0;
   var earnedThisRound = 0;
+  var autoAdvanceTimer = null;
+  var victoryDelayTimer = null;
 
   var $ = function(id){ return document.getElementById(id); };
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -961,6 +963,8 @@
   }
 
   function newRound(){
+    clearTimeout(autoAdvanceTimer);
+    clearTimeout(victoryDelayTimer);
     solvedThisRound = false;
     wrongTaps = 0;
     var letter = nextLetter();
@@ -1007,7 +1011,7 @@
       earnedThisRound = wrongTaps === 0 ? 3 : wrongTaps === 1 ? 2 : 1;
       stars += earnedThisRound;
       $("star-count").textContent = stars;
-      setTimeout(showVictory, reducedMotion ? 150 : 750);
+      victoryDelayTimer = setTimeout(showVictory, reducedMotion ? 150 : 750);
     }else{
       wrongTaps++;
       btn.classList.add("wrong");
@@ -1075,6 +1079,9 @@
         { t: current.letter + " is for " + sayWord + "!", pitch: 1.1, rate: 0.85 }
       ]);
     }, reducedMotion ? 100 : 900);
+
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = setTimeout(newRound, 3000);
   }
 
   /* ---------------- wiring ---------------- */
