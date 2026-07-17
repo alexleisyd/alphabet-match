@@ -459,9 +459,9 @@
   var SPARKLES = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
   function energy(){ return Math.min(stars, 36); }
   function beatSeconds(){ return 60 / (76 + energy()*1.5); }  // 76 -> 130 bpm
-  function padNote(freq, dur, vol){
+  function playPadOsc(freq, dur, vol, type){
     var o = actx.createOscillator(), g = actx.createGain();
-    o.type = freq < 200 ? "sine" : "triangle";
+    o.type = type;
     o.frequency.value = freq;
     o.detune.value = (Math.random()-0.5)*8;
     var t = actx.currentTime;
@@ -470,6 +470,14 @@
     g.gain.linearRampToValueAtTime(0.0001, t + dur);
     o.connect(g).connect(music.gain);
     o.start(t); o.stop(t + dur + 0.1);
+  }
+  function padNote(freq, dur, vol){
+    playPadOsc(freq, dur, vol, freq < 200 ? "sine" : "triangle");
+    if(freq < 180){
+      // small tablet speakers barely reproduce this low a fundamental —
+      // add a quiet octave-up shadow so the note still reads as present
+      playPadOsc(freq*2, dur, vol*0.4, "sine");
+    }
   }
   function kick(){
     var o = actx.createOscillator(), g = actx.createGain();
@@ -532,7 +540,7 @@
       }
       if(e >= 20 && (pos === 1 || pos === 3)) snare();
       // a touch louder as it gets livelier
-      music.gain.gain.setTargetAtTime(0.055 + (e/36)*0.028, actx.currentTime, 0.8);
+      music.gain.gain.setTargetAtTime(0.09 + (e/36)*0.05, actx.currentTime, 0.8);
     }
     music.beat++;
     music.beatTimer = setTimeout(nextBeat, spb*1000);
@@ -561,7 +569,7 @@
     music.chordIdx = 0;
     music.gain = ctx.createGain();
     music.gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    music.gain.gain.linearRampToValueAtTime(0.055, ctx.currentTime + 3);
+    music.gain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 1.5);
     music.gain.connect(ctx.destination);
     nextBeat();
     music.sparkTimer = setTimeout(sparkle, 2000);
