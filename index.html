@@ -175,6 +175,7 @@
     color:var(--ink);
     animation:pop-in .45s cubic-bezier(.2,1.6,.4,1) both;
   }
+  .letter-block .lower{font-size:.72em;margin-left:.14em}
   .speak-btn{
     width:clamp(58px,9vw,72px);
     height:clamp(58px,9vw,72px);
@@ -314,6 +315,11 @@
     z-index:20;
   }
 
+  /* narrow phones: "W w" plus the speak button must still fit across */
+  @media (max-width:480px){
+    .letter-block{font-size:clamp(56px,12vh,104px);padding:clamp(12px,2vh,20px) clamp(18px,3.5vh,32px)}
+  }
+
   /* short screens (phone landscape): tighten play screen */
   @media (max-height:520px){
     .letter-block{font-size:clamp(56px,18vh,90px);padding:10px 26px}
@@ -347,7 +353,7 @@
 <!-- PLAY -->
 <div class="stage hidden" id="screen-play">
   <div class="prompt-row">
-    <div class="letter-block" id="letter-block">B</div>
+    <div class="letter-block" id="letter-block">B<span class="lower">b</span></div>
     <button class="speak-btn" id="repeat-btn" aria-label="Hear it again">🔊</button>
   </div>
   <p class="prompt-text">Which picture starts with this letter?</p>
@@ -399,6 +405,16 @@
     Z:["ZEBRA","ZIPPER"]
   };
   var LETTERS = Object.keys(WORDS);
+  // letters whose names/sounds collide with another letter's words when
+  // heard aloud (Cat/Kite, Giraffe/Juice, X/Excavator, Zebra/Xylophone,
+  // Unicorn/Yo-yo...) — never pair them as target and distractor, or a
+  // child matching by sound gets told they're wrong
+  var CONFUSABLE = {
+    C:["K","S"], K:["C","Q"], Q:["K"], S:["C"],
+    G:["J"], J:["G"],
+    E:["X"], X:["E"], Z:["X"],
+    U:["Y"], Y:["U"]
+  };
 
   /* ---------------- hand-drawn art ---------------- */
   // Every picture is a hand-crafted SVG on a 100x100 canvas, sharing one
@@ -513,7 +529,7 @@
 
   /* ---------------- state ---------------- */
   var deck = [];          // shuffled letters, so every letter shows up before repeats
-  var current = null;     // {letter, word, emoji}
+  var current = null;     // {letter, word}
   var stars = 0;
   var muted = false;
   var solvedThisRound = false;
@@ -522,6 +538,7 @@
   var autoAdvanceTimer = null;
   var victoryDelayTimer = null;
   var victorySpeechTimer = null;
+  var victorySoundTimers = [];  // scheduled tile chimes and star tones
 
   var $ = function(id){ return document.getElementById(id); };
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -809,8 +826,20 @@
       setTimeout(next, 1500 + p.t.length * 110);
     }catch(e){}
   }
-  function speak(text, slow){
-    speakParts([{ t:text, rate: slow ? 0.85 : 0.95, pitch: 1.05 }]);
+  // iOS only unlocks speechSynthesis from a user gesture. When sound is on,
+  // the round's opening prompt (kicked off from this same gesture) does the
+  // unlocking; only a muted start needs this explicit silent utterance.
+  // Never speak it while unmuted: the prompt's cancel() would hit it
+  // mid-speak, and Chrome's queue can wedge silent after that.
+  var unlockUtterance = null; // keep a ref or Chrome may GC it mid-speak
+  function unlockSpeech(){
+    if(!muted || !("speechSynthesis" in window)) return;
+    try{
+      var u = new SpeechSynthesisUtterance(" ");
+      u.volume = 0;
+      unlockUtterance = u;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
   }
   var PRAISE = ["Yay!","Woo hoo!","Hooray!","Great job!","You did it!","Amazing!","Super duper!","High five!"];
   function speakPrompt(){
@@ -1095,7 +1124,11 @@
 
   /* ---------------- rounds ---------------- */
   function nextLetter(){
-    if(deck.length === 0) deck = shuffle(LETTERS.slice());
+    if(deck.length === 0){
+      deck = shuffle(LETTERS.slice());
+      // a fresh deck could deal the letter just played — move it to the bottom
+      if(current && deck[deck.length-1] === current.letter) deck.unshift(deck.pop());
+    }
     return deck.pop();
   }
 
@@ -1103,21 +1136,29 @@
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victoryDelayTimer);
     clearTimeout(victorySpeechTimer);
+    victorySoundTimers.forEach(function(t){ clearTimeout(t); });
+    victorySoundTimers.length = 0;
     solvedThisRound = false;
     wrongTaps = 0;
     var letter = nextLetter();
     current = { letter: letter, word: pick(WORDS[letter]) };
 
-    // two distractors from other letters
-    var others = shuffle(LETTERS.filter(function(l){ return l !== letter; }));
+    // two distractors from other letters, skipping sound-alike letters
+    var avoid = CONFUSABLE[letter] || [];
+    var others = shuffle(LETTERS.filter(function(l){ return l !== letter && avoid.indexOf(l) === -1; }));
     var options = [current];
     for(var i=0; options.length < 3 && i < others.length; i++){
       options.push({ letter: others[i], word: pick(WORDS[others[i]]) });
     }
     shuffle(options);
 
-    $("letter-block").textContent = letter;
+    // show the uppercase/lowercase pair, e.g. "B b"
     var block = $("letter-block");
+    block.textContent = letter;
+    var lower = document.createElement("span");
+    lower.className = "lower";
+    lower.textContent = letter.toLowerCase();
+    block.appendChild(lower);
     block.style.animation = "none";
     void block.offsetWidth;
     block.style.animation = "";
@@ -1152,7 +1193,12 @@
       wrongTaps++;
       btn.classList.add("wrong");
       chimeWrong();
-      speak("Try again!");
+      // teach instead of just rejecting: name what they tapped and its letter
+      var w = opt.word.toLowerCase().replace("-", " ");
+      speakParts([
+        { t: w + "!", pitch: 1.1, rate: 0.95 },
+        { t: w + " starts with " + opt.letter + ". Try again!", pitch: 1.05, rate: 0.9 }
+      ]);
     }
   }
 
@@ -1180,7 +1226,7 @@
       var delay = reducedMotion ? 0 : 0.35 + i*0.22;
       t.style.animationDelay = delay + "s";
       if(!reducedMotion && ch !== " " && ch !== "-"){
-        setTimeout(function(){ chimeTile(i); }, delay*1000);
+        victorySoundTimers.push(setTimeout(function(){ chimeTile(i); }, delay*1000));
       }
       tiles.appendChild(t);
     });
@@ -1198,7 +1244,7 @@
         sp.style.animationDelay = sDelay + "s";
         if(!reducedMotion){
           (function(n, when){
-            setTimeout(function(){ tone(660*Math.pow(1.26, n), 0, 0.25, "triangle", 0.15); }, when*1000);
+            victorySoundTimers.push(setTimeout(function(){ tone(660*Math.pow(1.26, n), 0, 0.25, "triangle", 0.15); }, when*1000));
           })(s, sDelay);
         }
       }else{
@@ -1233,7 +1279,7 @@
   window.ALPHABET_ART = ART; // handy for eyeballing every drawing in devtools
   $("play-btn").addEventListener("click", function(){
     audio();               // unlock audio on user gesture (iOS)
-    speak(" ");            // unlock speech on user gesture (iOS)
+    unlockSpeech();        // unlock speech on user gesture (iOS)
     startMusic();
     newRound();
   });
