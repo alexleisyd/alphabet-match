@@ -1,0 +1,12 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic [ref=e2]:
+      - text: ⭐
+      - generic [ref=e3]: "0"
+    - button "Turn sound on or off" [ref=e4] [cursor=pointer]: 🔊
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: A
+      - generic [ref=e20]: B
+    - heading "Alphabet Match!" [level=1] [ref=e28]
+    - button "▶ PLAY" [ref=e29] [cursor=pointer]
