@@ -74,6 +74,7 @@
     pointer-events:none;
   }
   .topbar>*{pointer-events:auto}
+  .topbar .right{display:flex;gap:10px;align-items:center}
   .stars{
     display:flex;
     align-items:center;
@@ -98,6 +99,7 @@
     transition:transform .1s;
   }
   .round-btn:active{transform:scale(.9)}
+  .round-btn svg{width:52%;height:52%;display:block}
 
   /* ---------- start screen ---------- */
   .start-title{
@@ -338,7 +340,10 @@
 
 <div class="topbar">
   <div class="stars">⭐ <span id="star-count">0</span></div>
-  <button class="round-btn" id="mute-btn" aria-label="Turn sound on or off">🔊</button>
+  <div class="right">
+    <button class="round-btn hidden" id="full-btn" aria-label="Fill the whole screen"></button>
+    <button class="round-btn" id="mute-btn" aria-label="Turn sound on or off">🔊</button>
+  </div>
 </div>
 
 <!-- START -->
@@ -424,6 +429,11 @@
       '<g stroke="#2e2d55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
       body + '</g></svg>';
   }
+  // The two corner-bracket icons the full-screen button swaps between.
+  var ICON = {
+    expand: I('<path d="M14 38V14h24M62 14h24v24M86 62v24H62M38 86H14V62" fill="none" stroke-width="10"/>'),
+    shrink: I('<path d="M38 14v24H14M86 38H62V14M62 86V62h24M14 62h24v24" fill="none" stroke-width="10"/>')
+  };
   var ART = {
     "APPLE": I('<path d="M50 35 Q49 22 40 16" fill="none"/><path d="M52 30 Q58 14 74 18 Q70 34 52 30 Z" fill="#8ad8a5"/><path d="M50 38 C34 26 18 38 20 58 C22 76 36 86 50 84 C64 86 78 76 80 58 C82 38 66 26 50 38 Z" fill="#ff6b6b"/><circle cx="36" cy="54" r="5" fill="#ffffff" opacity=".55" stroke="none"/>'),
     "ANT": I('<path d="M24 44 Q18 34 10 32 M34 42 Q36 32 44 28" fill="none"/><path d="M30 64 L24 82 M46 66 L44 84 M62 66 L70 82" fill="none"/><ellipse cx="71" cy="58" rx="15" ry="12" fill="#8b5e3c"/><circle cx="48" cy="58" r="10" fill="#8b5e3c"/><circle cx="28" cy="54" r="12" fill="#8b5e3c"/><circle cx="25" cy="52" r="2.4" fill="#2e2d55" stroke="none"/><path d="M22 59 Q25 62 28 60" fill="none" stroke-width="2.4"/>'),
@@ -1284,6 +1294,54 @@
   });
   $("next-btn").addEventListener("click", newRound);
   $("repeat-btn").addEventListener("click", speakPrompt);
+  /* ---------------- full screen ----------------
+     Worth having on a tablet: it hides the browser chrome, so a four-year-
+     old aiming at a card can't land on the address bar instead. The button
+     hides itself where the API doesn't exist (an iPhone), and the request
+     has to ride on the tap — browsers refuse it otherwise.              */
+  function fullscreenEl(){
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+  function fullscreenAvailable(){
+    var d = document.documentElement;
+    return !!(d.requestFullscreen || d.webkitRequestFullscreen) &&
+           document.fullscreenEnabled !== false && document.webkitFullscreenEnabled !== false;
+  }
+  function enterFullscreen(){
+    var d = document.documentElement;
+    var req = d.requestFullscreen || d.webkitRequestFullscreen;
+    if(!req) return Promise.resolve(false);
+    // navigationUI:"hide" is a hint; Safari ignores the argument entirely.
+    return Promise.resolve(req.call(d, { navigationUI:"hide" })).then(function(){ return true; },
+                                                                     function(){ return false; });
+  }
+  function exitFullscreen(){
+    var ex = document.exitFullscreen || document.webkitExitFullscreen;
+    if(!ex) return Promise.resolve(false);
+    return Promise.resolve(ex.call(document)).then(function(){ return true; }, function(){ return false; });
+  }
+  function toggleFullscreen(){
+    return fullscreenEl() ? exitFullscreen() : enterFullscreen();
+  }
+  function paintFullscreenBtn(){
+    var b = $("full-btn");
+    var on = !!fullscreenEl();
+    b.classList.toggle("hidden", !fullscreenAvailable());
+    b.innerHTML = on ? ICON.shrink : ICON.expand;
+    b.setAttribute("aria-label", on ? "Leave full screen" : "Fill the whole screen");
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  paintFullscreenBtn();
+  $("full-btn").addEventListener("click", function(){ toggleFullscreen(); });
+  document.addEventListener("fullscreenchange", paintFullscreenBtn);
+  document.addEventListener("webkitfullscreenchange", paintFullscreenBtn);
+  // F for grown-ups who never let go of the keyboard.
+  document.addEventListener("keydown", function(e){
+    if((e.key === "f" || e.key === "F") && !e.metaKey && !e.ctrlKey && !e.altKey){
+      toggleFullscreen();
+    }
+  });
+
   $("mute-btn").addEventListener("click", function(){
     muted = !muted;
     $("mute-btn").textContent = muted ? "🔇" : "🔊";
