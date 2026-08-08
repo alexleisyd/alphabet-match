@@ -321,6 +321,33 @@
     animation:pop-in .45s cubic-bezier(.2,1.6,.4,1) both;
   }
   .letter-block .lower{font-size:.72em;margin-left:.14em}
+  /* The reverse round's prompt: the picture asks the question instead. It
+     wears the same yellow as the letter block so the rule holds in both
+     directions — yellow is the question, white cards are the answers — but
+     the art keeps a white mat behind it, or a banana would vanish into it. */
+  .picture-block{
+    width:clamp(128px,25vh,210px);
+    height:clamp(128px,25vh,210px);
+    background:linear-gradient(180deg,#ffe07a 0%,var(--sunshine) 100%);
+    border:5px solid var(--sunshine-edge);
+    border-radius:clamp(18px,3vw,28px);
+    box-shadow:0 8px 0 var(--sunshine-edge), 0 14px 22px rgba(46,45,85,.18);
+    padding:clamp(9px,1.8vw,16px);
+    animation:pop-in .45s cubic-bezier(.2,1.6,.4,1) both;
+    transition:transform .1s;
+  }
+  .picture-block:active{transform:scale(.94)}
+  .picture-block .mat{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    background:var(--card);
+    border-radius:clamp(10px,1.8vw,16px);
+    padding:clamp(4px,1vw,9px);
+  }
+  .picture-block svg{width:100%;height:100%;display:block}
   .speak-btn{
     width:clamp(58px,9vw,72px);
     height:clamp(58px,9vw,72px);
@@ -348,6 +375,8 @@
   }
   .card{
     flex:1 1 0;
+    min-width:0;      /* letters have an intrinsic width; without this a row
+                         of four refuses to shrink and runs off a phone */
     max-width:270px;
     aspect-ratio:1/1.06;
     background:var(--card);
@@ -366,6 +395,17 @@
   .card:nth-child(4){animation-delay:.24s}
   .card:active{transform:scale(.94) translateY(4px);box-shadow:0 3px 0 rgba(46,45,85,.22)}
   .card svg{width:100%;height:100%}
+  /* a card holding a letter rather than a picture — same white card as any
+     other answer, so the .wrong/.right states read identically */
+  .card.letter-card{
+    /* sized against width as well as height: four "Ww" tiles across a phone
+       are what actually runs out of room, not a tall screen */
+    font-size:clamp(24px,min(9vh,9vw),84px);
+    font-weight:900;
+    line-height:1;
+    color:var(--ink);
+  }
+  .card.letter-card .lower{font-size:.72em;margin-left:.1em}
   .card.wrong{
     animation:wiggle .5s ease;
     opacity:.35;
@@ -531,9 +571,10 @@
 <div class="stage hidden" id="screen-play">
   <div class="prompt-row">
     <div class="letter-block" id="letter-block">B<span class="lower">b</span></div>
+    <button class="picture-block hidden" id="picture-block" aria-label="Hear this again"></button>
     <button class="speak-btn" id="repeat-btn" aria-label="Hear it again">🔊</button>
   </div>
-  <p class="prompt-text">Which picture starts with this letter?</p>
+  <p class="prompt-text" id="prompt-text">Which picture starts with this letter?</p>
   <div class="cards" id="cards"></div>
 </div>
 
@@ -737,7 +778,9 @@
   var level = 2;                // cards on the table: 2, 3 or 4
   var cleanStreak = 0;          // consecutive rounds solved without a miss
   var correctBtn = null;        // the card to nudge if they get stuck
+  var mode = "normal";          // "normal": letter asks. "reverse": picture asks.
   var hintTimer = null;
+  var promptTimer = null;
   var autoAdvanceTimer = null;
   var victoryDelayTimer = null;
   var victorySpeechTimer = null;
@@ -755,6 +798,9 @@
     return a;
   }
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  // "X-RAY" reads as "ex ray", "ICE CREAM" as written. Hyphens would
+  // otherwise be spelled out or swallowed depending on the voice.
+  function sayable(word){ return word.toLowerCase().replace(/-/g, " "); }
 
   /* ---------------- saved progress ---------------- */
   // Stars and the sticker book outlive the tab. A four-year-old's session
@@ -1430,10 +1476,29 @@
   }
   var PRAISE = ["Yay!","Woo hoo!","Hooray!","Great job!","You did it!","Amazing!","Super duper!","High five!"];
   function speakPrompt(){
+    if(mode === "reverse"){
+      var w = sayable(current.word);
+      speakParts([
+        { t: w + "!", pitch: 1.2, rate: 0.9 },
+        { t: "Which letter does " + w + " start with?", pitch: 1.05, rate: 0.95 }
+      ]);
+      return;
+    }
     speakParts([
       { t: current.letter + "!", pitch: 1.2, rate: 0.9 },
       { t: "Find the picture that starts with " + current.letter + "!", pitch: 1.05, rate: 0.95 }
     ]);
+  }
+  // In reverse the picture introduces itself with its own noise, then the
+  // question follows once the moo or the whistle has finished.
+  function openPrompt(){
+    clearTimeout(promptTimer);
+    if(mode === "reverse"){
+      playPicture(current.word);
+      promptTimer = setTimeout(speakPrompt, 700);
+    }else{
+      speakPrompt();
+    }
   }
 
   /* ---------------- confetti ---------------- */
@@ -1642,7 +1707,7 @@
       }
       cell.addEventListener("click", function(){
         playPicture(word);
-        speakParts([{ t: l + " is for " + word.toLowerCase().replace("-", " ") + "!", pitch: 1.1, rate: 0.9 }]);
+        speakParts([{ t: l + " is for " + sayable(word) + "!", pitch: 1.1, rate: 0.9 }]);
       });
       grid.appendChild(cell);
     });
@@ -1936,6 +2001,18 @@
      A child who has run out of ideas gets nothing back today but silence.
      After a couple of misses, or a long enough pause, the right card starts
      bobbing. It costs no stars: hesitating isn't a mistake.              */
+  /* ---------------- round type ----------------
+     The reverse round turns the question around: the picture asks, and the
+     answer is a letter. It's the harder direction — recognising a letter
+     among letters, with no drawing to lean on — so it stays out of the way
+     until a child is past the beginner deck and holding three cards, and
+     it never runs twice in a row.                                        */
+  function pickMode(){
+    if(beginner() || level < 3) return "normal";
+    if(mode === "reverse") return "normal";
+    return Math.random() < 0.34 ? "reverse" : "normal";
+  }
+
   var HINT_AFTER = 7000;
   function showHint(){
     if(solvedThisRound || !correctBtn) return;
@@ -1955,6 +2032,7 @@
     clearTimeout(victorySpeechTimer);
     clearTimeout(wrongSpeechTimer);
     clearTimeout(hintTimer);
+    clearTimeout(promptTimer);
     victorySoundTimers.forEach(function(t){ clearTimeout(t); });
     victorySoundTimers.length = 0;
     settleJar();
@@ -1962,6 +2040,8 @@
     filledJarThisRound = false;
     wrongTaps = 0;
     correctBtn = null;
+    mode = pickMode();
+    var reverse = mode === "reverse";
     var letter = nextLetter();
     current = { letter: letter, word: pick(WORDS[letter]) };
 
@@ -1974,32 +2054,60 @@
     }
     shuffle(options);
 
-    // show the uppercase/lowercase pair, e.g. "B b"
-    var block = $("letter-block");
-    block.textContent = letter;
-    var lower = document.createElement("span");
-    lower.className = "lower";
-    lower.textContent = letter.toLowerCase();
-    block.appendChild(lower);
-    block.style.animation = "none";
-    void block.offsetWidth;
-    block.style.animation = "";
+    // the prompt is a letter normally, and the picture itself in reverse
+    $("letter-block").classList.toggle("hidden", reverse);
+    $("picture-block").classList.toggle("hidden", !reverse);
+    $("prompt-text").textContent = reverse
+      ? "Which letter does this picture start with?"
+      : "Which picture starts with this letter?";
+
+    if(reverse){
+      var pic = $("picture-block");
+      pic.innerHTML = '<span class="mat">' + ART[current.word] + '</span>';
+      pic.setAttribute("aria-label", sayable(current.word) + ". Hear it again");
+      restart(pic);
+    }else{
+      var block = $("letter-block");
+      block.textContent = letter;
+      block.appendChild(lowerHalf(letter));
+      restart(block);
+    }
 
     var holder = $("cards");
     holder.innerHTML = "";
     options.forEach(function(opt){
       var b = document.createElement("button");
-      b.className = "card";
-      b.innerHTML = ART[opt.word];
-      b.setAttribute("aria-label", opt.word.toLowerCase());
+      b.className = reverse ? "card letter-card" : "card";
+      if(reverse){
+        b.textContent = opt.letter;
+        b.appendChild(lowerHalf(opt.letter));
+        b.setAttribute("aria-label", "letter " + opt.letter);
+      }else{
+        b.innerHTML = ART[opt.word];
+        b.setAttribute("aria-label", opt.word.toLowerCase());
+      }
       b.addEventListener("click", function(){ onCard(b, opt); });
       if(opt.letter === letter) correctBtn = b;
       holder.appendChild(b);
     });
 
     show("screen-play");
-    speakPrompt();
+    openPrompt();
     armHint(HINT_AFTER);
+  }
+
+  // the small trailing lowercase in "B b", so both cases are always paired
+  function lowerHalf(letter){
+    var s = document.createElement("span");
+    s.className = "lower";
+    s.textContent = letter.toLowerCase();
+    return s;
+  }
+  // replay a CSS entrance animation on an element that is being reused
+  function restart(el){
+    el.style.animation = "none";
+    void el.offsetWidth;
+    el.style.animation = "";
   }
 
   function onCard(btn, opt){
@@ -2034,10 +2142,16 @@
       // teach instead of just rejecting: let the picture make its noise, then
       // name what they tapped and which letter it belongs to
       setTimeout(function(){ playPicture(opt.word); }, 230);
-      var w = opt.word.toLowerCase().replace("-", " ");
+      var w = sayable(opt.word);
       clearTimeout(wrongSpeechTimer);
       wrongSpeechTimer = setTimeout(function(){
-        speakParts([
+        // Both directions name what was tapped, never what was wanted —
+        // saying "cow starts with C" in a reverse round would hand over
+        // the answer the child is being asked for.
+        speakParts(mode === "reverse" ? [
+          { t: opt.letter + "!", pitch: 1.1, rate: 0.95 },
+          { t: opt.letter + " is for " + w + ". Try again!", pitch: 1.05, rate: 0.9 }
+        ] : [
           { t: w + "!", pitch: 1.1, rate: 0.95 },
           { t: w + " starts with " + opt.letter + ". Try again!", pitch: 1.05, rate: 0.9 }
         ]);
@@ -2097,7 +2211,7 @@
     }
 
     show("screen-victory");
-    var sayWord = current.word.toLowerCase().replace("-", " ");
+    var sayWord = sayable(current.word);
 
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victorySpeechTimer);
@@ -2135,7 +2249,9 @@
     newRound();
   });
   $("next-btn").addEventListener("click", newRound);
-  $("repeat-btn").addEventListener("click", speakPrompt);
+  $("repeat-btn").addEventListener("click", openPrompt);
+  // the reverse prompt is pokeable too, for the noise on its own
+  $("picture-block").addEventListener("click", function(){ playPicture(current.word); });
   // The winning picture stays pokeable on the victory screen. Poking it also
   // calls off the auto-advance, so a child who wants to make the cow moo
   // eleven times is never hurried off the screen.
