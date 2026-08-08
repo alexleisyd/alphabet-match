@@ -230,6 +230,80 @@
     border-radius:999px;
     padding:6px 18px;
   }
+  .book-reset.armed{background:var(--coral);color:#fff}
+
+  /* ---------- grown-ups panel ---------- */
+  #grownups{z-index:41}
+  .gu-body{
+    width:100%;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    flex:1 1 auto;
+    min-height:0;
+    padding:0 2px;
+  }
+  .gu-label{
+    display:block;
+    font-size:clamp(15px,2.2vw,18px);
+    font-weight:900;
+    color:var(--ink);
+    margin:10px 0 6px;
+  }
+  .gu-input{
+    font-family:inherit;
+    font-size:clamp(18px,2.6vw,22px);
+    font-weight:800;
+    color:var(--ink);
+    width:100%;
+    background:#f2f4fb;
+    border:3px solid var(--card-edge);
+    border-radius:14px;
+    padding:9px 14px;
+  }
+  .gu-input:focus{outline:4px solid var(--grape);outline-offset:2px}
+  .gu-note{
+    font-size:clamp(12px,1.8vw,14px);
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:5px 0 0;
+  }
+  .gu-presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .gu-chip{
+    font-size:clamp(13px,1.9vw,15px);
+    font-weight:800;
+    background:#fff;
+    border:3px solid var(--card-edge);
+    border-radius:999px;
+    padding:5px 14px;
+  }
+  .gu-chip:disabled{opacity:.35;cursor:default}
+  .gu-letters{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(clamp(38px,5vw,50px),1fr));
+    gap:6px;
+  }
+  .gu-letter{
+    aspect-ratio:1/1;
+    font-size:clamp(15px,2.2vw,20px);
+    font-weight:900;
+    background:#f2f4fb;
+    color:#b9bede;
+    border:3px solid #d3d7ea;
+    border-radius:11px;
+  }
+  .gu-letter.on{
+    background:linear-gradient(180deg,#ffe07a 0%,var(--sunshine) 100%);
+    border-color:var(--sunshine-edge);
+    color:var(--ink);
+  }
+  .gu-actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+  }
   .round-btn{
     width:clamp(48px,7vw,58px);
     height:clamp(48px,7vw,58px);
@@ -563,7 +637,7 @@
   <div class="start-blocks" aria-hidden="true">
     <span class="mini-letter">A</span><span id="start-art-1"></span><span class="mini-letter alt">B</span><span id="start-art-2"></span>
   </div>
-  <h1 class="start-title">Alphabet Match!</h1>
+  <h1 class="start-title" id="start-title">Alphabet Match!</h1>
   <button class="big-btn" id="play-btn">▶&nbsp; PLAY</button>
 </div>
 
@@ -593,8 +667,32 @@
     <h2 class="book-title" id="book-title">My Sticker Book</h2>
     <p class="book-progress" id="book-progress"></p>
     <div class="book-grid" id="book-grid"></div>
-    <button class="book-reset hidden" id="book-reset">Start over</button>
     <button class="big-btn" id="book-close">DONE</button>
+  </div>
+</div>
+
+<!-- GROWN-UPS (long-press the sticker book title) -->
+<div class="book hidden" id="grownups">
+  <div class="book-panel">
+    <h2 class="book-title">For grown-ups</h2>
+    <div class="gu-body">
+      <label class="gu-label" for="name-input">Child's name</label>
+      <input class="gu-input" id="name-input" type="text" maxlength="20"
+             placeholder="(optional)" autocomplete="off" autocapitalize="words" spellcheck="false">
+      <p class="gu-note">Used in the cheers, and on the title.</p>
+
+      <label class="gu-label">Letters in play</label>
+      <div class="gu-presets">
+        <button class="gu-chip" id="pick-all">All letters</button>
+        <button class="gu-chip" id="pick-name">Just the name</button>
+      </div>
+      <div class="gu-letters" id="gu-letters"></div>
+      <p class="gu-note" id="gu-count"></p>
+    </div>
+    <div class="gu-actions">
+      <button class="book-reset" id="book-reset">Erase stars and stickers</button>
+      <button class="big-btn" id="gu-close">DONE</button>
+    </div>
   </div>
 </div>
 
@@ -769,6 +867,8 @@
   var sessionStars = 0;   // music energy builds per sitting, not per lifetime —
                           // a returning child should still hear the band arrive
   var book = {};          // letter -> [words collected], newest last
+  var childName = "";     // optional, set by a grown-up; used in the cheers
+  var letterSet = null;   // null means the whole alphabet is in play
   var muted = false;
   var solvedThisRound = false;
   var wrongTaps = 0;
@@ -817,6 +917,13 @@
       // a child who has already worked up to four cards shouldn't be sent
       // back to two just because they closed the tab
       if(typeof d.level === "number" && d.level >= MIN_CARDS && d.level <= MAX_CARDS) level = Math.floor(d.level);
+      if(typeof d.name === "string") childName = d.name.slice(0, NAME_MAX);
+      if(d.letters instanceof Array){
+        var keep = d.letters.filter(function(l){ return LETTERS.indexOf(l) !== -1; });
+        // a set of one leaves nothing to choose between; the whole alphabet
+        // is just the default, stored as null
+        if(keep.length >= 2 && keep.length < LETTERS.length) letterSet = keep.sort();
+      }
       if(d.book){
         LETTERS.forEach(function(l){
           var got = d.book[l];
@@ -830,7 +937,9 @@
   }
   function saveProgress(){
     try{
-      localStorage.setItem(SAVE_KEY, JSON.stringify({ stars: stars, book: book, level: level }));
+      localStorage.setItem(SAVE_KEY, JSON.stringify({
+        stars: stars, book: book, level: level, name: childName, letters: letterSet
+      }));
     }catch(e){}
   }
   // Re-finding a letter moves that word to the top of its pile, so the book
@@ -1475,6 +1584,17 @@
     }catch(e){}
   }
   var PRAISE = ["Yay!","Woo hoo!","Hooray!","Great job!","You did it!","Amazing!","Super duper!","High five!"];
+  var NAME_MAX = 20;
+  // Hearing your own name is a large part of why this is worth doing, but
+  // every single round would wear thin — so about half of them.
+  function cheerLine(){
+    var named = childName && Math.random() < 0.5;
+    if(filledJarThisRound){
+      return "You filled the whole jar" + (childName ? ", " + childName : "") + "!";
+    }
+    var p = pick(PRAISE);
+    return named ? p.replace(/!+$/, "") + ", " + childName + "!" : p;
+  }
   function speakPrompt(){
     if(mode === "reverse"){
       var w = sayable(current.word);
@@ -1970,18 +2090,24 @@
   // by rounds played, so it survives across sessions like everything else.
   function beginner(){ return Object.keys(book).length < 8; }
 
+  // Whatever a grown-up has narrowed the game down to, or all 26.
+  function activeLetters(){
+    return (letterSet && letterSet.length >= 2) ? letterSet : LETTERS;
+  }
+
   function nextLetter(){
     if(deck.length === 0){
+      var pool = activeLetters();
       // pop() draws from the end, so the easy tier goes last to come out first
       if(beginner()){
-        var easy = shuffle(EASY.slice());
-        var rest = shuffle(LETTERS.filter(function(l){ return EASY.indexOf(l) === -1; }));
+        var easy = shuffle(pool.filter(function(l){ return EASY.indexOf(l) !== -1; }));
+        var rest = shuffle(pool.filter(function(l){ return EASY.indexOf(l) === -1; }));
         deck = rest.concat(easy);
       }else{
-        deck = shuffle(LETTERS.slice());
+        deck = shuffle(pool.slice());
       }
       // a fresh deck could deal the letter just played — move it to the bottom
-      if(current && deck[deck.length-1] === current.letter) deck.unshift(deck.pop());
+      if(current && deck.length > 1 && deck[deck.length-1] === current.letter) deck.unshift(deck.pop());
     }
     return deck.pop();
   }
@@ -2045,9 +2171,13 @@
     var letter = nextLetter();
     current = { letter: letter, word: pick(WORDS[letter]) };
 
-    // distractors from other letters, skipping sound-alike letters
+    // distractors from other letters in play, skipping sound-alike letters
     var avoid = CONFUSABLE[letter] || [];
-    var others = shuffle(LETTERS.filter(function(l){ return l !== letter && avoid.indexOf(l) === -1; }));
+    var pool = activeLetters();
+    var others = shuffle(pool.filter(function(l){ return l !== letter && avoid.indexOf(l) === -1; }));
+    // a tight letter set can filter every distractor away — better a
+    // sound-alike than a lone card with nothing to choose between
+    if(!others.length) others = shuffle(pool.filter(function(l){ return l !== letter; }));
     var options = [current];
     for(var i=0; options.length < level && i < others.length; i++){
       options.push({ letter: others[i], word: pick(WORDS[others[i]]) });
@@ -2220,8 +2350,8 @@
       // no narration to wait for — just give a bit longer to look at the word
       autoAdvanceTimer = setTimeout(newRound, 5000);
     }else{
-      // a filled jar outranks the usual cheer — it only happens every 20 stars
-      var cheer = filledJarThisRound ? "You filled the whole jar!" : pick(PRAISE);
+      // a filled jar outranks the usual cheer — it only happens every 16 stars
+      var cheer = cheerLine();
       var wait = reducedMotion ? 100 : (filledJarThisRound ? 1500 : 900);
       victorySpeechTimer = setTimeout(function(){
         speakParts([
@@ -2270,18 +2400,105 @@
   $("jar-btn").addEventListener("click", openBook);
   $("book-close").addEventListener("click", closeBook);
   $("book").addEventListener("click", function(e){ if(e.target === $("book")) closeBook(); });
-  // A grown-up escape hatch: once progress sticks around, a shared tablet
-  // needs a road back to zero. Behind a long press, where a preschooler
-  // mashing the screen won't stumble onto it.
-  var resetHold = null;
-  function armReset(){
-    clearTimeout(resetHold);
-    resetHold = setTimeout(function(){ $("book-reset").classList.remove("hidden"); }, 1500);
+  /* ---------------- grown-ups panel ----------------
+     Everything a parent sets rather than plays, behind a long press on the
+     sticker book title — a gesture a preschooler mashing the screen won't
+     stumble onto, and one a grown-up only has to be told about once.    */
+  var holdTimer = null;
+  function armGrownups(){
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(openGrownups, 1500);
   }
-  function cancelReset(){ clearTimeout(resetHold); }
-  ["mousedown","touchstart"].forEach(function(ev){ $("book-title").addEventListener(ev, armReset); });
-  ["mouseup","mouseleave","touchend","touchcancel"].forEach(function(ev){ $("book-title").addEventListener(ev, cancelReset); });
+  function cancelGrownups(){ clearTimeout(holdTimer); }
+  ["mousedown","touchstart"].forEach(function(ev){ $("book-title").addEventListener(ev, armGrownups); });
+  ["mouseup","mouseleave","touchend","touchcancel"].forEach(function(ev){ $("book-title").addEventListener(ev, cancelGrownups); });
+
+  function paintNames(){
+    $("start-title").textContent = childName ? childName + "'s Alphabet Match!" : "Alphabet Match!";
+    $("book-title").textContent = childName ? childName + "'s Sticker Book" : "My Sticker Book";
+  }
+  // the distinct A-Z letters in the name, for the "just the name" preset
+  function nameLetters(){
+    var seen = {}, out = [];
+    childName.toUpperCase().split("").forEach(function(ch){
+      if(LETTERS.indexOf(ch) !== -1 && !seen[ch]){ seen[ch] = 1; out.push(ch); }
+    });
+    return out.sort();
+  }
+  function applyLetters(set){
+    // the full alphabet is the default, and is stored as null rather than a list
+    letterSet = (set && set.length >= 2 && set.length < LETTERS.length) ? set.slice().sort() : null;
+    deck = [];            // re-deal from the new set as soon as the round turns
+    saveProgress();
+    renderLetterPicker();
+  }
+  function renderLetterPicker(){
+    var on = activeLetters();
+    var wrap = $("gu-letters");
+    wrap.innerHTML = "";
+    LETTERS.forEach(function(l){
+      var b = document.createElement("button");
+      var isOn = on.indexOf(l) !== -1;
+      b.className = "gu-letter" + (isOn ? " on" : "");
+      b.textContent = l;
+      b.setAttribute("aria-pressed", isOn ? "true" : "false");
+      b.setAttribute("aria-label", l + (isOn ? ", in play" : ", not in play"));
+      b.addEventListener("click", function(){
+        var set = activeLetters().slice();
+        var at = set.indexOf(l);
+        if(at === -1) set.push(l);
+        else if(set.length > 2) set.splice(at, 1);   // never fewer than two
+        else return;
+        applyLetters(set);
+      });
+      wrap.appendChild(b);
+    });
+    var n = on.length;
+    $("gu-count").textContent = n === LETTERS.length
+      ? "All 26 letters are in play."
+      : n + " letters in play. Rounds only use these.";
+    $("pick-name").disabled = nameLetters().length < 2;
+  }
+  function openGrownups(){
+    $("name-input").value = childName;
+    renderLetterPicker();
+    disarmReset();
+    $("grownups").classList.remove("hidden");
+  }
+  function closeGrownups(){
+    $("grownups").classList.add("hidden");
+    disarmReset();
+    renderBook();          // the title may have gained a name
+  }
+  $("gu-close").addEventListener("click", closeGrownups);
+  $("grownups").addEventListener("click", function(e){ if(e.target === $("grownups")) closeGrownups(); });
+  $("name-input").addEventListener("input", function(){
+    childName = this.value.trim().slice(0, NAME_MAX);
+    paintNames();
+    renderLetterPicker();  // enables or greys the "just the name" preset
+    saveProgress();
+  });
+  $("pick-all").addEventListener("click", function(){ applyLetters(null); });
+  $("pick-name").addEventListener("click", function(){ applyLetters(nameLetters()); });
+
+  // Erasing is two taps: the panel already keeps children out, but a parent
+  // can still fat-finger a button that throws away weeks of stickers.
+  var resetArmed = null;
+  function disarmReset(){
+    clearTimeout(resetArmed);
+    resetArmed = null;
+    var b = $("book-reset");
+    b.classList.remove("armed");
+    b.textContent = "Erase stars and stickers";
+  }
   $("book-reset").addEventListener("click", function(){
+    var b = $("book-reset");
+    if(!resetArmed){
+      b.classList.add("armed");
+      b.textContent = "Tap again to erase";
+      resetArmed = setTimeout(disarmReset, 4000);
+      return;
+    }
     stars = 0; shownStars = 0; lastCelebrated = -1; book = {};
     // back to a beginner in every sense: two cards, and the easy letters
     // dealt first again once the current deck runs out
@@ -2289,8 +2506,9 @@
     saveProgress();
     paintJar();
     renderBook();
-    $("book-reset").classList.add("hidden");
+    disarmReset();
   });
+  paintNames();
   /* ---------------- full screen ----------------
      Worth having on a tablet: it hides the browser chrome, so a four-year-
      old aiming at a card can't land on the address bar instead. The button
