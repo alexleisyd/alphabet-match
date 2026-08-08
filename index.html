@@ -363,6 +363,7 @@
   }
   .card:nth-child(2){animation-delay:.08s}
   .card:nth-child(3){animation-delay:.16s}
+  .card:nth-child(4){animation-delay:.24s}
   .card:active{transform:scale(.94) translateY(4px);box-shadow:0 3px 0 rgba(46,45,85,.22)}
   .card svg{width:100%;height:100%}
   .card.wrong{
@@ -375,6 +376,20 @@
     background:#eafff4;
     border-color:var(--leaf);
     box-shadow:0 8px 0 rgba(38,183,137,.5);
+  }
+  /* the nudge for a child who has stalled. The green ring carries the hint
+     on its own, so it still reads when the bob is switched off below. */
+  .card.hint{
+    animation:hint-bob 1.5s ease-in-out infinite;
+    border-color:var(--leaf);
+    box-shadow:0 8px 0 rgba(38,183,137,.45), 0 0 0 9px rgba(38,183,137,.3);
+  }
+  @keyframes hint-bob{
+    0%,100%{transform:translateY(0)}
+    28%{transform:translateY(-18px)}
+    52%{transform:translateY(0)}
+    72%{transform:translateY(-8px)}
+    88%{transform:translateY(0)}
   }
   @keyframes pop-in{
     from{transform:scale(.3);opacity:0}
@@ -719,6 +734,10 @@
   var earnedThisRound = 0;
   var filledJarThisRound = false;
   var holdVictory = false;      // child is playing with the picture; don't move on
+  var level = 2;                // cards on the table: 2, 3 or 4
+  var cleanStreak = 0;          // consecutive rounds solved without a miss
+  var correctBtn = null;        // the card to nudge if they get stuck
+  var hintTimer = null;
   var autoAdvanceTimer = null;
   var victoryDelayTimer = null;
   var victorySpeechTimer = null;
@@ -749,6 +768,9 @@
       var d = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
       if(!d) return;
       if(typeof d.stars === "number" && isFinite(d.stars)) stars = Math.max(0, Math.floor(d.stars));
+      // a child who has already worked up to four cards shouldn't be sent
+      // back to two just because they closed the tab
+      if(typeof d.level === "number" && d.level >= MIN_CARDS && d.level <= MAX_CARDS) level = Math.floor(d.level);
       if(d.book){
         LETTERS.forEach(function(l){
           var got = d.book[l];
@@ -762,7 +784,7 @@
   }
   function saveProgress(){
     try{
-      localStorage.setItem(SAVE_KEY, JSON.stringify({ stars: stars, book: book }));
+      localStorage.setItem(SAVE_KEY, JSON.stringify({ stars: stars, book: book, level: level }));
     }catch(e){}
   }
   // Re-finding a letter moves that word to the top of its pile, so the book
@@ -1870,13 +1892,61 @@
   }
 
   /* ---------------- rounds ---------------- */
+  /* ---------------- difficulty ----------------
+     Two dials, both aimed at the same thing: a child's first few minutes
+     should be winnable. A flat 26-letter shuffle can open on Q, X or Z,
+     and three cards is a lot to read when you know four letters.        */
+  var MIN_CARDS = 2, MAX_CARDS = 4;
+  var STEP_UP_AFTER = 3;        // clean rounds in a row before widening
+  // The letters a preschooler tends to meet first: their shapes are
+  // distinct and the words are things they can already name.
+  var EASY = ["A","B","C","D","M","P","S","T"];
+  // "Still finding their feet" is measured by the sticker book rather than
+  // by rounds played, so it survives across sessions like everything else.
+  function beginner(){ return Object.keys(book).length < 8; }
+
   function nextLetter(){
     if(deck.length === 0){
-      deck = shuffle(LETTERS.slice());
+      // pop() draws from the end, so the easy tier goes last to come out first
+      if(beginner()){
+        var easy = shuffle(EASY.slice());
+        var rest = shuffle(LETTERS.filter(function(l){ return EASY.indexOf(l) === -1; }));
+        deck = rest.concat(easy);
+      }else{
+        deck = shuffle(LETTERS.slice());
+      }
       // a fresh deck could deal the letter just played — move it to the bottom
       if(current && deck[deck.length-1] === current.letter) deck.unshift(deck.pop());
     }
     return deck.pop();
+  }
+
+  // Widen after a few clean rounds, narrow the moment a round goes badly.
+  function gradeRound(){
+    if(wrongTaps === 0){
+      cleanStreak++;
+      if(cleanStreak >= STEP_UP_AFTER && level < MAX_CARDS){ level++; cleanStreak = 0; }
+    }else{
+      cleanStreak = 0;
+      if(wrongTaps >= 2 && level > MIN_CARDS) level--;
+    }
+  }
+
+  /* ---------------- stuck detection ----------------
+     A child who has run out of ideas gets nothing back today but silence.
+     After a couple of misses, or a long enough pause, the right card starts
+     bobbing. It costs no stars: hesitating isn't a mistake.              */
+  var HINT_AFTER = 7000;
+  function showHint(){
+    if(solvedThisRound || !correctBtn) return;
+    if(correctBtn.classList.contains("hint")) return;
+    correctBtn.classList.add("hint");
+    tone(660, 0, 0.18, "sine", 0.1);
+    tone(880, 0.12, 0.22, "sine", 0.1);
+  }
+  function armHint(delay){
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(showHint, delay);
   }
 
   function newRound(){
@@ -1884,20 +1954,22 @@
     clearTimeout(victoryDelayTimer);
     clearTimeout(victorySpeechTimer);
     clearTimeout(wrongSpeechTimer);
+    clearTimeout(hintTimer);
     victorySoundTimers.forEach(function(t){ clearTimeout(t); });
     victorySoundTimers.length = 0;
     settleJar();
     solvedThisRound = false;
     filledJarThisRound = false;
     wrongTaps = 0;
+    correctBtn = null;
     var letter = nextLetter();
     current = { letter: letter, word: pick(WORDS[letter]) };
 
-    // two distractors from other letters, skipping sound-alike letters
+    // distractors from other letters, skipping sound-alike letters
     var avoid = CONFUSABLE[letter] || [];
     var others = shuffle(LETTERS.filter(function(l){ return l !== letter && avoid.indexOf(l) === -1; }));
     var options = [current];
-    for(var i=0; options.length < 3 && i < others.length; i++){
+    for(var i=0; options.length < level && i < others.length; i++){
       options.push({ letter: others[i], word: pick(WORDS[others[i]]) });
     }
     shuffle(options);
@@ -1921,18 +1993,23 @@
       b.innerHTML = ART[opt.word];
       b.setAttribute("aria-label", opt.word.toLowerCase());
       b.addEventListener("click", function(){ onCard(b, opt); });
+      if(opt.letter === letter) correctBtn = b;
       holder.appendChild(b);
     });
 
     show("screen-play");
     speakPrompt();
+    armHint(HINT_AFTER);
   }
 
   function onCard(btn, opt){
     if(solvedThisRound) return;
     if(opt.letter === current.letter){
       solvedThisRound = true;
+      clearTimeout(hintTimer);
+      btn.classList.remove("hint");
       btn.classList.add("right");
+      gradeRound();
       // the picture speaks for itself first; the party horn follows so the
       // two don't smear into one noise
       playPicture(current.word);
@@ -1951,6 +2028,9 @@
       wrongTaps++;
       btn.classList.add("wrong");
       chimeWrong();
+      // a second miss means they're guessing — nudge once the teaching line
+      // has landed, rather than talking over it
+      armHint(wrongTaps >= 2 ? 1500 : HINT_AFTER);
       // teach instead of just rejecting: let the picture make its noise, then
       // name what they tapped and which letter it belongs to
       setTimeout(function(){ playPicture(opt.word); }, 230);
@@ -2087,6 +2167,9 @@
   ["mouseup","mouseleave","touchend","touchcancel"].forEach(function(ev){ $("book-title").addEventListener(ev, cancelReset); });
   $("book-reset").addEventListener("click", function(){
     stars = 0; shownStars = 0; lastCelebrated = -1; book = {};
+    // back to a beginner in every sense: two cards, and the easy letters
+    // dealt first again once the current deck runs out
+    level = MIN_CARDS; cleanStreak = 0; deck = [];
     saveProgress();
     paintJar();
     renderBook();
