@@ -1874,8 +1874,26 @@
       {y:.05, s:.90,  v:6,  o:1500}
     ];
 
-    function cloud(x, y, k){
+    /* ---- tappable scenery ----
+       Everything in the sky answers back when poked. Each shape records
+       where it just drew itself, so the hit targets follow the animation
+       rather than guessing at where a plane might be. */
+    var spots = [];
+    var poked = {};
+    function mark(kind, x, y, r){ spots.push({ kind:kind, x:x, y:y, r:r }); }
+    // a decaying wobble, ±1, for the ~700ms after something is tapped
+    function wob(kind){
+      var at = poked[kind];
+      if(at == null) return 0;
+      var dt = (Date.now() - at) / 700;
+      if(dt >= 1){ poked[kind] = null; return 0; }
+      return Math.sin(dt*Math.PI*4) * (1 - dt);
+    }
+
+    function cloud(x, y, k, kind){
       var s = k*U;
+      y += wob(kind)*7*U;
+      mark(kind, x, y, 40*s);
       s2.fillStyle = "rgba(255,255,255,.9)";
       s2.beginPath();
       s2.ellipse(x, y+13*s, 46*s, 17*s, 0, 0, TAU);
@@ -1886,7 +1904,10 @@
     }
 
     function sun(t){
-      var x = W*0.87, y = H*0.13, r = Math.max(26, Math.min(W,H)*0.055);
+      var x = W*0.87, y = H*0.13;
+      // the whole sun is drawn off r, so pulsing r pulses the rays and face too
+      var r = Math.max(26, Math.min(W,H)*0.055) * (1 + wob("sun")*0.1);
+      mark("sun", x, y, r*1.5);
       var g = s2.createRadialGradient(x,y,r*0.4, x,y,r*2.8);
       g.addColorStop(0,"rgba(255,214,68,.45)");
       g.addColorStop(1,"rgba(255,214,68,0)");
@@ -1920,9 +1941,11 @@
     function plane(t){
       var k = U*1.1;
       var cyc = 36;
+      var w = wob("plane");
       var x = -160 + ((t%cyc)/cyc)*(W+320);
-      var y = H*0.15 + Math.sin(t*1.2)*7;
-      s2.save(); s2.translate(x,y); s2.rotate(-0.05); s2.scale(k,k);
+      var y = H*0.15 + Math.sin(t*1.2)*7 + w*9;
+      mark("plane", x, y, 44*k);
+      s2.save(); s2.translate(x,y); s2.rotate(-0.05 + w*0.16); s2.scale(k,k);
       s2.fillStyle = "#ff8787";
       s2.beginPath(); s2.moveTo(-32,0);  s2.lineTo(-46,-17); s2.lineTo(-26,-7); s2.closePath(); s2.fill();
       s2.beginPath(); s2.moveTo(-4,4);   s2.lineTo(-22,22);  s2.lineTo(2,15);   s2.closePath(); s2.fill();
@@ -1942,7 +1965,10 @@
       var p = ((t%cyc)+cyc)%cyc/cyc;
       var x = W*0.12 + Math.sin(t*0.55)*16*U;
       var y = H*1.12 - p*(H*1.45);
-      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.55)*0.05);
+      var w = wob("balloon");
+      // the envelope sits above the anchor point, so the target does too
+      mark("balloon", x, y - R*0.27, R*1.35);
+      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.55)*0.05 + w*0.17);
       function gore(sx, color){
         s2.save(); s2.scale(sx,1);
         s2.fillStyle = color;
@@ -1972,7 +1998,8 @@
       var s = U;
       var x = W*0.9  + Math.sin(t*0.7)*20*s;
       var y = H*0.62 + Math.cos(t*0.9)*14*s;
-      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.7)*0.18 + 0.15);
+      mark("kite", x, y, 23*s);
+      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.7)*0.18 + 0.15 + wob("kite")*0.26);
       s2.strokeStyle = "#9d8bdb"; s2.lineWidth = 2*s; s2.lineCap = "round";
       s2.beginPath(); s2.moveTo(0, 20*s);
       s2.quadraticCurveTo( 8*s, 34*s, 2*s, 48*s);
@@ -1994,10 +2021,12 @@
       s2.restore();
     }
 
-    function bird(t, o, yf, sp, sc){
+    function bird(t, o, yf, sp, sc, kind){
+      var w = wob(kind);
       var x = ((t*sp + o) % (W+160)) - 80;
-      var y = H*yf + Math.sin(t*1.7 + o)*8;
-      var flap = Math.sin(t*7 + o)*5*sc;
+      var y = H*yf + Math.sin(t*1.7 + o)*8 - w*11;
+      mark(kind, x, y, 17*sc);   // generously wider than the bird, for small fingers
+      var flap = Math.sin(t*7 + o)*5*sc + w*4*sc;
       s2.strokeStyle = "#5a6b8c"; s2.lineWidth = 2.4*sc; s2.lineCap = "round";
       s2.beginPath();
       s2.moveTo(x-10*sc, y);
@@ -2015,6 +2044,9 @@
 
     function tree(x, y){
       var s = U;
+      mark("tree", x, y - 40*s, 27*s);
+      s2.save();
+      s2.translate(x, y); s2.rotate(wob("tree")*0.1); s2.translate(-x, -y);  // sway from the roots
       s2.fillStyle = "#a97455";
       s2.fillRect(x-4*s, y-30*s, 8*s, 30*s);
       s2.fillStyle = "#6fc98f";
@@ -2025,11 +2057,13 @@
       s2.fill();
       s2.fillStyle = "#8ad8a5";
       s2.beginPath(); s2.arc(x-6*s, y-52*s, 10*s, 0, TAU); s2.fill();
+      s2.restore();
     }
 
     function flower(x, y, t){
       var s = U;
-      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.9)*0.06);
+      mark("flower", x, y - 26*s, 17*s);
+      s2.save(); s2.translate(x,y); s2.rotate(Math.sin(t*0.9)*0.06 + wob("flower")*0.19);
       s2.strokeStyle = "#69b97e"; s2.lineWidth = 3.4*s; s2.lineCap = "round";
       s2.beginPath(); s2.moveTo(0,0); s2.quadraticCurveTo(2*s,-14*s, 0,-26*s); s2.stroke();
       s2.fillStyle = "#ffd23f";
@@ -2043,21 +2077,56 @@
     }
 
     function draw(t){
+      spots.length = 0;
       s2.clearRect(0,0,W,H);
       sun(t);
-      CLOUDS.forEach(function(c){
+      CLOUDS.forEach(function(c, i){
         var x = ((c.o + t*c.v) % (W+260)) - 130;
-        cloud(x, H*c.y, c.s);
+        cloud(x, H*c.y, c.s, "cloud" + i);
       });
       plane(t);
-      bird(t, 0,   .30, 26, U);
-      bird(t, 300, .25, 22, U*0.8);
+      bird(t, 0,   .30, 26, U,     "bird0");
+      bird(t, 300, .25, 22, U*0.8, "bird1");
       balloon(t);
       kite(t);
       hills();
       tree(W*0.07, H*0.99);
       flower(W*0.94, H*0.995, t);
     }
+
+    var SKY_SOUND = {
+      sun:"sparkle", plane:"whoosh", balloon:"boing", kite:"wind",
+      tree:"wind", flower:"twinkle", bird0:"chirp", bird1:"chirp",
+      cloud0:"wind", cloud1:"wind", cloud2:"wind", cloud3:"wind"
+    };
+    function pokeSky(cx, cy){
+      var best = null, bestD = Infinity;
+      for(var i=0;i<spots.length;i++){
+        var s = spots[i], dx = cx - s.x, dy = cy - s.y, d = dx*dx + dy*dy;
+        if(d <= s.r*s.r && d < bestD){ bestD = d; best = s; }   // nearest centre wins
+      }
+      if(!best) return false;
+      poked[best.kind] = Date.now();
+      var v = VOICE[SKY_SOUND[best.kind]];
+      if(v) try{ v(); }catch(e){}
+      return true;
+    }
+    // Only between questions. During a round nothing should compete with the
+    // cards, and a child hunting the balloon instead of answering is exactly
+    // the distraction this would otherwise create.
+    document.addEventListener("click", function(e){
+      if(!$("screen-play").classList.contains("hidden")) return;
+      // taps that landed on empty scenery only — never on a control, and
+      // never through an open sticker book or grown-ups panel
+      var t = e.target;
+      if(t !== document.body && !(t.classList && t.classList.contains("stage"))) return;
+      if(!pokeSky(e.clientX, e.clientY)) return;
+      // poking the balloon shouldn't hurry a child off the victory screen
+      if(!$("screen-victory").classList.contains("hidden")){
+        holdVictory = true;
+        clearTimeout(autoAdvanceTimer);
+      }
+    });
 
     resize();
     draw(20); // first frame right away, even in a background tab
