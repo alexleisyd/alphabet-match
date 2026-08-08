@@ -75,17 +75,160 @@
   }
   .topbar>*{pointer-events:auto}
   .topbar .right{display:flex;gap:10px;align-items:center}
-  .stars{
+
+  /* ---------- sticker jar ---------- */
+  .jar{
     display:flex;
     align-items:center;
     gap:8px;
     background:rgba(255,255,255,.85);
     border:3px solid var(--card-edge);
     border-radius:999px;
-    padding:6px 16px;
+    padding:4px 16px 4px 6px;
     font-size:clamp(18px,3vw,24px);
     font-weight:800;
     box-shadow:0 4px 0 rgba(46,45,85,.18);
+    transition:transform .1s;
+  }
+  .jar:active{transform:scale(.94)}
+  .jar-art{
+    width:clamp(52px,7vw,68px);
+    height:clamp(52px,7vw,68px);
+    display:block;
+  }
+  .jar-art svg{width:100%;height:100%;display:block}
+  .jar-done{
+    font-size:clamp(14px,2.2vw,18px);
+    background:var(--sunshine);
+    border:2.5px solid var(--card-edge);
+    border-radius:999px;
+    padding:1px 9px;
+  }
+  @keyframes jar-shake{
+    0%,100%{transform:none}
+    20%{transform:translateY(-7px) rotate(-8deg)}
+    45%{transform:translateY(-2px) rotate(7deg)}
+    70%{transform:translateY(-5px) rotate(-4deg)}
+  }
+  .jar.full-pop{animation:jar-shake .7s ease}
+  @keyframes jar-bump{
+    0%,100%{transform:scale(1)}
+    45%{transform:scale(1.18)}
+  }
+  .jar-art.bump{animation:jar-bump .3s ease}
+
+  /* one star flies from the winning card into the jar per star earned */
+  .flystar{
+    position:fixed;
+    left:0;top:0;
+    z-index:30;
+    pointer-events:none;
+    font-size:clamp(26px,4vw,38px);
+    line-height:1;
+    will-change:transform,opacity;
+  }
+
+  /* ---------- sticker book ---------- */
+  .book{
+    position:fixed;
+    inset:0;
+    z-index:40;
+    background:rgba(46,45,85,.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(10px,2.5vw,28px);
+  }
+  .book-panel{
+    background:linear-gradient(180deg,#fffdf5 0%,#ffffff 100%);
+    border:5px solid var(--card-edge);
+    border-radius:clamp(18px,3vw,30px);
+    box-shadow:0 10px 0 rgba(46,45,85,.3);
+    padding:clamp(14px,2.5vw,26px);
+    width:min(940px,100%);
+    max-height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:clamp(8px,1.5vh,14px);
+    animation:pop-in .35s cubic-bezier(.2,1.6,.4,1) both;
+  }
+  .book-title{
+    font-size:clamp(22px,4vw,34px);
+    font-weight:900;
+    margin:0;
+  }
+  .book-progress{
+    font-size:clamp(15px,2.4vw,20px);
+    font-weight:800;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .book-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(clamp(60px,8.5vw,104px),1fr));
+    gap:clamp(8px,1.4vw,14px);
+    width:100%;
+    flex:1 1 auto;
+    min-height:0;          /* or the grid refuses to shrink and scroll */
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    padding:8px 4px;
+  }
+  .slot{
+    position:relative;
+    aspect-ratio:1/1;
+    background:#f2f4fb;
+    border:3px dashed #b9bede;
+    border-radius:clamp(10px,1.8vw,16px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:clamp(22px,3.6vw,36px);
+    font-weight:900;
+    color:#b9bede;
+    padding:6px;
+  }
+  .slot.got{
+    background:var(--card);
+    border:3px solid var(--card-edge);
+    box-shadow:0 4px 0 rgba(46,45,85,.2);
+    color:var(--ink);
+    transition:transform .1s;
+  }
+  .slot.got:active{transform:scale(.93)}
+  .slot.got svg{width:100%;height:100%}
+  .slot .tag{
+    position:absolute;
+    left:-5px;bottom:-6px;
+    font-size:clamp(12px,1.7vw,16px);
+    font-weight:900;
+    background:var(--grape);
+    color:#fff;
+    border:2.5px solid var(--card-edge);
+    border-radius:999px;
+    padding:0 7px;
+  }
+  .slot .badge{
+    position:absolute;
+    right:-6px;top:-7px;
+    min-width:23px;height:23px;
+    border-radius:999px;
+    background:var(--sunshine);
+    border:2.5px solid var(--card-edge);
+    font-size:13px;
+    font-weight:900;
+    display:flex;align-items:center;justify-content:center;
+    padding:0 4px;
+  }
+  .book-reset{
+    font-size:16px;
+    font-weight:800;
+    color:var(--coral);
+    border:3px solid var(--coral);
+    border-radius:999px;
+    padding:6px 18px;
   }
   .round-btn{
     width:clamp(48px,7vw,58px);
@@ -256,7 +399,10 @@
     width:clamp(130px,24vh,210px);
     height:clamp(130px,24vh,210px);
     animation:bounce-big .9s cubic-bezier(.3,1.6,.4,1) both;
+    cursor:pointer;
+    transition:transform .1s;
   }
+  .victory-art:active{transform:scale(.93)}
   .victory-art svg{width:100%;height:100%;display:block}
   @keyframes bounce-big{
     0%{transform:scale(0) rotate(-15deg)}
@@ -328,6 +474,13 @@
     .prompt-text{display:none}
     .stage{gap:10px}
     .victory-art{width:clamp(80px,26vh,120px);height:clamp(80px,26vh,120px)}
+    /* give the book back the room the chrome was eating, so more than one
+       row of stickers is visible before it has to scroll */
+    .book-panel{padding:10px 14px;gap:6px}
+    .book-title{font-size:22px}
+    .book-progress{font-size:14px}
+    .book-grid{grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:7px;padding:6px 3px}
+    .book-panel .big-btn{font-size:20px;padding:9px 34px}
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -339,7 +492,11 @@
 <canvas id="confetti"></canvas>
 
 <div class="topbar">
-  <div class="stars">⭐ <span id="star-count">0</span></div>
+  <button class="jar" id="jar-btn" aria-label="Open your sticker book">
+    <span class="jar-art" id="jar-art"></span>
+    <span id="star-count">0</span>
+    <span class="jar-done hidden" id="jar-done"></span>
+  </button>
   <div class="right">
     <button class="round-btn hidden" id="full-btn" aria-label="Fill the whole screen"></button>
     <button class="round-btn" id="mute-btn" aria-label="Turn sound on or off">🔊</button>
@@ -372,6 +529,17 @@
   <div class="word-tiles" id="word-tiles"></div>
   <div class="victory-stars" id="victory-stars"></div>
   <button class="big-btn next" id="next-btn">NEXT &nbsp;▶</button>
+</div>
+
+<!-- STICKER BOOK -->
+<div class="book hidden" id="book">
+  <div class="book-panel">
+    <h2 class="book-title" id="book-title">My Sticker Book</h2>
+    <p class="book-progress" id="book-progress"></p>
+    <div class="book-grid" id="book-grid"></div>
+    <button class="book-reset hidden" id="book-reset">Start over</button>
+    <button class="big-btn" id="book-close">DONE</button>
+  </div>
 </div>
 
 <script>
@@ -539,14 +707,22 @@
   /* ---------------- state ---------------- */
   var deck = [];          // shuffled letters, so every letter shows up before repeats
   var current = null;     // {letter, word}
-  var stars = 0;
+  var stars = 0;          // lifetime total, restored from storage
+  var shownStars = 0;     // what the jar is painted with; trails `stars` while
+                          // the stars just earned are still flying into it
+  var sessionStars = 0;   // music energy builds per sitting, not per lifetime —
+                          // a returning child should still hear the band arrive
+  var book = {};          // letter -> [words collected], newest last
   var muted = false;
   var solvedThisRound = false;
   var wrongTaps = 0;
   var earnedThisRound = 0;
+  var filledJarThisRound = false;
+  var holdVictory = false;      // child is playing with the picture; don't move on
   var autoAdvanceTimer = null;
   var victoryDelayTimer = null;
   var victorySpeechTimer = null;
+  var wrongSpeechTimer = null;
   var victorySoundTimers = [];  // scheduled tile chimes and star tones
 
   var $ = function(id){ return document.getElementById(id); };
@@ -560,6 +736,44 @@
     return a;
   }
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+  /* ---------------- saved progress ---------------- */
+  // Stars and the sticker book outlive the tab. A four-year-old's session
+  // ends when the tablet gets taken away, and losing the jar along with it
+  // is the quickest way to make the game not worth starting again.
+  // Storage can be unavailable (private mode, a blocked third-party frame);
+  // the game just plays without memory then rather than falling over.
+  var SAVE_KEY = "alphabet-match.v1";
+  function loadProgress(){
+    try{
+      var d = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+      if(!d) return;
+      if(typeof d.stars === "number" && isFinite(d.stars)) stars = Math.max(0, Math.floor(d.stars));
+      if(d.book){
+        LETTERS.forEach(function(l){
+          var got = d.book[l];
+          if(!(got instanceof Array)) return;
+          // drop any word the game no longer has a drawing for
+          var keep = got.filter(function(w){ return WORDS[l].indexOf(w) !== -1; });
+          if(keep.length) book[l] = keep;
+        });
+      }
+    }catch(e){}
+  }
+  function saveProgress(){
+    try{
+      localStorage.setItem(SAVE_KEY, JSON.stringify({ stars: stars, book: book }));
+    }catch(e){}
+  }
+  // Re-finding a letter moves that word to the top of its pile, so the book
+  // shows the most recent one and the child can discover that B is a bee
+  // *and* a bus.
+  function collect(letter, word){
+    var got = book[letter] || (book[letter] = []);
+    var at = got.indexOf(word);
+    if(at !== -1) got.splice(at, 1);
+    got.push(word);
+  }
 
   /* ---------------- audio: chimes ---------------- */
   var actx = null;
@@ -607,6 +821,348 @@
     [1046.5, 1318.5].forEach(function(f){ tone(f, 0.55, 0.8, "triangle", 0.1); });
   }
 
+  /* ---------------- picture sounds ----------------
+     Every card can make its own noise, because "the cow moos when you tap
+     it" is the part a three-year-old actually plays for. These are all
+     synthesised — cartoon impressions rather than recordings — so the game
+     stays one file with nothing to download and nothing to go missing.  */
+  var sfxBus = null;
+  function sfxCtx(){
+    if(muted) return null;
+    var ctx = audio();
+    if(!ctx) return null;
+    if(!sfxBus){
+      sfxBus = ctx.createGain();
+      sfxBus.gain.value = 0.9;
+      sfxBus.connect(ctx.destination);
+    }
+    return ctx;
+  }
+  // A tone sliding through [second, hz] points. A band/low-pass gives it a
+  // throat, and `vib` adds the wobble that turns a flat tone into a bleat,
+  // a growl or a buzz. Nearly every voice below is one or two of these.
+  function slide(pts, dur, type, vol, at, o){
+    var ctx = sfxCtx(); if(!ctx) return;
+    o = o || {};
+    var t = ctx.currentTime + (at || 0);
+    var osc = ctx.createOscillator(), g = ctx.createGain(), tail = osc;
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(Math.max(20, pts[0][1]), t);
+    for(var i=1;i<pts.length;i++){
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, pts[i][1]), t + pts[i][0]);
+    }
+    if(o.filter){
+      var f = ctx.createBiquadFilter();
+      f.type = o.filter;
+      f.frequency.value = o.hz || 1200;
+      f.Q.value = o.q || 5;
+      osc.connect(f);
+      tail = f;
+    }
+    var atk = o.attack || 0.015;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + atk);
+    var hold = Math.max(atk + 0.001, dur * (o.hold == null ? 0.55 : o.hold));
+    if(hold < dur) g.gain.setValueAtTime(vol, t + hold);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    tail.connect(g).connect(sfxBus);
+    if(o.vib){
+      var lfo = ctx.createOscillator(), lg = ctx.createGain();
+      lfo.frequency.value = o.vib;
+      lg.gain.value = o.vibDepth || 14;
+      lfo.connect(lg).connect(osc.frequency);
+      lfo.start(t); lfo.stop(t + dur + 0.05);
+    }
+    osc.start(t); osc.stop(t + dur + 0.05);
+  }
+  // Noise swept through a moving filter: everything breathy, splashy,
+  // crunchy or windy is made of this.
+  var noiseBuf = null;
+  function rush(filterType, pts, dur, vol, at, q){
+    var ctx = sfxCtx(); if(!ctx) return;
+    if(!noiseBuf){
+      noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 1.2), ctx.sampleRate);
+      var d = noiseBuf.getChannelData(0);
+      for(var i=0;i<d.length;i++) d[i] = Math.random()*2 - 1;
+    }
+    var t = ctx.currentTime + (at || 0);
+    var src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noiseBuf;
+    src.loop = true;
+    f.type = filterType;
+    f.Q.value = q || 1;
+    f.frequency.setValueAtTime(Math.max(30, pts[0][1]), t);
+    for(var j=1;j<pts.length;j++){
+      f.frequency.exponentialRampToValueAtTime(Math.max(30, pts[j][1]), t + pts[j][0]);
+    }
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f).connect(g).connect(sfxBus);
+    src.start(t); src.stop(t + dur + 0.05);
+  }
+
+  var VOICE = {
+    meow: function(){
+      slide([[0,540],[0.13,820],[0.55,420]], 0.6, "sawtooth", 0.16, 0, {filter:"bandpass", hz:1000, q:3.5, hold:.25});
+    },
+    woof: function(){
+      for(var i=0;i<2;i++){
+        slide([[0,320],[0.06,150]], 0.18, "sawtooth", 0.2, i*0.24, {filter:"lowpass", hz:1000, q:2, hold:.15});
+        rush("bandpass", [[0,900],[0.06,400]], 0.12, 0.12, i*0.24, 2);
+      }
+    },
+    moo: function(){
+      slide([[0,200],[0.25,150],[0.95,118]], 1.05, "sawtooth", 0.16, 0, {filter:"lowpass", hz:600, q:3, vib:5.5, vibDepth:9, hold:.6});
+    },
+    roar: function(){
+      slide([[0,150],[0.2,95],[0.95,70]], 1.05, "sawtooth", 0.2, 0, {filter:"lowpass", hz:620, q:6, vib:26, vibDepth:30, hold:.65});
+      rush("lowpass", [[0,700],[1,240]], 1, 0.09, 0, 1);
+    },
+    squeak: function(){
+      slide([[0,1500],[0.07,2400],[0.16,1700]], 0.18, "square", 0.07, 0, {filter:"bandpass", hz:2400, q:4, hold:.2});
+      slide([[0,1600],[0.07,2500],[0.16,1800]], 0.18, "square", 0.06, 0.22, {filter:"bandpass", hz:2400, q:4, hold:.2});
+    },
+    buzz: function(){
+      slide([[0,230],[0.5,260],[0.9,200]], 0.95, "sawtooth", 0.1, 0, {filter:"lowpass", hz:1400, q:1, vib:34, vibDepth:28, hold:.75});
+    },
+    quack: function(){
+      slide([[0,620],[0.1,380]], 0.16, "sawtooth", 0.16, 0, {filter:"bandpass", hz:1100, q:7, hold:.4});
+      slide([[0,560],[0.11,330]], 0.18, "sawtooth", 0.14, 0.24, {filter:"bandpass", hz:1000, q:7, hold:.4});
+    },
+    hoot: function(){
+      slide([[0,420],[0.1,470],[0.4,400]], 0.45, "sine", 0.16, 0, {filter:"lowpass", hz:900, hold:.5});
+      slide([[0,400],[0.1,450],[0.4,380]], 0.45, "sine", 0.14, 0.5, {filter:"lowpass", hz:900, hold:.5});
+    },
+    chirp: function(){
+      for(var i=0;i<3;i++) slide([[0,2200],[0.05,3200],[0.1,2500]], 0.11, "sine", 0.1, i*0.15, {hold:.2});
+    },
+    squawk: function(){
+      slide([[0,900],[0.08,1400],[0.22,700]], 0.25, "sawtooth", 0.13, 0, {filter:"bandpass", hz:1600, q:4, hold:.3});
+      slide([[0,850],[0.08,1300],[0.22,650]], 0.25, "sawtooth", 0.11, 0.3, {filter:"bandpass", hz:1600, q:4, hold:.3});
+    },
+    oink: function(){
+      for(var i=0;i<3;i++){
+        slide([[0,300],[0.07,180]], 0.12, "sawtooth", 0.13, i*0.17, {filter:"bandpass", hz:800, q:5, hold:.3});
+        rush("bandpass", [[0,1200],[0.08,500]], 0.1, 0.1, i*0.17, 3);
+      }
+    },
+    baa: function(){
+      slide([[0,480],[0.15,430],[0.75,390]], 0.85, "sawtooth", 0.13, 0, {filter:"bandpass", hz:1300, q:2.5, vib:19, vibDepth:26, hold:.6});
+    },
+    neigh: function(){
+      slide([[0,760],[0.18,560],[0.85,330]], 0.9, "sawtooth", 0.14, 0, {filter:"bandpass", hz:1400, q:3, vib:17, vibDepth:40, hold:.5});
+    },
+    trumpet: function(){
+      slide([[0,330],[0.16,780],[0.5,720],[0.85,420]], 0.9, "sawtooth", 0.16, 0, {filter:"lowpass", hz:1600, q:4, hold:.6});
+    },
+    ribbit: function(){
+      for(var i=0;i<2;i++) slide([[0,180],[0.09,300],[0.2,170]], 0.24, "square", 0.11, i*0.33, {filter:"bandpass", hz:700, q:6, hold:.4});
+    },
+    hiss: function(){
+      rush("bandpass", [[0,3200],[0.5,4600],[0.9,2600]], 0.95, 0.11, 0, 2.5);
+    },
+    ooh: function(){
+      for(var i=0;i<3;i++) slide([[0,500],[0.08,780],[0.2,600]], 0.22, "sine", 0.13, i*0.2, {filter:"bandpass", hz:1100, q:3, hold:.3});
+    },
+    grunt: function(){
+      slide([[0,220],[0.3,140]], 0.35, "sawtooth", 0.13, 0, {filter:"lowpass", hz:600, q:4, vib:11, vibDepth:12, hold:.5});
+    },
+    whalesong: function(){
+      slide([[0,180],[0.5,420],[1.1,260],[1.6,205]], 1.7, "sine", 0.16, 0, {filter:"lowpass", hz:900, vib:4, vibDepth:8, hold:.7});
+    },
+    honk: function(){
+      slide([[0,330],[0.02,330]], 0.3, "square", 0.11, 0, {filter:"lowpass", hz:1500, hold:.8});
+      slide([[0,415],[0.02,415]], 0.3, "square", 0.09, 0, {filter:"lowpass", hz:1500, hold:.8});
+    },
+    toot: function(){
+      [0, 0.42].forEach(function(at, i){
+        var d = i ? 0.75 : 0.35;
+        slide([[0,520],[0.05,600],[d,570]], d, "sine", 0.13, at, {hold:.8});
+        slide([[0,780],[0.05,900],[d,855]], d, "sine", 0.09, at, {hold:.8});
+        rush("bandpass", [[0,2400],[d,2000]], d, 0.05, at, 3);
+      });
+    },
+    siren: function(){
+      for(var i=0;i<3;i++){
+        slide([[0,720],[0.2,1080]], 0.22, "square", 0.1, i*0.4, {filter:"lowpass", hz:2400, hold:.9});
+        slide([[0,1080],[0.2,720]], 0.22, "square", 0.1, i*0.4 + 0.2, {filter:"lowpass", hz:2400, hold:.9});
+      }
+    },
+    whoosh: function(){
+      rush("bandpass", [[0,400],[0.35,2600],[0.9,300]], 0.95, 0.16, 0, 1.2);
+    },
+    chop: function(){
+      for(var i=0;i<10;i++) rush("lowpass", [[0,700],[0.05,200]], 0.06, 0.16, i*0.085, 1);
+    },
+    engine: function(){
+      slide([[0,90],[0.3,130],[1,110]], 1.05, "sawtooth", 0.12, 0, {filter:"lowpass", hz:400, q:3, vib:16, vibDepth:14, hold:.7});
+      [0, 0.35, 0.7].forEach(function(at){ tone(1200, at, 0.16, "square", 0.07); });
+    },
+    rattle: function(){
+      for(var i=0;i<9;i++) rush("bandpass", [[0,1100],[0.04,700]], 0.05, 0.13, i*0.075 + Math.random()*0.02, 4);
+    },
+    bleep: function(){
+      [660, 990, 550, 880].forEach(function(f, i){
+        slide([[0,f],[0.02,f]], 0.1, "square", 0.09, i*0.13, {hold:.8});
+      });
+    },
+    scan: function(){
+      slide([[0,300],[0.7,2400]], 0.75, "sine", 0.08, 0, {hold:.8});
+      tone(1760, 0.75, 0.4, "sine", 0.1);
+    },
+    rumble: function(){
+      rush("lowpass", [[0,300],[0.4,120],[1.1,60]], 1.15, 0.3, 0, 1);
+      slide([[0,70],[1.1,42]], 1.15, "sawtooth", 0.14, 0, {filter:"lowpass", hz:200, vib:8, vibDepth:6, hold:.6});
+    },
+    splash: function(){
+      rush("lowpass", [[0,5000],[0.05,1200],[0.5,300]], 0.55, 0.2, 0, 1);
+      slide([[0,900],[0.3,220]], 0.35, "sine", 0.07, 0.02, {hold:.2});
+    },
+    bubble: function(){
+      for(var i=0;i<5;i++) slide([[0,400 + i*90],[0.09,900 + i*160]], 0.1, "sine", 0.11, i*0.13, {hold:.15});
+    },
+    waves: function(){
+      rush("lowpass", [[0,1400],[0.6,400],[1.3,200]], 1.35, 0.16, 0, 1);
+      rush("lowpass", [[0,1200],[0.5,350]], 1, 0.1, 0.8, 1);
+    },
+    rain: function(){
+      rush("highpass", [[0,3000],[1.1,2000]], 1.15, 0.11, 0, 1);
+      for(var i=0;i<7;i++) tone(1400 + Math.random()*1400, Math.random()*0.9, 0.07, "sine", 0.05);
+    },
+    wind: function(){
+      rush("bandpass", [[0,500],[0.5,900],[1.2,400]], 1.25, 0.13, 0, 1.5);
+    },
+    boing: function(){
+      slide([[0,760],[0.45,150]], 0.5, "triangle", 0.16, 0, {vib:13, vibDepth:70, hold:.25});
+    },
+    pop: function(){
+      slide([[0,240],[0.06,1300]], 0.07, "sine", 0.24, 0, {attack:.003, hold:.1});
+    },
+    crunch: function(){
+      for(var i=0;i<3;i++) rush("highpass", [[0,2200],[0.09,900]], 0.1, 0.16, i*0.11, 1);
+    },
+    crack: function(){
+      rush("bandpass", [[0,2600],[0.07,700]], 0.09, 0.22, 0, 2);
+      rush("lowpass", [[0,1500],[0.2,400]], 0.22, 0.1, 0.07, 1);
+    },
+    chomp: function(){
+      slide([[0,150],[0.1,60]], 0.12, "sine", 0.16, 0, {attack:.004, hold:.1});
+      rush("lowpass", [[0,1800],[0.06,300]], 0.08, 0.26, 0, 1);
+      rush("lowpass", [[0,1800],[0.06,300]], 0.08, 0.2, 0.16, 1);
+    },
+    nom: function(){
+      for(var i=0;i<2;i++){
+        rush("bandpass", [[0,900],[0.1,500]], 0.12, 0.11, i*0.2, 2);
+        slide([[0,240],[0.1,150]], 0.13, "sine", 0.08, i*0.2, {hold:.3});
+      }
+      slide([[0,400],[0.25,660]], 0.3, "sine", 0.08, 0.45, {hold:.3});   // ...mmm!
+    },
+    glug: function(){
+      for(var i=0;i<4;i++) slide([[0,150 + i*30],[0.1,340 + i*60]], 0.12, "sine", 0.13, i*0.14, {filter:"lowpass", hz:900, hold:.2});
+    },
+    slurp: function(){
+      rush("bandpass", [[0,600],[0.5,2600]], 0.55, 0.11, 0, 4);
+      slide([[0,260],[0.5,700]], 0.55, "sine", 0.06, 0, {hold:.5});
+    },
+    flutter: function(){
+      for(var i=0;i<8;i++) rush("bandpass", [[0,1600],[0.05,900]], 0.06, 0.07, i*0.1, 3);
+    },
+    tick: function(){
+      for(var i=0;i<6;i++) rush("highpass", [[0,4000],[0.02,3000]], 0.03, 0.1, i*0.12, 1);
+    },
+    wobble: function(){
+      slide([[0,300],[0.8,340]], 0.85, "triangle", 0.11, 0, {vib:7, vibDepth:60, hold:.6});
+    },
+    flump: function(){
+      rush("lowpass", [[0,1200],[0.25,300]], 0.3, 0.14, 0, 1);
+    },
+    zip: function(){
+      rush("bandpass", [[0,900],[0.32,5200]], 0.34, 0.13, 0, 6);
+    },
+    ding: function(){
+      tone(659.25, 0, 0.8, "sine", 0.16);
+      tone(523.25, 0.35, 1.1, "sine", 0.16);
+    },
+    jingle: function(){
+      for(var i=0;i<7;i++) tone(1800 + Math.random()*1800, Math.random()*0.35, 0.14, "triangle", 0.06);
+    },
+    clink: function(){
+      [2093, 2637, 3136].forEach(function(f, i){ tone(f, i*0.1, 0.35, "sine", 0.08); });
+      rush("highpass", [[0,6000],[0.3,4000]], 0.35, 0.05, 0, 1);
+    },
+    heartbeat: function(){
+      [0, 0.28].forEach(function(base){
+        slide([[0,90],[0.14,45]], 0.18, "sine", 0.3, base, {attack:.01, hold:.2});
+        slide([[0,80],[0.14,40]], 0.18, "sine", 0.22, base + 0.16, {attack:.01, hold:.2});
+      });
+    },
+    drumhit: function(){
+      [0, 0.22, 0.36].forEach(function(at){
+        slide([[0,180],[0.12,55]], 0.2, "sine", 0.3, at, {attack:.005, hold:.05});
+      });
+      rush("bandpass", [[0,2000],[0.12,1400]], 0.14, 0.12, 0.36, 1);
+    },
+    strum: function(){
+      [329.63, 392, 493.88, 587.33, 659.25].forEach(function(f, i){
+        slide([[0,f],[0.6,f*0.995]], 0.65, "triangle", 0.1, i*0.055, {attack:.005, hold:.05});
+      });
+    },
+    xyl: function(){
+      [523.25, 587.33, 659.25, 783.99, 880, 1046.5].forEach(function(f, i){
+        tone(f, i*0.075, 0.28, "sine", 0.14);
+      });
+    },
+    sparkle: function(){
+      [784, 988, 1175, 1568].forEach(function(f, i){ tone(f, i*0.08, 0.45, "triangle", 0.11); });
+    },
+    twinkle: function(){
+      [1319, 1568, 1976, 2637].forEach(function(f, i){ tone(f, i*0.07, 0.5, "sine", 0.09); });
+    },
+    royal: function(){
+      [523.25, 659.25, 783.99].forEach(function(f, i){ tone(f, i*0.13, 0.35, "sawtooth", 0.08); });
+      tone(1046.5, 0.4, 0.7, "sawtooth", 0.09);
+    }
+  };
+
+  // Every drawing gets a noise. A few take two (a unicorn should whinny
+  // *and* sparkle); anything unmapped falls back to a pop.
+  var SOUND = {
+    APPLE:"crunch", ANT:"tick", AIRPLANE:"whoosh", ALLIGATOR:"chomp",
+    BALL:"boing", BANANA:"nom", BEAR:"roar", BEE:"buzz", BUS:"honk", BUTTERFLY:"flutter",
+    CAT:"meow", CAR:"honk", CAKE:["nom","sparkle"], COW:"moo", CARROT:"crunch",
+    DOG:"woof", DUCK:"quack", DINOSAUR:"roar", DONUT:"nom", DRUM:"drumhit",
+    ELEPHANT:"trumpet", EGG:"crack", EAGLE:"squawk", EXCAVATOR:"engine",
+    FISH:"bubble", FROG:"ribbit", FLOWER:"twinkle", FOX:"woof", "FIRE TRUCK":"siren",
+    GRAPES:"pop", GIFT:["pop","sparkle"], GIRAFFE:"grunt", GUITAR:"strum",
+    HAT:"flump", HOUSE:"ding", HEART:"heartbeat", HORSE:"neigh", HELICOPTER:"chop",
+    "ICE CREAM":"nom", IGLOO:"clink", ISLAND:"waves",
+    JUICE:"glug", JELLYFISH:"bubble", JACKET:"zip",
+    KITE:"wind", KEY:"jingle", KOALA:"grunt", KANGAROO:"boing",
+    LION:"roar", LEMON:"nom", LEAF:"wind", LADYBUG:"buzz",
+    MONKEY:"ooh", MOON:"twinkle", MUSHROOM:"pop", MOUSE:"squeak", MILK:"glug",
+    NEST:"chirp", NOODLES:"slurp", NUT:"crack",
+    OCTOPUS:"bubble", ORANGE:"nom", OWL:"hoot",
+    PIG:"oink", PIZZA:"nom", PENGUIN:"squawk", PINEAPPLE:"nom", PANDA:"crunch",
+    QUEEN:"royal", QUILT:"flump",
+    RAINBOW:"twinkle", ROCKET:"whoosh", RABBIT:"boing", ROBOT:"bleep",
+    SUN:"sparkle", STAR:"twinkle", SNAKE:"hiss", STRAWBERRY:"nom", SHEEP:"baa",
+    TREE:"wind", TRAIN:"toot", TURTLE:"splash", TIGER:"roar",
+    UMBRELLA:"rain", UNICORN:["neigh","twinkle"],
+    VAN:"honk", VIOLIN:"strum", VOLCANO:"rumble",
+    WHALE:"whalesong", WATERMELON:"nom", WORM:"wobble", WAGON:"rattle",
+    "X-RAY":"scan", XYLOPHONE:"xyl",
+    "YO-YO":"boing", YARN:"wobble", YOGURT:"nom",
+    ZEBRA:"neigh", ZIPPER:"zip"
+  };
+  function playPicture(word){
+    var v = SOUND[word] || "pop";
+    var names = typeof v === "string" ? [v] : v;
+    names.forEach(function(n){
+      if(VOICE[n]) try{ VOICE[n](); }catch(e){}
+    });
+  }
+
   /* ---------------- ambient music ---------------- */
   // Generative loop on a beat grid: a C-Am-F-G pad with music-box
   // sparkles, mixed well below the voice and effects. The tempo rises
@@ -621,7 +1177,7 @@
     [196.00, 246.94, 293.66, 392.00]    // G
   ];
   var SPARKLES = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
-  function energy(){ return Math.min(stars, 36); }
+  function energy(){ return Math.min(sessionStars, 36); }
   function beatSeconds(){ return 60 / (76 + energy()*1.5); }  // 76 -> 130 bpm
   function playPadOsc(freq, dur, vol, type){
     var o = actx.createOscillator(), g = actx.createGain();
@@ -905,6 +1461,188 @@
     else { confettiRunning = false; cctx.clearRect(0,0,canvas.width,canvas.height); }
   }
 
+  /* ---------------- sticker jar ----------------
+     The jar is the reward system made concrete. "47" means nothing at four;
+     a jar you can watch fill up means a great deal. It holds JAR stars —
+     filling one banks it (the little badge) and the next one starts.     */
+  // 16 stars is roughly five or six rounds — often enough that a filled jar
+  // stays a real event rather than a distant one.
+  var JAR_COLS = 4, JAR_ROWS = 4, JAR = JAR_COLS * JAR_ROWS;
+  var lastCelebrated = -1;
+  // A jar that just filled should read full rather than snapping back to
+  // empty, so the 20th star still lives in jar one.
+  function jarParts(n){
+    var inJar = n === 0 ? 0 : ((n - 1) % JAR) + 1;
+    return { inJar: inJar, done: (n - inJar) / JAR };
+  }
+  function starPath(cx, cy, r){
+    var d = "";
+    for(var i=0;i<10;i++){
+      var a = -Math.PI/2 + i*Math.PI/5;
+      var rr = (i % 2) ? r*0.46 : r;
+      d += (i ? "L" : "M") + (cx + Math.cos(a)*rr).toFixed(1) + " " + (cy + Math.sin(a)*rr).toFixed(1);
+    }
+    return d + "Z";
+  }
+  function jarSVG(n){
+    var s = '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+      '<path d="M22 32 L22 84 Q22 92 30 92 L70 92 Q78 92 78 84 L78 32 Z" fill="#eaf6ff" stroke="#2e2d55" stroke-width="5" stroke-linejoin="round"/>';
+    // The stars are drawn unoutlined: at the size the jar sits in the top bar
+    // an ink stroke on each one turns the whole pile into a dark smudge.
+    for(var i=0;i<n;i++){
+      var row = Math.floor(i / JAR_COLS), col = i % JAR_COLS;
+      // a fixed per-slot wobble, so the pile looks poured rather than stacked
+      var jx = ((i*37) % 7) - 3, jy = ((i*53) % 5) - 2;
+      s += '<path d="' + starPath(33 + col*11.3 + jx*0.6, 81 - row*12 + jy*0.6, 6.4) +
+           '" fill="' + COLORS[i % COLORS.length] + '" stroke="none"/>';
+    }
+    return s + '<rect x="17" y="16" width="66" height="17" rx="7" fill="#ff6b6b" stroke="#2e2d55" stroke-width="5"/>' +
+      '<path d="M28 42 L28 78" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".6"/></svg>';
+  }
+  function paintJar(){
+    var p = jarParts(shownStars);
+    $("jar-art").innerHTML = jarSVG(p.inJar);
+    $("star-count").textContent = shownStars;
+    var done = $("jar-done");
+    done.textContent = "🏆" + p.done;
+    done.classList.toggle("hidden", p.done === 0);
+  }
+  function bumpJar(){
+    if(reducedMotion) return;
+    var art = $("jar-art");
+    art.classList.remove("bump");
+    void art.offsetWidth;
+    art.classList.add("bump");
+  }
+  function celebrateJar(){
+    if(lastCelebrated === shownStars) return;
+    lastCelebrated = shownStars;
+    var btn = $("jar-btn");
+    btn.classList.remove("full-pop");
+    void btn.offsetWidth;
+    btn.classList.add("full-pop");
+    burstConfetti();
+    [523.25, 659.25, 783.99, 1046.5].forEach(function(f, i){ tone(f, i*0.1, 0.5, "triangle", 0.18); });
+  }
+  // Fly the stars just earned from the winning card up into the jar, filling
+  // it one star at a time so the child sees where the reward went.
+  function flyStars(fromEl){
+    var jarEl = $("jar-art");
+    var n = stars - shownStars;
+    if(n <= 0) return;
+    if(reducedMotion || !fromEl || !jarEl.animate){
+      var crossed = Math.floor(stars/JAR) > Math.floor(shownStars/JAR);
+      shownStars = stars;
+      paintJar();
+      if(crossed) celebrateJar();
+      return;
+    }
+    var a = fromEl.getBoundingClientRect(), b = jarEl.getBoundingClientRect();
+    var toX = b.left + b.width/2, toY = b.top + b.height/2;
+    for(var i=0;i<n;i++){
+      (function(i){
+        var el = document.createElement("div");
+        el.className = "flystar";
+        el.textContent = "⭐";
+        el.setAttribute("aria-hidden", "true");
+        document.body.appendChild(el);
+        var fx = a.left + a.width*(0.3 + Math.random()*0.4);
+        var fy = a.top + a.height*(0.3 + Math.random()*0.4);
+        var at = function(x, y, sc, rot){
+          return "translate(" + x + "px," + y + "px) translate(-50%,-50%) scale(" + sc + ") rotate(" + rot + "deg)";
+        };
+        var anim = el.animate([
+          { transform: at(fx, fy, 0.4, 0), opacity: 0 },
+          { transform: at((fx + toX)/2, Math.min(fy, toY) - 80, 1.3, 180), opacity: 1, offset: 0.45 },
+          { transform: at(toX, toY, 0.3, 360), opacity: 1 }
+        ], { duration: 620, delay: 120 + i*150, easing: "cubic-bezier(.4,0,.55,1)", fill: "both" });
+        var landed = false;
+        var land = function(){
+          if(landed) return;
+          landed = true;
+          if(el.parentNode) el.parentNode.removeChild(el);
+          if(shownStars >= stars) return;
+          shownStars++;
+          paintJar();
+          bumpJar();
+          tone(880 * Math.pow(1.18, i), 0, 0.22, "triangle", 0.15);
+          if(jarParts(shownStars).inJar === JAR) celebrateJar();
+        };
+        anim.onfinish = land;
+        // a backstop: animation callbacks don't fire in a backgrounded tab
+        setTimeout(land, 900 + i*150);
+      })(i);
+    }
+  }
+  // Anything still in flight when the next round starts is abandoned; make
+  // sure the jar ends up showing the true total either way.
+  function settleJar(){
+    var flying = document.querySelectorAll(".flystar");
+    for(var i=0;i<flying.length;i++) flying[i].parentNode.removeChild(flying[i]);
+    if(shownStars !== stars){
+      shownStars = stars;
+      paintJar();
+    }
+  }
+
+  /* ---------------- sticker book ----------------
+     The payoff for keeping progress: 26 slots, and a picture appears in one
+     the first time that letter is matched. Finding B again with a different
+     word swaps the sticker and adds to the count, which is what makes a
+     child want to keep playing past the letters they already know.       */
+  function renderBook(){
+    var grid = $("book-grid");
+    grid.innerHTML = "";
+    var found = 0;
+    LETTERS.forEach(function(l){
+      var words = book[l];
+      var cell = document.createElement(words ? "button" : "div");
+      cell.className = "slot" + (words ? " got" : "");
+      if(!words){
+        cell.textContent = l;
+        cell.setAttribute("aria-label", l + ", not found yet");
+        grid.appendChild(cell);
+        return;
+      }
+      found++;
+      var word = words[words.length - 1];
+      cell.innerHTML = ART[word];
+      cell.setAttribute("aria-label", l + " is for " + word.toLowerCase());
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = l;
+      cell.appendChild(tag);
+      if(words.length > 1){
+        var badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = words.length;
+        cell.appendChild(badge);
+      }
+      cell.addEventListener("click", function(){
+        playPicture(word);
+        speakParts([{ t: l + " is for " + word.toLowerCase().replace("-", " ") + "!", pitch: 1.1, rate: 0.9 }]);
+      });
+      grid.appendChild(cell);
+    });
+    $("book-progress").textContent = found + " of " + LETTERS.length + " letters found";
+  }
+  function openBook(){
+    clearTimeout(autoAdvanceTimer);
+    settleJar();
+    renderBook();
+    $("book").classList.remove("hidden");
+  }
+  function closeBook(){
+    $("book").classList.add("hidden");
+    $("book-reset").classList.add("hidden");
+    // the victory screen was mid-countdown when the book opened — restart it,
+    // unless the child had already asked to stay by poking the picture
+    if(!holdVictory && !$("screen-victory").classList.contains("hidden")){
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = setTimeout(newRound, 4000);
+    }
+  }
+
   /* ---------------- painted sky ---------------- */
   // Everything in the background is drawn by hand on one canvas so the
   // whole scene shares a single soft cartoon style.
@@ -1145,9 +1883,12 @@
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victoryDelayTimer);
     clearTimeout(victorySpeechTimer);
+    clearTimeout(wrongSpeechTimer);
     victorySoundTimers.forEach(function(t){ clearTimeout(t); });
     victorySoundTimers.length = 0;
+    settleJar();
     solvedThisRound = false;
+    filledJarThisRound = false;
     wrongTaps = 0;
     var letter = nextLetter();
     current = { letter: letter, word: pick(WORDS[letter]) };
@@ -1192,22 +1933,35 @@
     if(opt.letter === current.letter){
       solvedThisRound = true;
       btn.classList.add("right");
-      fanfare();
+      // the picture speaks for itself first; the party horn follows so the
+      // two don't smear into one noise
+      playPicture(current.word);
+      setTimeout(fanfare, 420);
       burstConfetti();
       earnedThisRound = wrongTaps === 0 ? 3 : wrongTaps === 1 ? 2 : 1;
+      var before = stars;
       stars += earnedThisRound;
-      $("star-count").textContent = stars;
+      sessionStars += earnedThisRound;
+      filledJarThisRound = Math.floor(stars/JAR) > Math.floor(before/JAR);
+      collect(current.letter, current.word);
+      saveProgress();
+      flyStars(btn);
       victoryDelayTimer = setTimeout(showVictory, reducedMotion ? 150 : 750);
     }else{
       wrongTaps++;
       btn.classList.add("wrong");
       chimeWrong();
-      // teach instead of just rejecting: name what they tapped and its letter
+      // teach instead of just rejecting: let the picture make its noise, then
+      // name what they tapped and which letter it belongs to
+      setTimeout(function(){ playPicture(opt.word); }, 230);
       var w = opt.word.toLowerCase().replace("-", " ");
-      speakParts([
-        { t: w + "!", pitch: 1.1, rate: 0.95 },
-        { t: w + " starts with " + opt.letter + ". Try again!", pitch: 1.05, rate: 0.9 }
-      ]);
+      clearTimeout(wrongSpeechTimer);
+      wrongSpeechTimer = setTimeout(function(){
+        speakParts([
+          { t: w + "!", pitch: 1.1, rate: 0.95 },
+          { t: w + " starts with " + opt.letter + ". Try again!", pitch: 1.05, rate: 0.9 }
+        ]);
+      }, 900);
     }
   }
 
@@ -1267,25 +2021,33 @@
 
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victorySpeechTimer);
+    holdVictory = false;
     if(muted || !("speechSynthesis" in window)){
       // no narration to wait for — just give a bit longer to look at the word
       autoAdvanceTimer = setTimeout(newRound, 5000);
     }else{
+      // a filled jar outranks the usual cheer — it only happens every 20 stars
+      var cheer = filledJarThisRound ? "You filled the whole jar!" : pick(PRAISE);
+      var wait = reducedMotion ? 100 : (filledJarThisRound ? 1500 : 900);
       victorySpeechTimer = setTimeout(function(){
         speakParts([
-          { t: pick(PRAISE), pitch: 1.3, rate: 1.05 },
+          { t: cheer, pitch: 1.3, rate: 1.05 },
           { t: current.letter + " is for " + sayWord + "!", pitch: 1.1, rate: 0.85 }
         ], function(){
+          // the countdown only starts once narration ends, so a tap on the
+          // picture before then has to be remembered, not just cleared
+          if(holdVictory) return;
           autoAdvanceTimer = setTimeout(newRound, 3000);
         });
-      }, reducedMotion ? 100 : 900);
+      }, wait);
     }
   }
 
   /* ---------------- wiring ---------------- */
   $("start-art-1").innerHTML = ART.BEE;
   $("start-art-2").innerHTML = ART.APPLE;
-  window.ALPHABET_ART = ART; // handy for eyeballing every drawing in devtools
+  window.ALPHABET_ART = ART;             // handy for eyeballing every drawing in devtools
+  window.ALPHABET_SOUND = playPicture;   // ...and for auditioning any word's noise
   $("play-btn").addEventListener("click", function(){
     audio();               // unlock audio on user gesture (iOS)
     unlockSpeech();        // unlock speech on user gesture (iOS)
@@ -1294,6 +2056,42 @@
   });
   $("next-btn").addEventListener("click", newRound);
   $("repeat-btn").addEventListener("click", speakPrompt);
+  // The winning picture stays pokeable on the victory screen. Poking it also
+  // calls off the auto-advance, so a child who wants to make the cow moo
+  // eleven times is never hurried off the screen.
+  $("victory-art").addEventListener("click", function(){
+    holdVictory = true;
+    clearTimeout(autoAdvanceTimer);
+    clearTimeout(victorySpeechTimer);
+    playPicture(current.word);
+  });
+
+  /* ---------------- sticker jar and book ---------------- */
+  loadProgress();
+  shownStars = stars;
+  lastCelebrated = shownStars;   // don't re-celebrate a jar filled last session
+  paintJar();
+  $("jar-btn").addEventListener("click", openBook);
+  $("book-close").addEventListener("click", closeBook);
+  $("book").addEventListener("click", function(e){ if(e.target === $("book")) closeBook(); });
+  // A grown-up escape hatch: once progress sticks around, a shared tablet
+  // needs a road back to zero. Behind a long press, where a preschooler
+  // mashing the screen won't stumble onto it.
+  var resetHold = null;
+  function armReset(){
+    clearTimeout(resetHold);
+    resetHold = setTimeout(function(){ $("book-reset").classList.remove("hidden"); }, 1500);
+  }
+  function cancelReset(){ clearTimeout(resetHold); }
+  ["mousedown","touchstart"].forEach(function(ev){ $("book-title").addEventListener(ev, armReset); });
+  ["mouseup","mouseleave","touchend","touchcancel"].forEach(function(ev){ $("book-title").addEventListener(ev, cancelReset); });
+  $("book-reset").addEventListener("click", function(){
+    stars = 0; shownStars = 0; lastCelebrated = -1; book = {};
+    saveProgress();
+    paintJar();
+    renderBook();
+    $("book-reset").classList.add("hidden");
+  });
   /* ---------------- full screen ----------------
      Worth having on a tablet: it hides the browser chrome, so a four-year-
      old aiming at a card can't land on the address bar instead. The button
