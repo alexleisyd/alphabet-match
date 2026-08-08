@@ -1,0 +1,2757 @@
+{
+  "clips": {
+    "letter.excl.A": {
+      "hash": "d46f33b47e5c2855",
+      "bytes": 3197,
+      "seconds": 0.473,
+      "text": "A!"
+    },
+    "letter.excl.D": {
+      "hash": "38fc014d7976f7e0",
+      "bytes": 3847,
+      "seconds": 0.606,
+      "text": "D!"
+    },
+    "letter.excl.E": {
+      "hash": "fd3142b92b2bf590",
+      "bytes": 3034,
+      "seconds": 0.451,
+      "text": "E!"
+    },
+    "letter.excl.F": {
+      "hash": "aa7d70708bb3ac4e",
+      "bytes": 3708,
+      "seconds": 0.624,
+      "text": "F!"
+    },
+    "letter.excl.B": {
+      "hash": "852ec20dee17c16e",
+      "bytes": 3968,
+      "seconds": 0.681,
+      "text": "B!"
+    },
+    "letter.excl.C": {
+      "hash": "b79af4cbefafc1da",
+      "bytes": 4199,
+      "seconds": 0.782,
+      "text": "C!"
+    },
+    "letter.excl.J": {
+      "hash": "ec18faf02674e39f",
+      "bytes": 4622,
+      "seconds": 0.839,
+      "text": "J!"
+    },
+    "letter.excl.H": {
+      "hash": "cac4ef66b3503cc1",
+      "bytes": 3889,
+      "seconds": 0.656,
+      "text": "H!"
+    },
+    "letter.excl.G": {
+      "hash": "dfcc4c0ee17b665c",
+      "bytes": 3952,
+      "seconds": 0.646,
+      "text": "G!"
+    },
+    "letter.excl.I": {
+      "hash": "247f63c3fc192d01",
+      "bytes": 3283,
+      "seconds": 0.521,
+      "text": "I!"
+    },
+    "letter.excl.L": {
+      "hash": "e6c14af6bb56e8e1",
+      "bytes": 3615,
+      "seconds": 0.6,
+      "text": "L!"
+    },
+    "letter.excl.K": {
+      "hash": "512eef00cfb6e6cc",
+      "bytes": 4459,
+      "seconds": 0.583,
+      "text": "K!"
+    },
+    "letter.excl.Q": {
+      "hash": "7ee9910dc7bf6a3e",
+      "bytes": 3850,
+      "seconds": 0.665,
+      "text": "Q!"
+    },
+    "letter.excl.M": {
+      "hash": "2311aa84316306a9",
+      "bytes": 4114,
+      "seconds": 0.697,
+      "text": "M!"
+    },
+    "letter.excl.N": {
+      "hash": "d7276dd22f6efd2d",
+      "bytes": 3718,
+      "seconds": 0.6,
+      "text": "N!"
+    },
+    "letter.excl.P": {
+      "hash": "80d16231ab2c0ffd",
+      "bytes": 4346,
+      "seconds": 0.578,
+      "text": "P!"
+    },
+    "letter.excl.R": {
+      "hash": "eb5eefbb373a21d4",
+      "bytes": 3163,
+      "seconds": 0.497,
+      "text": "R!"
+    },
+    "letter.excl.O": {
+      "hash": "cd6e7fb60fecaae6",
+      "bytes": 3941,
+      "seconds": 0.658,
+      "text": "O!"
+    },
+    "letter.excl.S": {
+      "hash": "2da3655e8377d5ff",
+      "bytes": 3932,
+      "seconds": 0.661,
+      "text": "S!"
+    },
+    "letter.excl.V": {
+      "hash": "f7697a7c6e1a59bb",
+      "bytes": 3929,
+      "seconds": 0.678,
+      "text": "V!"
+    },
+    "letter.excl.T": {
+      "hash": "7cccb089a35a59f3",
+      "bytes": 3706,
+      "seconds": 0.614,
+      "text": "T!"
+    },
+    "letter.excl.U": {
+      "hash": "876f6de3f2f74f11",
+      "bytes": 5128,
+      "seconds": 0.713,
+      "text": "U!"
+    },
+    "letter.excl.X": {
+      "hash": "f4305e027a3d97a6",
+      "bytes": 4195,
+      "seconds": 0.708,
+      "text": "X!"
+    },
+    "letter.excl.Y": {
+      "hash": "1609cfc8a879216d",
+      "bytes": 4343,
+      "seconds": 0.742,
+      "text": "Y!"
+    },
+    "word.excl.APPLE": {
+      "hash": "3a3649949d0b0f5f",
+      "bytes": 3999,
+      "seconds": 0.713,
+      "text": "apple!"
+    },
+    "word.excl.ANT": {
+      "hash": "05394a5ab37437b7",
+      "bytes": 3684,
+      "seconds": 0.613,
+      "text": "ant!"
+    },
+    "letter.excl.Z": {
+      "hash": "a3413fee91a82ce8",
+      "bytes": 5052,
+      "seconds": 0.902,
+      "text": "Z!"
+    },
+    "word.excl.AIRPLANE": {
+      "hash": "2d0eb709d7a53e9f",
+      "bytes": 5018,
+      "seconds": 0.938,
+      "text": "airplane!"
+    },
+    "word.excl.BALL": {
+      "hash": "4623b47be1198d82",
+      "bytes": 3920,
+      "seconds": 0.669,
+      "text": "ball!"
+    },
+    "word.excl.ALLIGATOR": {
+      "hash": "55c47bc3fbe8e7fb",
+      "bytes": 4781,
+      "seconds": 0.875,
+      "text": "alligator!"
+    },
+    "word.excl.BANANA": {
+      "hash": "114af945113c2fd0",
+      "bytes": 5348,
+      "seconds": 1.025,
+      "text": "banana!"
+    },
+    "letter.excl.W": {
+      "hash": "01476deba2e2bf86",
+      "bytes": 4257,
+      "seconds": 0.765,
+      "text": "W!"
+    },
+    "word.excl.BEAR": {
+      "hash": "f61a7551f5242a78",
+      "bytes": 3371,
+      "seconds": 0.55,
+      "text": "bear!"
+    },
+    "word.excl.BEE": {
+      "hash": "d1b19889b97ca51b",
+      "bytes": 4050,
+      "seconds": 0.695,
+      "text": "bee!"
+    },
+    "word.excl.BUS": {
+      "hash": "0e39de186d38ccbf",
+      "bytes": 4241,
+      "seconds": 0.758,
+      "text": "bus!"
+    },
+    "word.excl.BUTTERFLY": {
+      "hash": "3effaf2385a5f4f4",
+      "bytes": 5193,
+      "seconds": 0.945,
+      "text": "butterfly!"
+    },
+    "word.excl.CAR": {
+      "hash": "5e56f1d5ee2cc878",
+      "bytes": 4123,
+      "seconds": 0.706,
+      "text": "car!"
+    },
+    "word.excl.CAKE": {
+      "hash": "0aa417e238bc935c",
+      "bytes": 4516,
+      "seconds": 0.563,
+      "text": "cake!"
+    },
+    "word.excl.COW": {
+      "hash": "62c2246cbfaf7fef",
+      "bytes": 3900,
+      "seconds": 0.669,
+      "text": "cow!"
+    },
+    "word.excl.CAT": {
+      "hash": "c8b745cc7cd39169",
+      "bytes": 4107,
+      "seconds": 0.708,
+      "text": "cat!"
+    },
+    "word.excl.CARROT": {
+      "hash": "ba31d47e555ff600",
+      "bytes": 4051,
+      "seconds": 0.708,
+      "text": "carrot!"
+    },
+    "word.excl.DINOSAUR": {
+      "hash": "001895205718cdce",
+      "bytes": 5806,
+      "seconds": 1.159,
+      "text": "dinosaur!"
+    },
+    "word.excl.DUCK": {
+      "hash": "f6e162a6cb7c3db4",
+      "bytes": 3350,
+      "seconds": 0.569,
+      "text": "duck!"
+    },
+    "word.excl.DOG": {
+      "hash": "a77391c0988f9083",
+      "bytes": 3888,
+      "seconds": 0.671,
+      "text": "dog!"
+    },
+    "word.excl.DRUM": {
+      "hash": "2cac75e5ef531876",
+      "bytes": 4130,
+      "seconds": 0.76,
+      "text": "drum!"
+    },
+    "word.excl.DONUT": {
+      "hash": "210275e9dd8c220f",
+      "bytes": 4143,
+      "seconds": 0.69,
+      "text": "donut!"
+    },
+    "word.excl.EGG": {
+      "hash": "a3829c2ec5ecf8e0",
+      "bytes": 3399,
+      "seconds": 0.544,
+      "text": "egg!"
+    },
+    "word.excl.ELEPHANT": {
+      "hash": "bf96afbdd185f2ce",
+      "bytes": 4291,
+      "seconds": 0.731,
+      "text": "elephant!"
+    },
+    "word.excl.EAGLE": {
+      "hash": "b5004abf88b94972",
+      "bytes": 3719,
+      "seconds": 0.612,
+      "text": "eagle!"
+    },
+    "word.excl.FROG": {
+      "hash": "4efea57345ea9013",
+      "bytes": 4344,
+      "seconds": 0.776,
+      "text": "frog!"
+    },
+    "word.excl.FISH": {
+      "hash": "6204c7dbb6dde29d",
+      "bytes": 4356,
+      "seconds": 0.796,
+      "text": "fish!"
+    },
+    "word.excl.EXCAVATOR": {
+      "hash": "8edaf3a96ea21030",
+      "bytes": 5341,
+      "seconds": 0.995,
+      "text": "excavator!"
+    },
+    "word.excl.FLOWER": {
+      "hash": "a5b63dff279ad5fa",
+      "bytes": 4796,
+      "seconds": 0.863,
+      "text": "flower!"
+    },
+    "word.excl.FOX": {
+      "hash": "01f0683f332945c0",
+      "bytes": 4754,
+      "seconds": 0.825,
+      "text": "fox!"
+    },
+    "word.excl.FIRE_TRUCK": {
+      "hash": "822b93ea18406614",
+      "bytes": 6050,
+      "seconds": 1.176,
+      "text": "fire truck!"
+    },
+    "word.excl.GIFT": {
+      "hash": "6ca16e0a8304c8e1",
+      "bytes": 5253,
+      "seconds": 0.97,
+      "text": "gift!"
+    },
+    "word.excl.GRAPES": {
+      "hash": "c23b2b729b312fcf",
+      "bytes": 4950,
+      "seconds": 0.926,
+      "text": "grapes!"
+    },
+    "word.excl.GIRAFFE": {
+      "hash": "9b12736348486c12",
+      "bytes": 5358,
+      "seconds": 0.996,
+      "text": "giraffe!"
+    },
+    "word.excl.GUITAR": {
+      "hash": "d10207ea1b376ae7",
+      "bytes": 4712,
+      "seconds": 0.857,
+      "text": "guitar!"
+    },
+    "word.excl.HAT": {
+      "hash": "638dd65d6c4cb058",
+      "bytes": 3853,
+      "seconds": 0.648,
+      "text": "hat!"
+    },
+    "word.excl.HOUSE": {
+      "hash": "13e681aeb74786bb",
+      "bytes": 4635,
+      "seconds": 0.837,
+      "text": "house!"
+    },
+    "word.excl.HEART": {
+      "hash": "938317797a284375",
+      "bytes": 3483,
+      "seconds": 0.601,
+      "text": "heart!"
+    },
+    "word.excl.HORSE": {
+      "hash": "726c8d845794fef2",
+      "bytes": 4138,
+      "seconds": 0.695,
+      "text": "horse!"
+    },
+    "word.excl.HELICOPTER": {
+      "hash": "baa69f5812470613",
+      "bytes": 6681,
+      "seconds": 0.967,
+      "text": "helicopter!"
+    },
+    "word.excl.ICE_CREAM": {
+      "hash": "f9364043faf4e5f7",
+      "bytes": 5833,
+      "seconds": 1.135,
+      "text": "ice cream!"
+    },
+    "word.excl.IGLOO": {
+      "hash": "2bfd35e55a449618",
+      "bytes": 4273,
+      "seconds": 0.752,
+      "text": "igloo!"
+    },
+    "word.excl.ISLAND": {
+      "hash": "7eb5a3c82262e800",
+      "bytes": 9912,
+      "seconds": 0.919,
+      "text": "island!"
+    },
+    "word.excl.JUICE": {
+      "hash": "56ec51be1b0f3fa1",
+      "bytes": 5256,
+      "seconds": 1.022,
+      "text": "juice!"
+    },
+    "word.excl.JELLYFISH": {
+      "hash": "fafdbc9dbabc40ea",
+      "bytes": 6321,
+      "seconds": 1.271,
+      "text": "jellyfish!"
+    },
+    "word.excl.JACKET": {
+      "hash": "25d77cf98fa4f8d1",
+      "bytes": 4860,
+      "seconds": 0.864,
+      "text": "jacket!"
+    },
+    "word.excl.KITE": {
+      "hash": "9489ec2ad382dd91",
+      "bytes": 5373,
+      "seconds": 0.78,
+      "text": "kite!"
+    },
+    "word.excl.KEY": {
+      "hash": "a9fe42c64fbe99dc",
+      "bytes": 3552,
+      "seconds": 0.585,
+      "text": "key!"
+    },
+    "word.excl.KOALA": {
+      "hash": "62f19e120aa3d377",
+      "bytes": 5111,
+      "seconds": 0.977,
+      "text": "koala!"
+    },
+    "word.excl.KANGAROO": {
+      "hash": "d39dc750011b2837",
+      "bytes": 6937,
+      "seconds": 1.38,
+      "text": "kangaroo!"
+    },
+    "word.excl.LEMON": {
+      "hash": "7bc060a6dcd11f93",
+      "bytes": 4805,
+      "seconds": 0.858,
+      "text": "lemon!"
+    },
+    "word.excl.LION": {
+      "hash": "a56cd8e15ea49b6d",
+      "bytes": 5221,
+      "seconds": 0.944,
+      "text": "lion!"
+    },
+    "word.excl.LEAF": {
+      "hash": "4a31ba6952659127",
+      "bytes": 4394,
+      "seconds": 0.805,
+      "text": "leaf!"
+    },
+    "word.excl.LADYBUG": {
+      "hash": "2a0a8d0e55ec5249",
+      "bytes": 5593,
+      "seconds": 1.035,
+      "text": "ladybug!"
+    },
+    "word.excl.MONKEY": {
+      "hash": "52f3914526ba2729",
+      "bytes": 5016,
+      "seconds": 0.908,
+      "text": "monkey!"
+    },
+    "word.excl.MOON": {
+      "hash": "575aafcf7fb64b36",
+      "bytes": 5094,
+      "seconds": 0.947,
+      "text": "moon!"
+    },
+    "word.excl.MILK": {
+      "hash": "da2f71fb688d920d",
+      "bytes": 4879,
+      "seconds": 0.887,
+      "text": "milk!"
+    },
+    "word.excl.NEST": {
+      "hash": "18dd0910ac988473",
+      "bytes": 4087,
+      "seconds": 0.702,
+      "text": "nest!"
+    },
+    "word.excl.MUSHROOM": {
+      "hash": "661a858e6b92b88d",
+      "bytes": 4645,
+      "seconds": 0.854,
+      "text": "mushroom!"
+    },
+    "word.excl.MOUSE": {
+      "hash": "dc63384010c4844c",
+      "bytes": 4472,
+      "seconds": 0.809,
+      "text": "mouse!"
+    },
+    "word.excl.NUT": {
+      "hash": "315ad76d1550a716",
+      "bytes": 3323,
+      "seconds": 0.52,
+      "text": "nut!"
+    },
+    "word.excl.NOODLES": {
+      "hash": "52583c062e3c352a",
+      "bytes": 5410,
+      "seconds": 1,
+      "text": "noodles!"
+    },
+    "word.excl.PIG": {
+      "hash": "34e918c4e74323b7",
+      "bytes": 3949,
+      "seconds": 0.688,
+      "text": "pig!"
+    },
+    "word.excl.OWL": {
+      "hash": "f3028def96974bdc",
+      "bytes": 7858,
+      "seconds": 0.677,
+      "text": "owl!"
+    },
+    "word.excl.ORANGE": {
+      "hash": "627218451a4e9834",
+      "bytes": 5146,
+      "seconds": 0.981,
+      "text": "orange!"
+    },
+    "word.excl.OCTOPUS": {
+      "hash": "3820deb173b880bb",
+      "bytes": 6157,
+      "seconds": 1.157,
+      "text": "octopus!"
+    },
+    "word.excl.PENGUIN": {
+      "hash": "9f8839d15e3c962c",
+      "bytes": 4870,
+      "seconds": 0.902,
+      "text": "penguin!"
+    },
+    "word.excl.PIZZA": {
+      "hash": "9913db74a3cdfa06",
+      "bytes": 3756,
+      "seconds": 0.608,
+      "text": "pizza!"
+    },
+    "word.excl.PINEAPPLE": {
+      "hash": "2fbb1df07c5b919d",
+      "bytes": 6227,
+      "seconds": 0.949,
+      "text": "pineapple!"
+    },
+    "word.excl.PANDA": {
+      "hash": "03ec3876f3acb3d0",
+      "bytes": 5554,
+      "seconds": 1.03,
+      "text": "panda!"
+    },
+    "word.excl.QUEEN": {
+      "hash": "8df5193405a22c0d",
+      "bytes": 5710,
+      "seconds": 0.893,
+      "text": "queen!"
+    },
+    "word.excl.ROCKET": {
+      "hash": "a6fffe15007cda08",
+      "bytes": 4888,
+      "seconds": 0.86,
+      "text": "rocket!"
+    },
+    "word.excl.QUILT": {
+      "hash": "2d3d8c38e710716f",
+      "bytes": 4485,
+      "seconds": 0.805,
+      "text": "quilt!"
+    },
+    "word.excl.RAINBOW": {
+      "hash": "f0e87defc09a6391",
+      "bytes": 5694,
+      "seconds": 1.09,
+      "text": "rainbow!"
+    },
+    "word.excl.RABBIT": {
+      "hash": "fcf59335c5d71433",
+      "bytes": 4874,
+      "seconds": 0.934,
+      "text": "rabbit!"
+    },
+    "word.excl.SUN": {
+      "hash": "71bbbdc32aabb4c0",
+      "bytes": 5510,
+      "seconds": 1.064,
+      "text": "sun!"
+    },
+    "word.excl.ROBOT": {
+      "hash": "cd3c8f4f2a62c7bc",
+      "bytes": 5237,
+      "seconds": 0.989,
+      "text": "robot!"
+    },
+    "word.excl.STAR": {
+      "hash": "d8d76182beec57a3",
+      "bytes": 4865,
+      "seconds": 0.875,
+      "text": "star!"
+    },
+    "word.excl.SNAKE": {
+      "hash": "77bff6bf73299d02",
+      "bytes": 5513,
+      "seconds": 1.109,
+      "text": "snake!"
+    },
+    "word.excl.STRAWBERRY": {
+      "hash": "42042059d8b95583",
+      "bytes": 6820,
+      "seconds": 1.335,
+      "text": "strawberry!"
+    },
+    "word.excl.TREE": {
+      "hash": "85ed5fa2a24fffdd",
+      "bytes": 4700,
+      "seconds": 0.518,
+      "text": "tree!"
+    },
+    "word.excl.SHEEP": {
+      "hash": "95531ed5eccd29c6",
+      "bytes": 4745,
+      "seconds": 0.868,
+      "text": "sheep!"
+    },
+    "word.excl.TURTLE": {
+      "hash": "958ce669437a1c0b",
+      "bytes": 3552,
+      "seconds": 0.574,
+      "text": "turtle!"
+    },
+    "word.excl.TRAIN": {
+      "hash": "88f045715082d21e",
+      "bytes": 6010,
+      "seconds": 0.812,
+      "text": "train!"
+    },
+    "word.excl.TIGER": {
+      "hash": "7e5d6c0a8be58d92",
+      "bytes": 5260,
+      "seconds": 0.985,
+      "text": "tiger!"
+    },
+    "word.excl.UMBRELLA": {
+      "hash": "b1c092e0578c2673",
+      "bytes": 4757,
+      "seconds": 0.886,
+      "text": "umbrella!"
+    },
+    "word.excl.VAN": {
+      "hash": "5fe5ae7f2da7b03d",
+      "bytes": 4970,
+      "seconds": 0.938,
+      "text": "van!"
+    },
+    "word.excl.UNICORN": {
+      "hash": "ba85abb4b4d483f8",
+      "bytes": 6480,
+      "seconds": 1.024,
+      "text": "unicorn!"
+    },
+    "word.excl.VIOLIN": {
+      "hash": "1577db329195ba44",
+      "bytes": 5195,
+      "seconds": 0.974,
+      "text": "violin!"
+    },
+    "word.excl.WHALE": {
+      "hash": "c6ae77ecc8d55224",
+      "bytes": 4481,
+      "seconds": 0.806,
+      "text": "whale!"
+    },
+    "word.excl.WATERMELON": {
+      "hash": "3a7305e0fdd72644",
+      "bytes": 5669,
+      "seconds": 1.125,
+      "text": "watermelon!"
+    },
+    "word.excl.VOLCANO": {
+      "hash": "258df6b2eba67c0a",
+      "bytes": 6656,
+      "seconds": 1.337,
+      "text": "volcano!"
+    },
+    "word.excl.WORM": {
+      "hash": "495bddb8ea392990",
+      "bytes": 4337,
+      "seconds": 0.731,
+      "text": "worm!"
+    },
+    "word.excl.X_RAY": {
+      "hash": "ab13175aa63180d4",
+      "bytes": 6887,
+      "seconds": 1.406,
+      "text": "x ray!"
+    },
+    "word.excl.XYLOPHONE": {
+      "hash": "df3edb8a7d564966",
+      "bytes": 5546,
+      "seconds": 1.11,
+      "text": "xylophone!"
+    },
+    "word.excl.WAGON": {
+      "hash": "30559464274eab06",
+      "bytes": 5069,
+      "seconds": 0.905,
+      "text": "wagon!"
+    },
+    "word.excl.YO_YO": {
+      "hash": "16207063cc84fb5c",
+      "bytes": 7853,
+      "seconds": 1.617,
+      "text": "yo yo!"
+    },
+    "word.excl.YOGURT": {
+      "hash": "091f6107d4f09213",
+      "bytes": 5718,
+      "seconds": 1.095,
+      "text": "yogurt!"
+    },
+    "word.excl.YARN": {
+      "hash": "469baac24cfeb31e",
+      "bytes": 4834,
+      "seconds": 0.87,
+      "text": "yarn!"
+    },
+    "word.excl.ZEBRA": {
+      "hash": "fde5b996e2594358",
+      "bytes": 5519,
+      "seconds": 1.053,
+      "text": "zebra!"
+    },
+    "word.excl.ZIPPER": {
+      "hash": "087bdae1717b6ef8",
+      "bytes": 4502,
+      "seconds": 0.794,
+      "text": "zipper!"
+    },
+    "prompt.find.B": {
+      "hash": "8508a8ff33a6bb7a",
+      "bytes": 12865,
+      "seconds": 2.859,
+      "text": "Find the picture that starts with B!"
+    },
+    "prompt.find.A": {
+      "hash": "00f598e29fc48b90",
+      "bytes": 19448,
+      "seconds": 4.5,
+      "text": "Find the picture that starts with A!"
+    },
+    "prompt.find.C": {
+      "hash": "2d8834a06e3ce2c7",
+      "bytes": 13452,
+      "seconds": 3.1,
+      "text": "Find the picture that starts with C!"
+    },
+    "prompt.find.D": {
+      "hash": "ef2b3f93b5f4500f",
+      "bytes": 14161,
+      "seconds": 3.3,
+      "text": "Find the picture that starts with D!"
+    },
+    "prompt.find.E": {
+      "hash": "e66cdb5351a079a1",
+      "bytes": 15289,
+      "seconds": 3.5,
+      "text": "Find the picture that starts with E!"
+    },
+    "prompt.find.F": {
+      "hash": "3fc2eae1e3643f84",
+      "bytes": 13754,
+      "seconds": 3.1,
+      "text": "Find the picture that starts with F!"
+    },
+    "prompt.find.H": {
+      "hash": "8e3aea711bd59196",
+      "bytes": 11947,
+      "seconds": 2.611,
+      "text": "Find the picture that starts with H!"
+    },
+    "prompt.find.G": {
+      "hash": "200f14a4c71705ce",
+      "bytes": 14543,
+      "seconds": 3.3,
+      "text": "Find the picture that starts with G!"
+    },
+    "prompt.find.I": {
+      "hash": "3480876a845882e5",
+      "bytes": 15441,
+      "seconds": 3.5,
+      "text": "Find the picture that starts with I!"
+    },
+    "prompt.find.K": {
+      "hash": "1bd1be91cfc9f234",
+      "bytes": 13155,
+      "seconds": 2.908,
+      "text": "Find the picture that starts with K!"
+    },
+    "prompt.find.L": {
+      "hash": "72aea9b92120e6dd",
+      "bytes": 13385,
+      "seconds": 2.977,
+      "text": "Find the picture that starts with L!"
+    },
+    "prompt.find.M": {
+      "hash": "8e3c5950c0edf68a",
+      "bytes": 18223,
+      "seconds": 4.2,
+      "text": "Find the picture that starts with M!"
+    },
+    "prompt.find.N": {
+      "hash": "671c40c3f1b1708a",
+      "bytes": 15841,
+      "seconds": 3.6,
+      "text": "Find the picture that starts with N!"
+    },
+    "prompt.find.J": {
+      "hash": "7767a2cca382f2a7",
+      "bytes": 13181,
+      "seconds": 2.924,
+      "text": "Find the picture that starts with J!"
+    },
+    "prompt.find.P": {
+      "hash": "72bc3ff06e832078",
+      "bytes": 12075,
+      "seconds": 2.667,
+      "text": "Find the picture that starts with P!"
+    },
+    "prompt.find.Q": {
+      "hash": "79ccfeb406046e0d",
+      "bytes": 15668,
+      "seconds": 3.6,
+      "text": "Find the picture that starts with Q!"
+    },
+    "prompt.find.S": {
+      "hash": "a9b41c65ed2441d2",
+      "bytes": 14720,
+      "seconds": 3.4,
+      "text": "Find the picture that starts with S!"
+    },
+    "prompt.find.O": {
+      "hash": "13bc18b17ce0bf2e",
+      "bytes": 12680,
+      "seconds": 2.827,
+      "text": "Find the picture that starts with O!"
+    },
+    "prompt.find.T": {
+      "hash": "d21232191a856509",
+      "bytes": 10147,
+      "seconds": 2.217,
+      "text": "Find the picture that starts with T!"
+    },
+    "prompt.find.V": {
+      "hash": "b9129990b909cda1",
+      "bytes": 13535,
+      "seconds": 3.1,
+      "text": "Find the picture that starts with V!"
+    },
+    "prompt.find.U": {
+      "hash": "de71d38a7651ce70",
+      "bytes": 11613,
+      "seconds": 2.544,
+      "text": "Find the picture that starts with U!"
+    },
+    "prompt.find.R": {
+      "hash": "3e7fc20600d5cd41",
+      "bytes": 11498,
+      "seconds": 2.556,
+      "text": "Find the picture that starts with R!"
+    },
+    "prompt.find.X": {
+      "hash": "4df3619eb91881c0",
+      "bytes": 13595,
+      "seconds": 3.1,
+      "text": "Find the picture that starts with X!"
+    },
+    "prompt.find.W": {
+      "hash": "732da8b16cd6e0bf",
+      "bytes": 13501,
+      "seconds": 2.99,
+      "text": "Find the picture that starts with W!"
+    },
+    "prompt.find.Y": {
+      "hash": "faf4813303ce82c3",
+      "bytes": 14712,
+      "seconds": 3.4,
+      "text": "Find the picture that starts with Y!"
+    },
+    "prompt.which.APPLE": {
+      "hash": "5ec65806697eebca",
+      "bytes": 13374,
+      "seconds": 3.1,
+      "text": "Which letter does apple start with?"
+    },
+    "prompt.find.Z": {
+      "hash": "cd44c7398bebaef5",
+      "bytes": 16048,
+      "seconds": 3.6,
+      "text": "Find the picture that starts with Z!"
+    },
+    "prompt.which.ANT": {
+      "hash": "023ee79003feb6a8",
+      "bytes": 12277,
+      "seconds": 2.707,
+      "text": "Which letter does ant start with?"
+    },
+    "prompt.which.AIRPLANE": {
+      "hash": "fafcfac721528af2",
+      "bytes": 14508,
+      "seconds": 3.3,
+      "text": "Which letter does airplane start with?"
+    },
+    "prompt.which.ALLIGATOR": {
+      "hash": "8cf382f791d97d27",
+      "bytes": 11761,
+      "seconds": 2.585,
+      "text": "Which letter does alligator start with?"
+    },
+    "prompt.which.BALL": {
+      "hash": "f9c576920c6f0a5f",
+      "bytes": 11050,
+      "seconds": 2.418,
+      "text": "Which letter does ball start with?"
+    },
+    "prompt.which.BANANA": {
+      "hash": "5fa9b5dcb509f168",
+      "bytes": 12247,
+      "seconds": 2.725,
+      "text": "Which letter does banana start with?"
+    },
+    "prompt.which.BEAR": {
+      "hash": "7dd349755ee69b40",
+      "bytes": 13108,
+      "seconds": 2.949,
+      "text": "Which letter does bear start with?"
+    },
+    "prompt.which.BEE": {
+      "hash": "59462fc3a57f35d6",
+      "bytes": 13507,
+      "seconds": 2.971,
+      "text": "Which letter does bee start with?"
+    },
+    "prompt.which.BUS": {
+      "hash": "43312354f2da3c0c",
+      "bytes": 11690,
+      "seconds": 2.554,
+      "text": "Which letter does bus start with?"
+    },
+    "prompt.which.BUTTERFLY": {
+      "hash": "e6770650281463ef",
+      "bytes": 10925,
+      "seconds": 2.38,
+      "text": "Which letter does butterfly start with?"
+    },
+    "prompt.which.CAT": {
+      "hash": "14fee64edd820a76",
+      "bytes": 14634,
+      "seconds": 3.3,
+      "text": "Which letter does cat start with?"
+    },
+    "prompt.which.CAR": {
+      "hash": "a970905fd7aac91b",
+      "bytes": 12979,
+      "seconds": 2.941,
+      "text": "Which letter does car start with?"
+    },
+    "prompt.which.CAKE": {
+      "hash": "8c947a1b9796f938",
+      "bytes": 10920,
+      "seconds": 2.385,
+      "text": "Which letter does cake start with?"
+    },
+    "prompt.which.CARROT": {
+      "hash": "e15796d26b35c91e",
+      "bytes": 12382,
+      "seconds": 2.854,
+      "text": "Which letter does carrot start with?"
+    },
+    "prompt.which.COW": {
+      "hash": "24fbb727c14db2e3",
+      "bytes": 12080,
+      "seconds": 2.703,
+      "text": "Which letter does cow start with?"
+    },
+    "prompt.which.DUCK": {
+      "hash": "d2a7c660dc7a9832",
+      "bytes": 11614,
+      "seconds": 2.592,
+      "text": "Which letter does duck start with?"
+    },
+    "prompt.which.DOG": {
+      "hash": "50570c5c469125a5",
+      "bytes": 10580,
+      "seconds": 2.297,
+      "text": "Which letter does dog start with?"
+    },
+    "prompt.which.DINOSAUR": {
+      "hash": "4ede3e44a76128a0",
+      "bytes": 15132,
+      "seconds": 3.4,
+      "text": "Which letter does dinosaur start with?"
+    },
+    "prompt.which.DONUT": {
+      "hash": "8db4471b1269f1dd",
+      "bytes": 10602,
+      "seconds": 2.305,
+      "text": "Which letter does donut start with?"
+    },
+    "prompt.which.DRUM": {
+      "hash": "6327277ea91cd333",
+      "bytes": 14573,
+      "seconds": 3.3,
+      "text": "Which letter does drum start with?"
+    },
+    "prompt.which.ELEPHANT": {
+      "hash": "b480071983e6ceda",
+      "bytes": 13048,
+      "seconds": 2.867,
+      "text": "Which letter does elephant start with?"
+    },
+    "prompt.which.EGG": {
+      "hash": "73c5932f98206763",
+      "bytes": 11081,
+      "seconds": 2.423,
+      "text": "Which letter does egg start with?"
+    },
+    "prompt.which.EAGLE": {
+      "hash": "b6a64f28c22aa1f3",
+      "bytes": 11620,
+      "seconds": 2.59,
+      "text": "Which letter does eagle start with?"
+    },
+    "prompt.which.FROG": {
+      "hash": "992ce5755b3d5599",
+      "bytes": 10032,
+      "seconds": 2.214,
+      "text": "Which letter does frog start with?"
+    },
+    "prompt.which.FLOWER": {
+      "hash": "0dc1a4b5db49c0b8",
+      "bytes": 14485,
+      "seconds": 3.3,
+      "text": "Which letter does flower start with?"
+    },
+    "prompt.which.FISH": {
+      "hash": "68b23840b433c2d8",
+      "bytes": 11456,
+      "seconds": 2.513,
+      "text": "Which letter does fish start with?"
+    },
+    "prompt.which.FOX": {
+      "hash": "d38e5691552442e2",
+      "bytes": 15792,
+      "seconds": 3.6,
+      "text": "Which letter does fox start with?"
+    },
+    "prompt.which.FIRE_TRUCK": {
+      "hash": "8f0f59f320826a08",
+      "bytes": 14513,
+      "seconds": 3.3,
+      "text": "Which letter does fire truck start with?"
+    },
+    "prompt.which.GRAPES": {
+      "hash": "12df74cc1a8b45d0",
+      "bytes": 11253,
+      "seconds": 2.453,
+      "text": "Which letter does grapes start with?"
+    },
+    "prompt.which.GIFT": {
+      "hash": "86ff21f1922da771",
+      "bytes": 12864,
+      "seconds": 2.858,
+      "text": "Which letter does gift start with?"
+    },
+    "prompt.which.GIRAFFE": {
+      "hash": "3d8c7552a7dda6f7",
+      "bytes": 15065,
+      "seconds": 3.4,
+      "text": "Which letter does giraffe start with?"
+    },
+    "prompt.which.GUITAR": {
+      "hash": "f917035cc3f5cdab",
+      "bytes": 12972,
+      "seconds": 2.911,
+      "text": "Which letter does guitar start with?"
+    },
+    "prompt.which.EXCAVATOR": {
+      "hash": "a6ab68b5f55388e3",
+      "bytes": 14076,
+      "seconds": 3.2,
+      "text": "Which letter does excavator start with?"
+    },
+    "prompt.which.HAT": {
+      "hash": "a3644c6b1270e56c",
+      "bytes": 11086,
+      "seconds": 2.431,
+      "text": "Which letter does hat start with?"
+    },
+    "prompt.which.HOUSE": {
+      "hash": "fa00c49ffc855bc5",
+      "bytes": 12918,
+      "seconds": 2.83,
+      "text": "Which letter does house start with?"
+    },
+    "prompt.which.HORSE": {
+      "hash": "77e415946840594d",
+      "bytes": 12378,
+      "seconds": 2.712,
+      "text": "Which letter does horse start with?"
+    },
+    "prompt.which.HELICOPTER": {
+      "hash": "5bd6bab96b474e28",
+      "bytes": 10884,
+      "seconds": 2.383,
+      "text": "Which letter does helicopter start with?"
+    },
+    "prompt.which.HEART": {
+      "hash": "8151f0f83c545a1c",
+      "bytes": 13123,
+      "seconds": 2.944,
+      "text": "Which letter does heart start with?"
+    },
+    "prompt.which.IGLOO": {
+      "hash": "b94f65f9c82b064a",
+      "bytes": 14914,
+      "seconds": 3.4,
+      "text": "Which letter does igloo start with?"
+    },
+    "prompt.which.ICE_CREAM": {
+      "hash": "fce4c258d5bccc8f",
+      "bytes": 11682,
+      "seconds": 2.55,
+      "text": "Which letter does ice cream start with?"
+    },
+    "prompt.which.JUICE": {
+      "hash": "ef5dec505311f7ed",
+      "bytes": 13203,
+      "seconds": 2.948,
+      "text": "Which letter does juice start with?"
+    },
+    "prompt.which.JELLYFISH": {
+      "hash": "5bfe5519cb313605",
+      "bytes": 11668,
+      "seconds": 2.543,
+      "text": "Which letter does jellyfish start with?"
+    },
+    "prompt.which.ISLAND": {
+      "hash": "ade705237c3a7c0e",
+      "bytes": 13191,
+      "seconds": 2.948,
+      "text": "Which letter does island start with?"
+    },
+    "prompt.which.JACKET": {
+      "hash": "2ee3fb479a298d56",
+      "bytes": 13582,
+      "seconds": 3.1,
+      "text": "Which letter does jacket start with?"
+    },
+    "prompt.which.KITE": {
+      "hash": "2fceb89f6430e151",
+      "bytes": 12211,
+      "seconds": 2.656,
+      "text": "Which letter does kite start with?"
+    },
+    "prompt.which.KEY": {
+      "hash": "5896772d1f3fe359",
+      "bytes": 10596,
+      "seconds": 2.287,
+      "text": "Which letter does key start with?"
+    },
+    "prompt.which.KOALA": {
+      "hash": "db6125eeb223e4e0",
+      "bytes": 12316,
+      "seconds": 2.738,
+      "text": "Which letter does koala start with?"
+    },
+    "prompt.which.LEMON": {
+      "hash": "33e272d4bed6c23b",
+      "bytes": 10608,
+      "seconds": 2.282,
+      "text": "Which letter does lemon start with?"
+    },
+    "prompt.which.LION": {
+      "hash": "2ae1d3dd52eec5ae",
+      "bytes": 10406,
+      "seconds": 2.235,
+      "text": "Which letter does lion start with?"
+    },
+    "prompt.which.LEAF": {
+      "hash": "0e059f4132936c64",
+      "bytes": 13554,
+      "seconds": 3.1,
+      "text": "Which letter does leaf start with?"
+    },
+    "prompt.which.MONKEY": {
+      "hash": "ff38d6b81943c863",
+      "bytes": 11554,
+      "seconds": 2.531,
+      "text": "Which letter does monkey start with?"
+    },
+    "prompt.which.LADYBUG": {
+      "hash": "64cc8f516261a2e4",
+      "bytes": 13023,
+      "seconds": 2.876,
+      "text": "Which letter does ladybug start with?"
+    },
+    "prompt.which.KANGAROO": {
+      "hash": "d20a2bb05f904e8b",
+      "bytes": 14434,
+      "seconds": 3.3,
+      "text": "Which letter does kangaroo start with?"
+    },
+    "prompt.which.MUSHROOM": {
+      "hash": "ed62371af28e3db0",
+      "bytes": 12990,
+      "seconds": 2.895,
+      "text": "Which letter does mushroom start with?"
+    },
+    "prompt.which.MOON": {
+      "hash": "7842e4757e006c38",
+      "bytes": 15160,
+      "seconds": 3.4,
+      "text": "Which letter does moon start with?"
+    },
+    "prompt.which.MOUSE": {
+      "hash": "ae74df742b5c2946",
+      "bytes": 11879,
+      "seconds": 2.599,
+      "text": "Which letter does mouse start with?"
+    },
+    "prompt.which.MILK": {
+      "hash": "7c9ad83522952b31",
+      "bytes": 9545,
+      "seconds": 2.085,
+      "text": "Which letter does milk start with?"
+    },
+    "prompt.which.NOODLES": {
+      "hash": "f2e72023a5b12b69",
+      "bytes": 16367,
+      "seconds": 3.7,
+      "text": "Which letter does noodles start with?"
+    },
+    "prompt.which.NEST": {
+      "hash": "079e2fd8c9277161",
+      "bytes": 10381,
+      "seconds": 2.247,
+      "text": "Which letter does nest start with?"
+    },
+    "prompt.which.OCTOPUS": {
+      "hash": "8191d5f2a18f99af",
+      "bytes": 13313,
+      "seconds": 2.959,
+      "text": "Which letter does octopus start with?"
+    },
+    "prompt.which.ORANGE": {
+      "hash": "5ad9a3c3c20ead24",
+      "bytes": 12699,
+      "seconds": 2.816,
+      "text": "Which letter does orange start with?"
+    },
+    "prompt.which.PIG": {
+      "hash": "15f6ee9650046e61",
+      "bytes": 10973,
+      "seconds": 2.384,
+      "text": "Which letter does pig start with?"
+    },
+    "prompt.which.OWL": {
+      "hash": "e571b6a620b6ef9f",
+      "bytes": 13740,
+      "seconds": 3.1,
+      "text": "Which letter does owl start with?"
+    },
+    "prompt.which.PIZZA": {
+      "hash": "1461117fc46d4577",
+      "bytes": 11486,
+      "seconds": 2.528,
+      "text": "Which letter does pizza start with?"
+    },
+    "prompt.which.PENGUIN": {
+      "hash": "3ad1e770790eb531",
+      "bytes": 10978,
+      "seconds": 2.367,
+      "text": "Which letter does penguin start with?"
+    },
+    "prompt.which.PINEAPPLE": {
+      "hash": "59c045d933f6faea",
+      "bytes": 13694,
+      "seconds": 3.1,
+      "text": "Which letter does pineapple start with?"
+    },
+    "prompt.which.PANDA": {
+      "hash": "16ff458176b071b9",
+      "bytes": 15507,
+      "seconds": 3.5,
+      "text": "Which letter does panda start with?"
+    },
+    "prompt.which.QUEEN": {
+      "hash": "9d68afab1e4b67be",
+      "bytes": 9846,
+      "seconds": 2.112,
+      "text": "Which letter does queen start with?"
+    },
+    "prompt.which.ROCKET": {
+      "hash": "4ccf76afdb8a7cb1",
+      "bytes": 12191,
+      "seconds": 2.665,
+      "text": "Which letter does rocket start with?"
+    },
+    "prompt.which.RAINBOW": {
+      "hash": "feadd1b2ccb09aaf",
+      "bytes": 16106,
+      "seconds": 3.7,
+      "text": "Which letter does rainbow start with?"
+    },
+    "prompt.which.QUILT": {
+      "hash": "b1ef5fbc896cb2bc",
+      "bytes": 11271,
+      "seconds": 2.442,
+      "text": "Which letter does quilt start with?"
+    },
+    "prompt.which.RABBIT": {
+      "hash": "54ff16cd5cad562a",
+      "bytes": 14491,
+      "seconds": 3.3,
+      "text": "Which letter does rabbit start with?"
+    },
+    "prompt.which.ROBOT": {
+      "hash": "f7e2e54083ac49c4",
+      "bytes": 13422,
+      "seconds": 2.965,
+      "text": "Which letter does robot start with?"
+    },
+    "prompt.which.STAR": {
+      "hash": "7405b75f4d65eda3",
+      "bytes": 9720,
+      "seconds": 2.085,
+      "text": "Which letter does star start with?"
+    },
+    "prompt.which.NUT": {
+      "hash": "76f269caec4d6aa1",
+      "bytes": 15114,
+      "seconds": 3.4,
+      "text": "Which letter does nut start with?"
+    },
+    "prompt.which.SUN": {
+      "hash": "8c4ed656facd5708",
+      "bytes": 12462,
+      "seconds": 2.746,
+      "text": "Which letter does sun start with?"
+    },
+    "prompt.which.SNAKE": {
+      "hash": "d6af00c3fb38d26e",
+      "bytes": 14876,
+      "seconds": 3.4,
+      "text": "Which letter does snake start with?"
+    },
+    "prompt.which.STRAWBERRY": {
+      "hash": "3934715d73ff0158",
+      "bytes": 15718,
+      "seconds": 3.6,
+      "text": "Which letter does strawberry start with?"
+    },
+    "prompt.which.SHEEP": {
+      "hash": "a6586f4c664a1ded",
+      "bytes": 15639,
+      "seconds": 3.6,
+      "text": "Which letter does sheep start with?"
+    },
+    "prompt.which.TURTLE": {
+      "hash": "886784241bfd0c79",
+      "bytes": 12564,
+      "seconds": 2.74,
+      "text": "Which letter does turtle start with?"
+    },
+    "prompt.which.TIGER": {
+      "hash": "211e38cf52cd720a",
+      "bytes": 14659,
+      "seconds": 3.3,
+      "text": "Which letter does tiger start with?"
+    },
+    "prompt.which.TREE": {
+      "hash": "fdf6066b73707394",
+      "bytes": 10934,
+      "seconds": 2.381,
+      "text": "Which letter does tree start with?"
+    },
+    "prompt.which.TRAIN": {
+      "hash": "8431330fb3cf2de5",
+      "bytes": 10653,
+      "seconds": 2.391,
+      "text": "Which letter does train start with?"
+    },
+    "prompt.which.UNICORN": {
+      "hash": "f1d5f68509c93547",
+      "bytes": 16208,
+      "seconds": 3.7,
+      "text": "Which letter does unicorn start with?"
+    },
+    "prompt.which.UMBRELLA": {
+      "hash": "532cc261375b8358",
+      "bytes": 14028,
+      "seconds": 3.2,
+      "text": "Which letter does umbrella start with?"
+    },
+    "prompt.which.VAN": {
+      "hash": "fd39187a5d999d17",
+      "bytes": 11130,
+      "seconds": 2.414,
+      "text": "Which letter does van start with?"
+    },
+    "prompt.which.VIOLIN": {
+      "hash": "57037312ffd38e50",
+      "bytes": 11100,
+      "seconds": 2.427,
+      "text": "Which letter does violin start with?"
+    },
+    "prompt.which.VOLCANO": {
+      "hash": "d811eb31774cd521",
+      "bytes": 12338,
+      "seconds": 2.737,
+      "text": "Which letter does volcano start with?"
+    },
+    "prompt.which.WHALE": {
+      "hash": "495f11d370d4ea24",
+      "bytes": 13227,
+      "seconds": 2.92,
+      "text": "Which letter does whale start with?"
+    },
+    "prompt.which.WATERMELON": {
+      "hash": "e48930fb8baabf3e",
+      "bytes": 10911,
+      "seconds": 2.383,
+      "text": "Which letter does watermelon start with?"
+    },
+    "prompt.which.WORM": {
+      "hash": "13651cb557696b72",
+      "bytes": 15869,
+      "seconds": 3.6,
+      "text": "Which letter does worm start with?"
+    },
+    "prompt.which.X_RAY": {
+      "hash": "976c3fb87ce98d1b",
+      "bytes": 13267,
+      "seconds": 2.907,
+      "text": "Which letter does x ray start with?"
+    },
+    "prompt.which.WAGON": {
+      "hash": "600670f1cda366fa",
+      "bytes": 11633,
+      "seconds": 2.552,
+      "text": "Which letter does wagon start with?"
+    },
+    "prompt.which.XYLOPHONE": {
+      "hash": "727a8cd3549596a9",
+      "bytes": 14332,
+      "seconds": 3.3,
+      "text": "Which letter does xylophone start with?"
+    },
+    "prompt.which.YARN": {
+      "hash": "f8ee67beb5f54f46",
+      "bytes": 12307,
+      "seconds": 2.738,
+      "text": "Which letter does yarn start with?"
+    },
+    "prompt.which.YO_YO": {
+      "hash": "c974dd3f46dafbe0",
+      "bytes": 10865,
+      "seconds": 2.341,
+      "text": "Which letter does yo yo start with?"
+    },
+    "prompt.which.YOGURT": {
+      "hash": "3feb5e76ee17c616",
+      "bytes": 11998,
+      "seconds": 2.611,
+      "text": "Which letter does yogurt start with?"
+    },
+    "prompt.which.ZEBRA": {
+      "hash": "11b08b7e680420bf",
+      "bytes": 12372,
+      "seconds": 2.709,
+      "text": "Which letter does zebra start with?"
+    },
+    "prompt.which.ZIPPER": {
+      "hash": "be3af5351f96ff9f",
+      "bytes": 11483,
+      "seconds": 2.533,
+      "text": "Which letter does zipper start with?"
+    },
+    "teach.is-for.A.ANT": {
+      "hash": "295b060b7d2b0f8b",
+      "bytes": 8477,
+      "seconds": 1.781,
+      "text": "A is for ant!"
+    },
+    "teach.is-for.A.APPLE": {
+      "hash": "6a72c4e86c251adb",
+      "bytes": 8186,
+      "seconds": 1.727,
+      "text": "A is for apple!"
+    },
+    "teach.is-for.A.AIRPLANE": {
+      "hash": "a60797f126845c3c",
+      "bytes": 12090,
+      "seconds": 2.175,
+      "text": "A is for airplane!"
+    },
+    "teach.is-for.B.BANANA": {
+      "hash": "4f06a580544ce299",
+      "bytes": 8990,
+      "seconds": 1.881,
+      "text": "B is for banana!"
+    },
+    "teach.is-for.B.BALL": {
+      "hash": "c327da8b5185b902",
+      "bytes": 11104,
+      "seconds": 2.43,
+      "text": "B is for ball!"
+    },
+    "teach.is-for.A.ALLIGATOR": {
+      "hash": "a8f9e60d481c09a3",
+      "bytes": 12576,
+      "seconds": 2.749,
+      "text": "A is for alligator!"
+    },
+    "teach.is-for.B.BEAR": {
+      "hash": "8feb2d3aee6064b9",
+      "bytes": 10264,
+      "seconds": 2.216,
+      "text": "B is for bear!"
+    },
+    "teach.is-for.B.BUS": {
+      "hash": "3021abd4b10cc78a",
+      "bytes": 11029,
+      "seconds": 2.361,
+      "text": "B is for bus!"
+    },
+    "teach.is-for.B.BEE": {
+      "hash": "1c7d21a0bbbab513",
+      "bytes": 9230,
+      "seconds": 1.932,
+      "text": "B is for bee!"
+    },
+    "teach.is-for.C.CAT": {
+      "hash": "ce8b7cbfbdd329d8",
+      "bytes": 8620,
+      "seconds": 1.805,
+      "text": "C is for cat!"
+    },
+    "teach.is-for.C.CAKE": {
+      "hash": "64b5739d3a43ceaf",
+      "bytes": 8888,
+      "seconds": 1.89,
+      "text": "C is for cake!"
+    },
+    "teach.is-for.C.CAR": {
+      "hash": "113e3d0736b02733",
+      "bytes": 9568,
+      "seconds": 2.059,
+      "text": "C is for car!"
+    },
+    "teach.is-for.B.BUTTERFLY": {
+      "hash": "a338545aade81af3",
+      "bytes": 9428,
+      "seconds": 1.993,
+      "text": "B is for butterfly!"
+    },
+    "teach.is-for.C.CARROT": {
+      "hash": "bbea081c4228dc38",
+      "bytes": 8463,
+      "seconds": 1.784,
+      "text": "C is for carrot!"
+    },
+    "teach.is-for.D.DUCK": {
+      "hash": "f098154f3556ea3d",
+      "bytes": 8489,
+      "seconds": 1.802,
+      "text": "D is for duck!"
+    },
+    "teach.is-for.D.DOG": {
+      "hash": "8226b90016f173a4",
+      "bytes": 8489,
+      "seconds": 1.755,
+      "text": "D is for dog!"
+    },
+    "teach.is-for.D.DINOSAUR": {
+      "hash": "c41a4af8be3c0268",
+      "bytes": 10779,
+      "seconds": 2.337,
+      "text": "D is for dinosaur!"
+    },
+    "teach.is-for.D.DONUT": {
+      "hash": "27ee2c5775af76a5",
+      "bytes": 17306,
+      "seconds": 4,
+      "text": "D is for donut!"
+    },
+    "teach.is-for.D.DRUM": {
+      "hash": "ee6abece199a7927",
+      "bytes": 8330,
+      "seconds": 1.739,
+      "text": "D is for drum!"
+    },
+    "teach.is-for.E.EGG": {
+      "hash": "b6eb08609d93cfff",
+      "bytes": 8535,
+      "seconds": 1.809,
+      "text": "E is for egg!"
+    },
+    "teach.is-for.E.ELEPHANT": {
+      "hash": "527060a361cb3792",
+      "bytes": 10020,
+      "seconds": 2.137,
+      "text": "E is for elephant!"
+    },
+    "teach.is-for.C.COW": {
+      "hash": "7707222e66a03c11",
+      "bytes": 11464,
+      "seconds": 2.548,
+      "text": "C is for cow!"
+    },
+    "teach.is-for.E.EAGLE": {
+      "hash": "9b85ec958e3a299e",
+      "bytes": 10575,
+      "seconds": 2.297,
+      "text": "E is for eagle!"
+    },
+    "teach.is-for.E.EXCAVATOR": {
+      "hash": "c7a7e59250ff7205",
+      "bytes": 9212,
+      "seconds": 1.977,
+      "text": "E is for excavator!"
+    },
+    "teach.is-for.F.FISH": {
+      "hash": "a4ea3fb15e968154",
+      "bytes": 8193,
+      "seconds": 1.74,
+      "text": "F is for fish!"
+    },
+    "teach.is-for.F.FROG": {
+      "hash": "10a47b07952c4ff8",
+      "bytes": 7798,
+      "seconds": 1.593,
+      "text": "F is for frog!"
+    },
+    "teach.is-for.F.FLOWER": {
+      "hash": "0af4eddb89e05978",
+      "bytes": 9174,
+      "seconds": 1.928,
+      "text": "F is for flower!"
+    },
+    "teach.is-for.F.FIRE_TRUCK": {
+      "hash": "5582c41d7f201266",
+      "bytes": 9354,
+      "seconds": 1.998,
+      "text": "F is for fire truck!"
+    },
+    "teach.is-for.G.GRAPES": {
+      "hash": "62951da7f762bac0",
+      "bytes": 9600,
+      "seconds": 2.032,
+      "text": "G is for grapes!"
+    },
+    "teach.is-for.F.FOX": {
+      "hash": "0389586f6b015ce8",
+      "bytes": 8481,
+      "seconds": 1.768,
+      "text": "F is for fox!"
+    },
+    "teach.is-for.G.GIFT": {
+      "hash": "f6e12baae7f9d2f5",
+      "bytes": 11091,
+      "seconds": 2.382,
+      "text": "G is for gift!"
+    },
+    "teach.is-for.G.GIRAFFE": {
+      "hash": "8aeb0fe246007ce6",
+      "bytes": 9550,
+      "seconds": 2.035,
+      "text": "G is for giraffe!"
+    },
+    "teach.is-for.G.GUITAR": {
+      "hash": "f2a715a1304278b1",
+      "bytes": 12665,
+      "seconds": 2.799,
+      "text": "G is for guitar!"
+    },
+    "teach.is-for.H.HOUSE": {
+      "hash": "b5d36180aa56e4f9",
+      "bytes": 9448,
+      "seconds": 2.017,
+      "text": "H is for house!"
+    },
+    "teach.is-for.H.HAT": {
+      "hash": "cde3458345fc5a6c",
+      "bytes": 8420,
+      "seconds": 1.769,
+      "text": "H is for hat!"
+    },
+    "teach.is-for.H.HORSE": {
+      "hash": "8897cdf8a29a49ad",
+      "bytes": 9339,
+      "seconds": 1.965,
+      "text": "H is for horse!"
+    },
+    "teach.is-for.H.HELICOPTER": {
+      "hash": "30ea89f51b96342c",
+      "bytes": 9521,
+      "seconds": 2.021,
+      "text": "H is for helicopter!"
+    },
+    "teach.is-for.H.HEART": {
+      "hash": "1d629d9ed75cc715",
+      "bytes": 8863,
+      "seconds": 1.85,
+      "text": "H is for heart!"
+    },
+    "teach.is-for.I.ISLAND": {
+      "hash": "2421418da0349b79",
+      "bytes": 11504,
+      "seconds": 1.995,
+      "text": "I is for island!"
+    },
+    "teach.is-for.I.ICE_CREAM": {
+      "hash": "f7644e12d2d355c8",
+      "bytes": 10104,
+      "seconds": 2.166,
+      "text": "I is for ice cream!"
+    },
+    "teach.is-for.I.IGLOO": {
+      "hash": "29b54831e54f7123",
+      "bytes": 11396,
+      "seconds": 2.509,
+      "text": "I is for igloo!"
+    },
+    "teach.is-for.J.JUICE": {
+      "hash": "dd9053a0c425ed7b",
+      "bytes": 9573,
+      "seconds": 2.036,
+      "text": "J is for juice!"
+    },
+    "teach.is-for.J.JELLYFISH": {
+      "hash": "faebb22e9da18d0f",
+      "bytes": 15768,
+      "seconds": 3.5,
+      "text": "J is for jellyfish!"
+    },
+    "teach.is-for.J.JACKET": {
+      "hash": "8d78669a555e1bbb",
+      "bytes": 10594,
+      "seconds": 2.294,
+      "text": "J is for jacket!"
+    },
+    "teach.is-for.K.KITE": {
+      "hash": "60bb46565e6d5d32",
+      "bytes": 10102,
+      "seconds": 2.219,
+      "text": "K is for kite!"
+    },
+    "teach.is-for.K.KEY": {
+      "hash": "f9e7a91cc03224d7",
+      "bytes": 9717,
+      "seconds": 2.053,
+      "text": "K is for key!"
+    },
+    "teach.is-for.K.KOALA": {
+      "hash": "3e41d86526be7a22",
+      "bytes": 11213,
+      "seconds": 2.467,
+      "text": "K is for koala!"
+    },
+    "teach.is-for.L.LION": {
+      "hash": "395d941d4dd4b631",
+      "bytes": 9437,
+      "seconds": 2.012,
+      "text": "L is for lion!"
+    },
+    "teach.is-for.K.KANGAROO": {
+      "hash": "6ae21b96d4c91483",
+      "bytes": 10278,
+      "seconds": 2.232,
+      "text": "K is for kangaroo!"
+    },
+    "teach.is-for.L.LEMON": {
+      "hash": "9d3d3833086e3c3b",
+      "bytes": 9496,
+      "seconds": 2.022,
+      "text": "L is for lemon!"
+    },
+    "teach.is-for.L.LEAF": {
+      "hash": "b98cccad75ffafb4",
+      "bytes": 9600,
+      "seconds": 2.058,
+      "text": "L is for leaf!"
+    },
+    "teach.is-for.M.MONKEY": {
+      "hash": "fb53edb1221e8ec1",
+      "bytes": 10769,
+      "seconds": 2.326,
+      "text": "M is for monkey!"
+    },
+    "teach.is-for.M.MOON": {
+      "hash": "774b09aaac0d0036",
+      "bytes": 9966,
+      "seconds": 2.11,
+      "text": "M is for moon!"
+    },
+    "teach.is-for.L.LADYBUG": {
+      "hash": "83915caf193b2cb9",
+      "bytes": 9728,
+      "seconds": 2.074,
+      "text": "L is for ladybug!"
+    },
+    "teach.is-for.M.MUSHROOM": {
+      "hash": "a7dc3bb79f575d23",
+      "bytes": 9864,
+      "seconds": 2.115,
+      "text": "M is for mushroom!"
+    },
+    "teach.is-for.M.MOUSE": {
+      "hash": "94cfad96224339cb",
+      "bytes": 9502,
+      "seconds": 2.035,
+      "text": "M is for mouse!"
+    },
+    "teach.is-for.M.MILK": {
+      "hash": "cd7f5194311775f8",
+      "bytes": 9387,
+      "seconds": 2.039,
+      "text": "M is for milk!"
+    },
+    "teach.is-for.N.NUT": {
+      "hash": "5af81da0d710766c",
+      "bytes": 8893,
+      "seconds": 1.916,
+      "text": "N is for nut!"
+    },
+    "teach.is-for.N.NEST": {
+      "hash": "85050109ce4e5f17",
+      "bytes": 10440,
+      "seconds": 2.302,
+      "text": "N is for nest!"
+    },
+    "teach.is-for.O.OCTOPUS": {
+      "hash": "e3e13080d0fa233a",
+      "bytes": 11008,
+      "seconds": 2.421,
+      "text": "O is for octopus!"
+    },
+    "teach.is-for.N.NOODLES": {
+      "hash": "6d14888f00a5d35d",
+      "bytes": 10825,
+      "seconds": 1.77,
+      "text": "N is for noodles!"
+    },
+    "teach.is-for.O.OWL": {
+      "hash": "57d6040d6e04add6",
+      "bytes": 7346,
+      "seconds": 1.463,
+      "text": "O is for owl!"
+    },
+    "teach.is-for.O.ORANGE": {
+      "hash": "fc12c6a223e4bbec",
+      "bytes": 11648,
+      "seconds": 2.542,
+      "text": "O is for orange!"
+    },
+    "teach.is-for.P.PIZZA": {
+      "hash": "367fb5b455b29189",
+      "bytes": 11160,
+      "seconds": 2.393,
+      "text": "P is for pizza!"
+    },
+    "teach.is-for.P.PIG": {
+      "hash": "a03805ceba312802",
+      "bytes": 9364,
+      "seconds": 1.984,
+      "text": "P is for pig!"
+    },
+    "teach.is-for.P.PENGUIN": {
+      "hash": "d39cf707cf1069ef",
+      "bytes": 11686,
+      "seconds": 1.923,
+      "text": "P is for penguin!"
+    },
+    "teach.is-for.P.PANDA": {
+      "hash": "bfc2181b2a52b8bf",
+      "bytes": 8706,
+      "seconds": 1.799,
+      "text": "P is for panda!"
+    },
+    "teach.is-for.P.PINEAPPLE": {
+      "hash": "9c5cefb7e183a627",
+      "bytes": 10609,
+      "seconds": 2.279,
+      "text": "P is for pineapple!"
+    },
+    "teach.is-for.Q.QUEEN": {
+      "hash": "8aad169cf35f97a1",
+      "bytes": 8458,
+      "seconds": 1.765,
+      "text": "Q is for queen!"
+    },
+    "teach.is-for.R.RAINBOW": {
+      "hash": "006ee05dc98ef216",
+      "bytes": 11311,
+      "seconds": 2.44,
+      "text": "R is for rainbow!"
+    },
+    "teach.is-for.Q.QUILT": {
+      "hash": "a6977c962583689e",
+      "bytes": 9270,
+      "seconds": 1.967,
+      "text": "Q is for quilt!"
+    },
+    "teach.is-for.S.SUN": {
+      "hash": "c1f3657e6a4d82a3",
+      "bytes": 9535,
+      "seconds": 2.016,
+      "text": "S is for sun!"
+    },
+    "teach.is-for.R.RABBIT": {
+      "hash": "dd2c7123707c2053",
+      "bytes": 11213,
+      "seconds": 2.153,
+      "text": "R is for rabbit!"
+    },
+    "teach.is-for.R.ROBOT": {
+      "hash": "ac9ba4adb00bd67b",
+      "bytes": 9988,
+      "seconds": 2.141,
+      "text": "R is for robot!"
+    },
+    "teach.is-for.S.STAR": {
+      "hash": "624dcfdb80de2dec",
+      "bytes": 8254,
+      "seconds": 1.696,
+      "text": "S is for star!"
+    },
+    "teach.is-for.S.SNAKE": {
+      "hash": "df7fedef7aa218d6",
+      "bytes": 12364,
+      "seconds": 2.727,
+      "text": "S is for snake!"
+    },
+    "teach.is-for.R.ROCKET": {
+      "hash": "b03262bee2bc702d",
+      "bytes": 9169,
+      "seconds": 1.94,
+      "text": "R is for rocket!"
+    },
+    "teach.is-for.S.SHEEP": {
+      "hash": "9e171c70110df168",
+      "bytes": 11554,
+      "seconds": 1.903,
+      "text": "S is for sheep!"
+    },
+    "teach.is-for.S.STRAWBERRY": {
+      "hash": "dcc7fe49dc6ff970",
+      "bytes": 11294,
+      "seconds": 2.444,
+      "text": "S is for strawberry!"
+    },
+    "teach.is-for.T.TREE": {
+      "hash": "25a2ad96e872811d",
+      "bytes": 11280,
+      "seconds": 2.455,
+      "text": "T is for tree!"
+    },
+    "teach.is-for.T.TRAIN": {
+      "hash": "a5356fadc928887d",
+      "bytes": 10505,
+      "seconds": 1.863,
+      "text": "T is for train!"
+    },
+    "teach.is-for.T.TURTLE": {
+      "hash": "be7b6be439b65e85",
+      "bytes": 12315,
+      "seconds": 2.076,
+      "text": "T is for turtle!"
+    },
+    "teach.is-for.T.TIGER": {
+      "hash": "ee35c8a8f4dffe40",
+      "bytes": 11545,
+      "seconds": 1.935,
+      "text": "T is for tiger!"
+    },
+    "teach.is-for.U.UMBRELLA": {
+      "hash": "78a8d1469cfca10b",
+      "bytes": 11715,
+      "seconds": 2.581,
+      "text": "U is for umbrella!"
+    },
+    "teach.is-for.U.UNICORN": {
+      "hash": "17f16be9cbe68153",
+      "bytes": 12649,
+      "seconds": 2.776,
+      "text": "U is for unicorn!"
+    },
+    "teach.is-for.V.VIOLIN": {
+      "hash": "9b3228a7f5789032",
+      "bytes": 9217,
+      "seconds": 1.997,
+      "text": "V is for violin!"
+    },
+    "teach.is-for.W.WHALE": {
+      "hash": "c492f943eb377372",
+      "bytes": 9182,
+      "seconds": 1.938,
+      "text": "W is for whale!"
+    },
+    "teach.is-for.V.VOLCANO": {
+      "hash": "421079e625924341",
+      "bytes": 12733,
+      "seconds": 2.851,
+      "text": "V is for volcano!"
+    },
+    "teach.is-for.V.VAN": {
+      "hash": "b46d868bf9813a49",
+      "bytes": 8994,
+      "seconds": 1.938,
+      "text": "V is for van!"
+    },
+    "teach.is-for.W.WATERMELON": {
+      "hash": "707db3b80738c580",
+      "bytes": 10602,
+      "seconds": 2.301,
+      "text": "W is for watermelon!"
+    },
+    "teach.is-for.W.WORM": {
+      "hash": "af6541059b7ae005",
+      "bytes": 11188,
+      "seconds": 2.404,
+      "text": "W is for worm!"
+    },
+    "teach.is-for.W.WAGON": {
+      "hash": "e05d94ada37d41fd",
+      "bytes": 12265,
+      "seconds": 2.656,
+      "text": "W is for wagon!"
+    },
+    "teach.is-for.X.X_RAY": {
+      "hash": "67ab2a619f05e659",
+      "bytes": 9989,
+      "seconds": 2.161,
+      "text": "X is for x ray!"
+    },
+    "teach.is-for.Y.YO_YO": {
+      "hash": "05b0e9b843a9c8fb",
+      "bytes": 12627,
+      "seconds": 2.755,
+      "text": "Y is for yo yo!"
+    },
+    "teach.is-for.X.XYLOPHONE": {
+      "hash": "99f15fb6f1be3d16",
+      "bytes": 11343,
+      "seconds": 2.439,
+      "text": "X is for xylophone!"
+    },
+    "teach.is-for.Y.YARN": {
+      "hash": "7c148bb4c6c14641",
+      "bytes": 8660,
+      "seconds": 1.815,
+      "text": "Y is for yarn!"
+    },
+    "teach.is-for.Y.YOGURT": {
+      "hash": "579419880e45b4a6",
+      "bytes": 11845,
+      "seconds": 2.59,
+      "text": "Y is for yogurt!"
+    },
+    "teach.is-for.Z.ZIPPER": {
+      "hash": "66e47eb616dd750d",
+      "bytes": 9972,
+      "seconds": 2.143,
+      "text": "Z is for zipper!"
+    },
+    "teach.is-for.Z.ZEBRA": {
+      "hash": "952223e72a50f731",
+      "bytes": 12343,
+      "seconds": 2.719,
+      "text": "Z is for zebra!"
+    },
+    "teach.starts-with.A.ANT": {
+      "hash": "c892081e34b23637",
+      "bytes": 8648,
+      "seconds": 1.831,
+      "text": "ant starts with A!"
+    },
+    "teach.starts-with.A.APPLE": {
+      "hash": "c1f7d944654ece16",
+      "bytes": 11463,
+      "seconds": 2.502,
+      "text": "apple starts with A!"
+    },
+    "teach.starts-with.A.AIRPLANE": {
+      "hash": "4ceed286b6ea0065",
+      "bytes": 12861,
+      "seconds": 2.83,
+      "text": "airplane starts with A!"
+    },
+    "teach.starts-with.A.ALLIGATOR": {
+      "hash": "5d20bb9dc21edc52",
+      "bytes": 11238,
+      "seconds": 2.499,
+      "text": "alligator starts with A!"
+    },
+    "teach.starts-with.B.BALL": {
+      "hash": "88c11a1727be851a",
+      "bytes": 13998,
+      "seconds": 3.1,
+      "text": "ball starts with B!"
+    },
+    "teach.starts-with.B.BANANA": {
+      "hash": "ac505b87eca6f17c",
+      "bytes": 11105,
+      "seconds": 2.422,
+      "text": "banana starts with B!"
+    },
+    "teach.starts-with.B.BEAR": {
+      "hash": "9949e4b6871b8d8a",
+      "bytes": 12940,
+      "seconds": 2.839,
+      "text": "bear starts with B!"
+    },
+    "teach.starts-with.B.BUS": {
+      "hash": "f44e2e01f8dd6435",
+      "bytes": 11721,
+      "seconds": 2.529,
+      "text": "bus starts with B!"
+    },
+    "teach.starts-with.B.BEE": {
+      "hash": "8c7618f52008638e",
+      "bytes": 9685,
+      "seconds": 2.078,
+      "text": "bee starts with B!"
+    },
+    "teach.starts-with.B.BUTTERFLY": {
+      "hash": "5fef13c05ac69c8e",
+      "bytes": 10637,
+      "seconds": 2.331,
+      "text": "butterfly starts with B!"
+    },
+    "teach.starts-with.C.CAT": {
+      "hash": "879fc66af6dc2820",
+      "bytes": 12276,
+      "seconds": 2.695,
+      "text": "cat starts with C!"
+    },
+    "teach.starts-with.C.CAR": {
+      "hash": "6e0f14bd23407506",
+      "bytes": 12965,
+      "seconds": 2.523,
+      "text": "car starts with C!"
+    },
+    "teach.starts-with.C.CAKE": {
+      "hash": "2937ec5a43be8624",
+      "bytes": 11774,
+      "seconds": 2.587,
+      "text": "cake starts with C!"
+    },
+    "teach.starts-with.C.COW": {
+      "hash": "1afa9b65b3211c1f",
+      "bytes": 9271,
+      "seconds": 2.001,
+      "text": "cow starts with C!"
+    },
+    "teach.starts-with.C.CARROT": {
+      "hash": "5e04151e460aee8b",
+      "bytes": 12709,
+      "seconds": 2.809,
+      "text": "carrot starts with C!"
+    },
+    "teach.starts-with.D.DOG": {
+      "hash": "921604b04e971ac7",
+      "bytes": 10448,
+      "seconds": 2.293,
+      "text": "dog starts with D!"
+    },
+    "teach.starts-with.D.DUCK": {
+      "hash": "06109f7270a9dc66",
+      "bytes": 11048,
+      "seconds": 2.429,
+      "text": "duck starts with D!"
+    },
+    "teach.starts-with.D.DINOSAUR": {
+      "hash": "509d0a90e75a4617",
+      "bytes": 11370,
+      "seconds": 2.559,
+      "text": "dinosaur starts with D!"
+    },
+    "teach.starts-with.D.DONUT": {
+      "hash": "8c199a753ece8e57",
+      "bytes": 12640,
+      "seconds": 2.761,
+      "text": "donut starts with D!"
+    },
+    "teach.starts-with.E.EGG": {
+      "hash": "60b17876b744c78b",
+      "bytes": 10437,
+      "seconds": 2.237,
+      "text": "egg starts with E!"
+    },
+    "teach.starts-with.D.DRUM": {
+      "hash": "f8635e7d39fa7919",
+      "bytes": 10885,
+      "seconds": 2.364,
+      "text": "drum starts with D!"
+    },
+    "teach.starts-with.E.ELEPHANT": {
+      "hash": "514afb6046aaa58c",
+      "bytes": 12967,
+      "seconds": 2.864,
+      "text": "elephant starts with E!"
+    },
+    "teach.starts-with.E.EAGLE": {
+      "hash": "baa05e50936a564c",
+      "bytes": 10013,
+      "seconds": 2.139,
+      "text": "eagle starts with E!"
+    },
+    "teach.starts-with.E.EXCAVATOR": {
+      "hash": "a1d7bf9603e53ba1",
+      "bytes": 12192,
+      "seconds": 2.677,
+      "text": "excavator starts with E!"
+    },
+    "teach.starts-with.F.FISH": {
+      "hash": "bb7101018ffdc8a7",
+      "bytes": 14036,
+      "seconds": 2.821,
+      "text": "fish starts with F!"
+    },
+    "teach.starts-with.F.FROG": {
+      "hash": "5298d8721f057c83",
+      "bytes": 14352,
+      "seconds": 2.871,
+      "text": "frog starts with F!"
+    },
+    "teach.starts-with.F.FOX": {
+      "hash": "33f6abcc7a8ceee5",
+      "bytes": 9167,
+      "seconds": 1.949,
+      "text": "fox starts with F!"
+    },
+    "teach.starts-with.F.FLOWER": {
+      "hash": "f80783d0096c1e78",
+      "bytes": 10142,
+      "seconds": 2.192,
+      "text": "flower starts with F!"
+    },
+    "teach.starts-with.F.FIRE_TRUCK": {
+      "hash": "243e4dbbf22f99ed",
+      "bytes": 14177,
+      "seconds": 3.2,
+      "text": "fire truck starts with F!"
+    },
+    "teach.starts-with.G.GIFT": {
+      "hash": "272c1cebf1481c91",
+      "bytes": 11052,
+      "seconds": 2.378,
+      "text": "gift starts with G!"
+    },
+    "teach.starts-with.G.GRAPES": {
+      "hash": "7365811e2486db4e",
+      "bytes": 13245,
+      "seconds": 2.922,
+      "text": "grapes starts with G!"
+    },
+    "teach.starts-with.H.HAT": {
+      "hash": "d023f92c34150a67",
+      "bytes": 13086,
+      "seconds": 2.871,
+      "text": "hat starts with H!"
+    },
+    "teach.starts-with.G.GUITAR": {
+      "hash": "5ef103ca47dcdc05",
+      "bytes": 13896,
+      "seconds": 3.2,
+      "text": "guitar starts with G!"
+    },
+    "teach.starts-with.G.GIRAFFE": {
+      "hash": "b1ca4849900ba1e2",
+      "bytes": 12878,
+      "seconds": 2.844,
+      "text": "giraffe starts with G!"
+    },
+    "teach.starts-with.H.HOUSE": {
+      "hash": "d38c8d7432db5668",
+      "bytes": 10587,
+      "seconds": 2.304,
+      "text": "house starts with H!"
+    },
+    "teach.starts-with.H.HORSE": {
+      "hash": "b8187619887576fb",
+      "bytes": 10284,
+      "seconds": 2.21,
+      "text": "horse starts with H!"
+    },
+    "teach.starts-with.H.HEART": {
+      "hash": "7a0de73c62247c35",
+      "bytes": 14004,
+      "seconds": 2.771,
+      "text": "heart starts with H!"
+    },
+    "teach.starts-with.I.ICE_CREAM": {
+      "hash": "2902c4447da6c1ff",
+      "bytes": 12447,
+      "seconds": 2.755,
+      "text": "ice cream starts with I!"
+    },
+    "teach.starts-with.H.HELICOPTER": {
+      "hash": "217547fbdb226122",
+      "bytes": 12000,
+      "seconds": 2.689,
+      "text": "helicopter starts with H!"
+    },
+    "teach.starts-with.I.IGLOO": {
+      "hash": "1c2362c852e42047",
+      "bytes": 13383,
+      "seconds": 2.971,
+      "text": "igloo starts with I!"
+    },
+    "teach.starts-with.I.ISLAND": {
+      "hash": "3ab34e08e86667f9",
+      "bytes": 11144,
+      "seconds": 2.448,
+      "text": "island starts with I!"
+    },
+    "teach.starts-with.J.JELLYFISH": {
+      "hash": "0496c7982e246add",
+      "bytes": 12108,
+      "seconds": 2.69,
+      "text": "jellyfish starts with J!"
+    },
+    "teach.starts-with.J.JUICE": {
+      "hash": "8a93457588f3f950",
+      "bytes": 14119,
+      "seconds": 3.2,
+      "text": "juice starts with J!"
+    },
+    "teach.starts-with.J.JACKET": {
+      "hash": "6c8005bf348551b7",
+      "bytes": 10439,
+      "seconds": 2.294,
+      "text": "jacket starts with J!"
+    },
+    "teach.starts-with.K.KITE": {
+      "hash": "0fd3c50ee85be544",
+      "bytes": 12343,
+      "seconds": 2.711,
+      "text": "kite starts with K!"
+    },
+    "teach.starts-with.K.KEY": {
+      "hash": "8024f53a7a38d507",
+      "bytes": 14765,
+      "seconds": 3.3,
+      "text": "key starts with K!"
+    },
+    "teach.starts-with.K.KOALA": {
+      "hash": "f8afc5b38b332ff5",
+      "bytes": 10628,
+      "seconds": 2.294,
+      "text": "koala starts with K!"
+    },
+    "teach.starts-with.K.KANGAROO": {
+      "hash": "64f58cd48fa14fb7",
+      "bytes": 11863,
+      "seconds": 2.616,
+      "text": "kangaroo starts with K!"
+    },
+    "teach.starts-with.L.LION": {
+      "hash": "cb710718380be404",
+      "bytes": 14308,
+      "seconds": 3.3,
+      "text": "lion starts with L!"
+    },
+    "teach.starts-with.L.LEMON": {
+      "hash": "7a5e545c8c156cdc",
+      "bytes": 10282,
+      "seconds": 2.202,
+      "text": "lemon starts with L!"
+    },
+    "teach.starts-with.L.LEAF": {
+      "hash": "1f4578f0444e8e15",
+      "bytes": 11993,
+      "seconds": 2.626,
+      "text": "leaf starts with L!"
+    },
+    "teach.starts-with.L.LADYBUG": {
+      "hash": "4a89a12aa607471e",
+      "bytes": 16931,
+      "seconds": 2.957,
+      "text": "ladybug starts with L!"
+    },
+    "teach.starts-with.M.MONKEY": {
+      "hash": "17aa5bf00003c220",
+      "bytes": 14994,
+      "seconds": 3.1,
+      "text": "monkey starts with M!"
+    },
+    "teach.starts-with.M.MUSHROOM": {
+      "hash": "a3b0126fdca9f7a1",
+      "bytes": 13855,
+      "seconds": 3.1,
+      "text": "mushroom starts with M!"
+    },
+    "teach.starts-with.M.MOON": {
+      "hash": "f0e8b88377830693",
+      "bytes": 11813,
+      "seconds": 2.569,
+      "text": "moon starts with M!"
+    },
+    "teach.starts-with.N.NEST": {
+      "hash": "56f9dd167bf52a5e",
+      "bytes": 14964,
+      "seconds": 3.4,
+      "text": "nest starts with N!"
+    },
+    "teach.starts-with.M.MOUSE": {
+      "hash": "f51089139a948359",
+      "bytes": 14067,
+      "seconds": 3.1,
+      "text": "mouse starts with M!"
+    },
+    "teach.starts-with.M.MILK": {
+      "hash": "465241fe74a719b3",
+      "bytes": 13745,
+      "seconds": 2.984,
+      "text": "milk starts with M!"
+    },
+    "teach.starts-with.N.NOODLES": {
+      "hash": "fbd35249554daa01",
+      "bytes": 12740,
+      "seconds": 2.758,
+      "text": "noodles starts with N!"
+    },
+    "teach.starts-with.N.NUT": {
+      "hash": "20141a5a2b84ab07",
+      "bytes": 13507,
+      "seconds": 2.969,
+      "text": "nut starts with N!"
+    },
+    "teach.starts-with.O.OCTOPUS": {
+      "hash": "3d7d922d758fd3e8",
+      "bytes": 13964,
+      "seconds": 2.659,
+      "text": "octopus starts with O!"
+    },
+    "teach.starts-with.O.OWL": {
+      "hash": "af35f2d8060a3d0a",
+      "bytes": 11705,
+      "seconds": 2.533,
+      "text": "owl starts with O!"
+    },
+    "teach.starts-with.O.ORANGE": {
+      "hash": "a0fcfd4104b92adb",
+      "bytes": 11645,
+      "seconds": 2.531,
+      "text": "orange starts with O!"
+    },
+    "teach.starts-with.P.PIG": {
+      "hash": "4e311338460ac9fe",
+      "bytes": 12051,
+      "seconds": 2.386,
+      "text": "pig starts with P!"
+    },
+    "teach.starts-with.P.PIZZA": {
+      "hash": "4f7a7ad4f795122f",
+      "bytes": 9875,
+      "seconds": 2.106,
+      "text": "pizza starts with P!"
+    },
+    "teach.starts-with.P.PENGUIN": {
+      "hash": "e1b9c8dac5f5db9f",
+      "bytes": 10989,
+      "seconds": 2.362,
+      "text": "penguin starts with P!"
+    },
+    "teach.starts-with.P.PINEAPPLE": {
+      "hash": "c7e190203ee7a427",
+      "bytes": 11337,
+      "seconds": 2.195,
+      "text": "pineapple starts with P!"
+    },
+    "teach.starts-with.P.PANDA": {
+      "hash": "1988404e7dbefbee",
+      "bytes": 14005,
+      "seconds": 2.899,
+      "text": "panda starts with P!"
+    },
+    "teach.starts-with.Q.QUEEN": {
+      "hash": "6a0bc00671ed1192",
+      "bytes": 10252,
+      "seconds": 2.257,
+      "text": "queen starts with Q!"
+    },
+    "teach.starts-with.Q.QUILT": {
+      "hash": "2f958eeb1e6c4a21",
+      "bytes": 12289,
+      "seconds": 2.729,
+      "text": "quilt starts with Q!"
+    },
+    "teach.starts-with.R.RAINBOW": {
+      "hash": "f2bc5a56b02d5049",
+      "bytes": 13045,
+      "seconds": 2.884,
+      "text": "rainbow starts with R!"
+    },
+    "teach.starts-with.R.ROCKET": {
+      "hash": "ec1b1463ab5d749d",
+      "bytes": 12288,
+      "seconds": 2.721,
+      "text": "rocket starts with R!"
+    },
+    "teach.starts-with.R.RABBIT": {
+      "hash": "b6cc5bcc568dc507",
+      "bytes": 9916,
+      "seconds": 2.118,
+      "text": "rabbit starts with R!"
+    },
+    "teach.starts-with.R.ROBOT": {
+      "hash": "c136d26506115fff",
+      "bytes": 9549,
+      "seconds": 2.018,
+      "text": "robot starts with R!"
+    },
+    "teach.starts-with.S.SUN": {
+      "hash": "718ccad671d050ec",
+      "bytes": 12854,
+      "seconds": 2.827,
+      "text": "sun starts with S!"
+    },
+    "teach.starts-with.S.STAR": {
+      "hash": "e6135559f4434543",
+      "bytes": 11799,
+      "seconds": 2.598,
+      "text": "star starts with S!"
+    },
+    "teach.starts-with.S.SNAKE": {
+      "hash": "ccc616409d2254ce",
+      "bytes": 12912,
+      "seconds": 2.855,
+      "text": "snake starts with S!"
+    },
+    "teach.starts-with.S.STRAWBERRY": {
+      "hash": "a40a7a7f9b13e5b9",
+      "bytes": 15275,
+      "seconds": 3.4,
+      "text": "strawberry starts with S!"
+    },
+    "teach.starts-with.S.SHEEP": {
+      "hash": "0cbf21ba4f613afa",
+      "bytes": 11140,
+      "seconds": 2.416,
+      "text": "sheep starts with S!"
+    },
+    "teach.starts-with.T.TRAIN": {
+      "hash": "b9fa26d1ff5cdcb6",
+      "bytes": 13515,
+      "seconds": 2.607,
+      "text": "train starts with T!"
+    },
+    "teach.starts-with.T.TURTLE": {
+      "hash": "c9c5340c17ee74c6",
+      "bytes": 15083,
+      "seconds": 2.25,
+      "text": "turtle starts with T!"
+    },
+    "teach.starts-with.T.TREE": {
+      "hash": "ce1f0c47740ef5f6",
+      "bytes": 11582,
+      "seconds": 2.536,
+      "text": "tree starts with T!"
+    },
+    "teach.starts-with.T.TIGER": {
+      "hash": "c7e1b64b091dcd90",
+      "bytes": 10163,
+      "seconds": 2.19,
+      "text": "tiger starts with T!"
+    },
+    "teach.starts-with.U.UNICORN": {
+      "hash": "71eacd181287631a",
+      "bytes": 14609,
+      "seconds": 3.3,
+      "text": "unicorn starts with U!"
+    },
+    "teach.starts-with.U.UMBRELLA": {
+      "hash": "5cadb4f5d91262d9",
+      "bytes": 12159,
+      "seconds": 2.663,
+      "text": "umbrella starts with U!"
+    },
+    "teach.starts-with.V.VAN": {
+      "hash": "ae5f7d17a90f452b",
+      "bytes": 10666,
+      "seconds": 2.271,
+      "text": "van starts with V!"
+    },
+    "teach.starts-with.V.VIOLIN": {
+      "hash": "2aa3d717e9e3d156",
+      "bytes": 11610,
+      "seconds": 2.552,
+      "text": "violin starts with V!"
+    },
+    "teach.starts-with.V.VOLCANO": {
+      "hash": "b3469837080ff2f7",
+      "bytes": 10524,
+      "seconds": 2.297,
+      "text": "volcano starts with V!"
+    },
+    "teach.starts-with.W.WHALE": {
+      "hash": "7f0d0d7e86a31ef9",
+      "bytes": 11724,
+      "seconds": 2.599,
+      "text": "whale starts with W!"
+    },
+    "teach.starts-with.W.WATERMELON": {
+      "hash": "7b56612f92356f6e",
+      "bytes": 15150,
+      "seconds": 3.5,
+      "text": "watermelon starts with W!"
+    },
+    "teach.starts-with.W.WORM": {
+      "hash": "46740e3c6591de23",
+      "bytes": 14020,
+      "seconds": 3.1,
+      "text": "worm starts with W!"
+    },
+    "teach.starts-with.W.WAGON": {
+      "hash": "5f4ce288c142e4af",
+      "bytes": 9748,
+      "seconds": 2.128,
+      "text": "wagon starts with W!"
+    },
+    "teach.starts-with.X.XYLOPHONE": {
+      "hash": "7f295816dd5a47a6",
+      "bytes": 10406,
+      "seconds": 2.244,
+      "text": "xylophone starts with X!"
+    },
+    "teach.starts-with.X.X_RAY": {
+      "hash": "7fd8795e18e19abf",
+      "bytes": 15315,
+      "seconds": 3.4,
+      "text": "x ray starts with X!"
+    },
+    "teach.starts-with.Y.YO_YO": {
+      "hash": "fa3fcfbe0029b67f",
+      "bytes": 14350,
+      "seconds": 2.969,
+      "text": "yo yo starts with Y!"
+    },
+    "teach.starts-with.Y.YARN": {
+      "hash": "445c1aac51f8eb34",
+      "bytes": 8493,
+      "seconds": 1.785,
+      "text": "yarn starts with Y!"
+    },
+    "teach.starts-with.Y.YOGURT": {
+      "hash": "954445fd69ca5b01",
+      "bytes": 10701,
+      "seconds": 2.339,
+      "text": "yogurt starts with Y!"
+    },
+    "teach.starts-with.Z.ZIPPER": {
+      "hash": "17b0a1ac53b8e8b0",
+      "bytes": 11631,
+      "seconds": 2.52,
+      "text": "zipper starts with Z!"
+    },
+    "cheer.praise.yay": {
+      "hash": "1d05e4c2972c0c43",
+      "bytes": 4093,
+      "seconds": 0.69,
+      "text": "Yay!"
+    },
+    "retry.try-again": {
+      "hash": "0c3fb2bf9982bfdd",
+      "bytes": 7008,
+      "seconds": 1.441,
+      "text": "Try again!"
+    },
+    "teach.starts-with.Z.ZEBRA": {
+      "hash": "33bd31d8e0372a6d",
+      "bytes": 11250,
+      "seconds": 2.472,
+      "text": "zebra starts with Z!"
+    },
+    "cheer.praise.woo_hoo": {
+      "hash": "163854cc7e4a49e8",
+      "bytes": 6707,
+      "seconds": 1.353,
+      "text": "Woo hoo!"
+    },
+    "cheer.praise.hooray": {
+      "hash": "cd3fceca7326ddf5",
+      "bytes": 4364,
+      "seconds": 0.779,
+      "text": "Hooray!"
+    },
+    "cheer.praise.great_job": {
+      "hash": "a67405a3ac46958c",
+      "bytes": 5854,
+      "seconds": 1.148,
+      "text": "Great job!"
+    },
+    "cheer.praise.amazing": {
+      "hash": "1d70aa9619aa1574",
+      "bytes": 5668,
+      "seconds": 1.11,
+      "text": "Amazing!"
+    },
+    "cheer.praise.you_did_it": {
+      "hash": "cdfc718787b147c9",
+      "bytes": 6683,
+      "seconds": 1.312,
+      "text": "You did it!"
+    },
+    "cheer.praise.high_five": {
+      "hash": "fc65c4740dc1f0f8",
+      "bytes": 4451,
+      "seconds": 0.793,
+      "text": "High five!"
+    },
+    "cheer.jar": {
+      "hash": "25fda3a42839fd47",
+      "bytes": 9287,
+      "seconds": 2.006,
+      "text": "You filled the whole jar!"
+    },
+    "cheer.praise.super_duper": {
+      "hash": "3c132c18fb884cd6",
+      "bytes": 8063,
+      "seconds": 1.673,
+      "text": "Super duper!"
+    }
+  },
+  "provider": "openai",
+  "model": "gpt-4o-mini-tts",
+  "voice": "coral",
+  "encoder": "aac-32k-24k-mono-loudnorm-trim.v1",
+  "updated": "2026-08-08T09:40:21.616Z"
+}

@@ -696,7 +696,14 @@
   </div>
 </div>
 
-<script>
+<!-- The word bank and every spoken line live out here rather than inside the
+     game's closure, because two things read them: the game below, and the
+     voice-over build, which evaluates this block in plain Node with no
+     browser and no DOM. Nothing in here may touch the document. -->
+<!-- shared with number-friends; the original lives in voice-kit, don't edit this copy -->
+<script src="voice-player.js"></script>
+
+<script id="voice-data">
 (function(){
   "use strict";
 
@@ -732,6 +739,154 @@
     Z:["ZEBRA","ZIPPER"]
   };
   var LETTERS = Object.keys(WORDS);
+
+// "X-RAY" reads as "ex ray", "ICE CREAM" as written. Hyphens would
+  // otherwise be spelled out or swallowed depending on the voice.
+  function sayable(word){ return word.toLowerCase().replace(/-/g, " "); }
+
+  /* ---------------- voice lines ---------------- */
+  // Every spoken line in the game lives in this table and nowhere else.
+  // Call sites name a line and fill its slots; they never build a sentence.
+  //
+  // The table is also the manifest the voice-over build reads: it renders
+  // one audio clip per line per slot combination, named by clipId(). That
+  // only stays honest if the slot domains come from the game's own word
+  // list rather than being restated here — a domain that drifted would
+  // ship a round with no clip to play and the child would hear silence.
+  //
+  //   over     which domain to enumerate when recording
+  //   dynamic  interpolates the child's typed name, so it can never be a
+  //            recording; falls back to the nameless clip once we switch
+  var PRAISE = [
+    { id:"yay",         t:"Yay!" },
+    { id:"woo-hoo",     t:"Woo hoo!" },
+    { id:"hooray",      t:"Hooray!" },
+    { id:"great-job",   t:"Great job!" },
+    { id:"you-did-it",  t:"You did it!" },
+    { id:"amazing",     t:"Amazing!" },
+    { id:"super-duper", t:"Super duper!" },
+    { id:"high-five",   t:"High five!" }
+  ];
+  function praiseText(id){
+    for(var i=0;i<PRAISE.length;i++) if(PRAISE[i].id === id) return PRAISE[i].t;
+    return PRAISE[0].t;
+  }
+  var ALL_WORDS = LETTERS.reduce(function(a, l){ return a.concat(WORDS[l]); }, []);
+  var VOICE_DOMAINS = {
+    none:   { keys: [], all: function(){ return [{}]; } },
+    letter: { keys: ["letter"], all: function(){
+                return LETTERS.map(function(l){ return { letter: l }; }); } },
+    word:   { keys: ["word"], all: function(){
+                return ALL_WORDS.map(function(w){ return { word: w }; }); } },
+    // only the letter/word pairs the game can actually say — 99 of them,
+    // not the 26 x 99 grid, which would record "B is for apple"
+    pair:   { keys: ["letter","word"], all: function(){
+                return LETTERS.reduce(function(a, l){
+                  return a.concat(WORDS[l].map(function(w){ return { letter: l, word: w }; }));
+                }, []); } },
+    praise: { keys: ["praise"], all: function(){
+                return PRAISE.map(function(p){ return { praise: p.id }; }); } }
+  };
+  var LINES = {
+    "letter.excl":        { over:"letter", pitch:1.2,  rate:0.9,
+      text: function(s){ return s.letter + "!"; } },
+    "word.excl":          { over:"word",   pitch:1.2,  rate:0.9,
+      text: function(s){ return sayable(s.word) + "!"; } },
+    "prompt.find":        { over:"letter", pitch:1.05, rate:0.95,
+      text: function(s){ return "Find the picture that starts with " + s.letter + "!"; } },
+    "prompt.which":       { over:"word",   pitch:1.05, rate:0.95,
+      text: function(s){ return "Which letter does " + sayable(s.word) + " start with?"; } },
+    "teach.is-for":       { over:"pair",   pitch:1.1,  rate:0.85,
+      text: function(s){ return s.letter + " is for " + sayable(s.word) + "!"; } },
+    "teach.starts-with":  { over:"pair",   pitch:1.05, rate:0.9,
+      text: function(s){ return sayable(s.word) + " starts with " + s.letter + "!"; } },
+    // Follows a teaching line rather than being baked into one, so the two
+    // teaching lines are recorded once each and reused everywhere. It only
+    // ever lands on a sentence boundary, where a join is inaudible.
+    "retry.try-again":    { over:"none",   pitch:1.05, rate:0.9,
+      text: function(){ return "Try again!"; } },
+    "cheer.praise":       { over:"praise", pitch:1.3,  rate:1.05,
+      text: function(s){ return praiseText(s.praise); } },
+    "cheer.jar":          { over:"none",   pitch:1.3,  rate:1.05,
+      text: function(){ return "You filled the whole jar!"; } },
+    "cheer.praise.named": { dynamic:true, fallback:"cheer.praise", pitch:1.3, rate:1.05,
+      text: function(s){ return praiseText(s.praise).replace(/!+$/, "") + ", " + s.name + "!"; } },
+    "cheer.jar.named":    { dynamic:true, fallback:"cheer.jar", pitch:1.3, rate:1.05,
+      text: function(s){ return "You filled the whole jar, " + s.name + "!"; } }
+  };
+  function slug(v){ return String(v).replace(/[^A-Za-z0-9]+/g, "_"); }
+  function clipId(id, slots){
+    var L = LINES[id];
+    if(!L || L.dynamic) return null;      // nothing to record
+    return VOICE_DOMAINS[L.over].keys.reduce(function(s, k){
+      return s + "." + slug(slots[k]);
+    }, id);
+  }
+  // One spoken part, ready for the player. `tweak` nudges delivery for a
+  // call site that wants the same words softer or bouncier; it only reaches
+  // the synthesiser, since a recorded clip has the one delivery it was cut
+  // with. Keep tweaks small enough that losing them changes nothing much.
+  // Set once the recorded pack is in use. A dynamic line can never be a
+  // recording, and mixing a synthesised voice in beside the narrator's is
+  // worse than losing the name — so those lines resolve to the nameless
+  // twin they nominated. Hearing "Great job!" in the right voice beats
+  // hearing "Great job, Ada!" in a stranger's.
+  var recorded = false;
+  function line(id, slots, tweak){
+    var L = LINES[id];
+    if(!L){
+      if(window.console) console.warn("no such voice line: " + id);
+      return null;
+    }
+    if(recorded && L.dynamic && LINES[L.fallback]){
+      id = L.fallback;
+      L = LINES[id];
+    }
+    slots = slots || {};
+    return {
+      line:  id,
+      clip:  clipId(id, slots),
+      t:     L.text(slots),
+      pitch: (tweak && tweak.pitch) || L.pitch,
+      rate:  (tweak && tweak.rate)  || L.rate
+    };
+  }
+  // What the voice-over build enumerates: every clip the game can ask for.
+  function voiceManifest(){
+    var out = [];
+    Object.keys(LINES).forEach(function(id){
+      var L = LINES[id];
+      if(L.dynamic) return;
+      VOICE_DOMAINS[L.over].all().forEach(function(slots){
+        out.push({ clip: clipId(id, slots), line: id, text: L.text(slots),
+                   pitch: L.pitch, rate: L.rate });
+      });
+    });
+    return out;
+  }
+
+  window.GAME_DATA = { WORDS: WORDS, LETTERS: LETTERS, sayable: sayable };
+  window.VOICE = {
+    LINES: LINES, DOMAINS: VOICE_DOMAINS, PRAISE: PRAISE,
+    line: line, clipId: clipId, manifest: voiceManifest,
+    useRecorded: function(on){ recorded = on; }
+  };
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  // pulled in from the data block above, so the game body reads unchanged
+  var WORDS = window.GAME_DATA.WORDS,
+      LETTERS = window.GAME_DATA.LETTERS,
+      sayable = window.GAME_DATA.sayable;
+  var PRAISE = window.VOICE.PRAISE,
+      LINES = window.VOICE.LINES,
+      line = window.VOICE.line,
+      voiceManifest = window.VOICE.manifest;
+
   // letters whose names/sounds collide with another letter's words when
   // heard aloud (Cat/Kite, Giraffe/Juice, X/Excavator, Zebra/Xylophone,
   // Unicorn/Yo-yo...) — never pair them as target and distractor, or a
@@ -898,9 +1053,6 @@
     return a;
   }
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
-  // "X-RAY" reads as "ex ray", "ICE CREAM" as written. Hyphens would
-  // otherwise be spelled out or swallowed depending on the voice.
-  function sayable(word){ return word.toLowerCase().replace(/-/g, " "); }
 
   /* ---------------- saved progress ---------------- */
   // Stars and the sticker book outlive the tab. A four-year-old's session
@@ -1522,6 +1674,86 @@
     pickVoice();
     window.speechSynthesis.onvoiceschanged = pickVoice;
   }
+  /* ---------------- the recorded narrator ---------------- */
+  // The game speaks with a recorded voice when the pack is there. Everything
+  // below this point is the fallback for when it isn't: a broken build, or
+  // index.html opened straight off disk, where fetch cannot reach the clips.
+  // Better a browser voice than a mute game that teaches nothing.
+  //
+  // For a store build set this to false. The pack ships inside the binary, so
+  // a missing clip means something is wrong, and silence is a bug QA will
+  // catch — where a stranger's voice suddenly narrating your app is not.
+  var ALLOW_SYNTH_FALLBACK = true;
+
+  var voicePack = null;
+  var useVoicePack = false;
+  // Opened straight off disk, every fetch is refused before it is sent: a
+  // file:// page has a null origin and no scheme a browser will do CORS for.
+  // Asking anyway just prints an alarming CORS error for something that is
+  // working as intended, so don't ask — the pack cannot be reached from here.
+  // A packaged build serves its assets over http, so this only ever affects
+  // double-clicking index.html during development. Run a local server to hear
+  // the recorded voice:  python3 -m http.server 8000
+  var canFetchLocalFiles = location.protocol !== "file:";
+  if(window.VoicePlayer && canFetchLocalFiles){
+    voicePack = window.VoicePlayer({
+      base: "voice/",
+      context: audio,                 // the game's own AudioContext, so one unlock covers all
+      missing: ALLOW_SYNTH_FALLBACK ? "speak" : "silent"
+    });
+    // One cheap request decides it, before any audio has to be decoded.
+    // A dynamic line has no recording, so this also tells the line table to
+    // start resolving those to their nameless twins.
+    fetch("voice/cheer.jar.m4a", { method: "HEAD" })
+      .then(function(r){ setVoicePack(r.ok); })
+      .catch(function(){ setVoicePack(false); });
+  }else if(window.console && !canFetchLocalFiles){
+    console.info("Alphabet Match: opened from disk, so the recorded voice is " +
+                 "out of reach — using the browser's voice. Serve the folder " +
+                 "over http to hear the real narrator.");
+  }
+  // Whether anything will actually be said, whichever narrator is in use.
+  // The victory screen waits for narration to finish before moving on, so it
+  // has to know the difference between "speaking" and "silent" — not between
+  // "the browser has a synthesiser" and "it doesn't".
+  function willSpeak(){
+    return useVoicePack || ("speechSynthesis" in window);
+  }
+  function setVoicePack(on){
+    useVoicePack = !!(on && voicePack);
+    window.VOICE.useRecorded(useVoicePack);
+    if(useVoicePack) preloadRound();
+  }
+  // The clips this round can possibly need, warmed before they are wanted so
+  // the first word of a prompt is not waiting on a fetch.
+  var roundOptions = null;   // the cards on screen, so their clips can be warmed
+  function preloadRound(){
+    if(!useVoicePack || !current) return;
+    var clip = window.VOICE.clipId;
+    var want = [
+      clip("letter.excl", { letter: current.letter }),
+      clip("prompt.find", { letter: current.letter }),
+      clip("word.excl", { word: current.word }),
+      clip("prompt.which", { word: current.word }),
+      clip("retry.try-again", {})
+    ];
+    // every card is a possible wrong tap, and each of those has a teaching
+    // line waiting behind it
+    (roundOptions || []).forEach(function(o){
+      want.push(clip("word.excl", { word: o.word }));
+      want.push(clip("letter.excl", { letter: o.letter }));
+      want.push(clip("teach.is-for", { letter: o.letter, word: o.word }));
+      want.push(clip("teach.starts-with", { letter: o.letter, word: o.word }));
+    });
+    // the cheer that ends the round, whichever one it turns out to be
+    window.VOICE.PRAISE.forEach(function(p){
+      want.push(clip("cheer.praise", { praise: p.id }));
+    });
+    want.push(clip("cheer.jar", {}));
+    voicePack.preload(want);
+  }
+
+  /* ---------------- speech: the fallback ---------------- */
   // Speak one or more parts in a row, each with its own pitch/rate,
   // so cheers can be bouncy while the teaching part stays slow and clear.
   // Chrome quirks handled here:
@@ -1532,8 +1764,13 @@
   var speakTimer = null;
   var liveUtterances = [];
   var speakSession = 0;
+  // Parts come from line(); a null means a line id that doesn't exist, which
+  // must not take the rest of the sentence down with it.
   function speakParts(parts, onDone){
-    if(muted || !("speechSynthesis" in window)) return;
+    if(muted) return;
+    parts = parts.filter(function(p){ return !!p; });
+    if(useVoicePack){ voicePack.say(parts, onDone); return; }
+    if(!("speechSynthesis" in window)) return;
     try{
       window.speechSynthesis.cancel();
       clearTimeout(speakTimer);
@@ -1583,30 +1820,30 @@
       window.speechSynthesis.speak(u);
     }catch(e){}
   }
-  var PRAISE = ["Yay!","Woo hoo!","Hooray!","Great job!","You did it!","Amazing!","Super duper!","High five!"];
   var NAME_MAX = 20;
   // Hearing your own name is a large part of why this is worth doing, but
   // every single round would wear thin — so about half of them.
   function cheerLine(){
     var named = childName && Math.random() < 0.5;
     if(filledJarThisRound){
-      return "You filled the whole jar" + (childName ? ", " + childName : "") + "!";
+      return childName ? line("cheer.jar.named", { name: childName })
+                       : line("cheer.jar");
     }
     var p = pick(PRAISE);
-    return named ? p.replace(/!+$/, "") + ", " + childName + "!" : p;
+    return named ? line("cheer.praise.named", { praise: p.id, name: childName })
+                 : line("cheer.praise", { praise: p.id });
   }
   function speakPrompt(){
     if(mode === "reverse"){
-      var w = sayable(current.word);
       speakParts([
-        { t: w + "!", pitch: 1.2, rate: 0.9 },
-        { t: "Which letter does " + w + " start with?", pitch: 1.05, rate: 0.95 }
+        line("word.excl", { word: current.word }),
+        line("prompt.which", { word: current.word })
       ]);
       return;
     }
     speakParts([
-      { t: current.letter + "!", pitch: 1.2, rate: 0.9 },
-      { t: "Find the picture that starts with " + current.letter + "!", pitch: 1.05, rate: 0.95 }
+      line("letter.excl", { letter: current.letter }),
+      line("prompt.find", { letter: current.letter })
     ]);
   }
   // In reverse the picture introduces itself with its own noise, then the
@@ -1827,7 +2064,7 @@
       }
       cell.addEventListener("click", function(){
         playPicture(word);
-        speakParts([{ t: l + " is for " + sayable(word) + "!", pitch: 1.1, rate: 0.9 }]);
+        speakParts([line("teach.is-for", { letter: l, word: word }, { rate: 0.9 })]);
       });
       grid.appendChild(cell);
     });
@@ -2252,6 +2489,8 @@
       options.push({ letter: others[i], word: pick(WORDS[others[i]]) });
     }
     shuffle(options);
+    roundOptions = options;
+    preloadRound();
 
     // the prompt is a letter normally, and the picture itself in reverse
     $("letter-block").classList.toggle("hidden", reverse);
@@ -2341,18 +2580,22 @@
       // teach instead of just rejecting: let the picture make its noise, then
       // name what they tapped and which letter it belongs to
       setTimeout(function(){ playPicture(opt.word); }, 230);
-      var w = sayable(opt.word);
       clearTimeout(wrongSpeechTimer);
       wrongSpeechTimer = setTimeout(function(){
         // Both directions name what was tapped, never what was wanted —
         // saying "cow starts with C" in a reverse round would hand over
         // the answer the child is being asked for.
+        var soft = { pitch: 1.1, rate: 0.95 };
+        var slots = { letter: opt.letter, word: opt.word };
         speakParts(mode === "reverse" ? [
-          { t: opt.letter + "!", pitch: 1.1, rate: 0.95 },
-          { t: opt.letter + " is for " + w + ". Try again!", pitch: 1.05, rate: 0.9 }
+          line("letter.excl", { letter: opt.letter }, soft),
+          // the victory clip, said a shade quicker and flatter than a cheer
+          line("teach.is-for", slots, { pitch: 1.05, rate: 0.9 }),
+          line("retry.try-again")
         ] : [
-          { t: w + "!", pitch: 1.1, rate: 0.95 },
-          { t: w + " starts with " + opt.letter + ". Try again!", pitch: 1.05, rate: 0.9 }
+          line("word.excl", { word: opt.word }, soft),
+          line("teach.starts-with", slots),
+          line("retry.try-again")
         ]);
       }, 900);
     }
@@ -2410,12 +2653,11 @@
     }
 
     show("screen-victory");
-    var sayWord = sayable(current.word);
 
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victorySpeechTimer);
     holdVictory = false;
-    if(muted || !("speechSynthesis" in window)){
+    if(muted || !willSpeak()){
       // no narration to wait for — just give a bit longer to look at the word
       autoAdvanceTimer = setTimeout(newRound, 5000);
     }else{
@@ -2424,8 +2666,8 @@
       var wait = reducedMotion ? 100 : (filledJarThisRound ? 1500 : 900);
       victorySpeechTimer = setTimeout(function(){
         speakParts([
-          { t: cheer, pitch: 1.3, rate: 1.05 },
-          { t: current.letter + " is for " + sayWord + "!", pitch: 1.1, rate: 0.85 }
+          cheer,
+          line("teach.is-for", { letter: current.letter, word: current.word })
         ], function(){
           // the countdown only starts once narration ends, so a tap on the
           // picture before then has to be remembered, not just cleared
@@ -2441,6 +2683,13 @@
   $("start-art-2").innerHTML = ART.APPLE;
   window.ALPHABET_ART = ART;             // handy for eyeballing every drawing in devtools
   window.ALPHABET_SOUND = playPicture;   // ...and for auditioning any word's noise
+  window.ALPHABET_VOICE = {
+    manifest: voiceManifest, lines: LINES, line: line,
+    // what the narrator is doing right now, for poking at in devtools
+    player: function(){ return voicePack; },
+    recorded: function(){ return useVoicePack; },
+    say: function(parts, done){ speakParts(parts, done); }
+  };
   $("play-btn").addEventListener("click", function(){
     audio();               // unlock audio on user gesture (iOS)
     unlockSpeech();        // unlock speech on user gesture (iOS)
@@ -2630,6 +2879,7 @@
     muted = !muted;
     $("mute-btn").textContent = muted ? "🔇" : "🔊";
     if(muted){
+      if(voicePack) voicePack.cancel();
       if("speechSynthesis" in window) window.speechSynthesis.cancel();
       stopMusic();
     }else if(actx){
