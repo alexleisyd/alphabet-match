@@ -1604,8 +1604,8 @@
     },
     "teach.is-for.D.DONUT": {
       "hash": "27ee2c5775af76a5",
-      "bytes": 17306,
-      "seconds": 4,
+      "bytes": 9930,
+      "seconds": 2.101,
       "text": "D is for donut!"
     },
     "teach.is-for.D.DRUM": {
@@ -2753,5 +2753,5 @@
   "model": "gpt-4o-mini-tts",
   "voice": "coral",
   "encoder": "aac-32k-24k-mono-loudnorm-trim.v1",
-  "updated": "2026-08-08T09:40:21.616Z"
+  "updated": "2026-08-08T13:37:54.202Z"
 }
