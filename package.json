@@ -1,0 +1,30 @@
+{
+  "name": "alphabet-match",
+  "version": "1.0.0",
+  "description": "A letter-matching game for preschoolers, wrapped for iOS and Android.",
+  "private": true,
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexleisyd/alphabet-match.git"
+  },
+  "scripts": {
+    "vendor": "cp node_modules/@capacitor/core/dist/capacitor.js capacitor.js",
+    "artwork": "tools/artwork.sh",
+    "build": "npm run vendor && rm -rf www && mkdir -p www/voice && cp index.html voice-player.js capacitor.js www/ && rsync -a --exclude='.*' voice/ www/voice/",
+    "sync": "npm run build && npx cap sync",
+    "serve": "python3 -m http.server 8000",
+    "ios": "npm run sync && npx cap open ios",
+    "android": "npm run sync && npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3"
+  }
+}

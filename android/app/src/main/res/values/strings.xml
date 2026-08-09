@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Alphabet Match</string>
+    <string name="title_activity_main">Alphabet Match</string>
+    <string name="package_name">au.com.lionforce.alphabetmatch</string>
+    <string name="custom_url_scheme">au.com.lionforce.alphabetmatch</string>
+</resources>

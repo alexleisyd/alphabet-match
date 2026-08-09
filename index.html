@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Alphabet Match</title>
@@ -54,7 +55,15 @@
     align-items:center;
     justify-content:center;
     gap:clamp(12px,2.5vh,28px);
-    padding:clamp(12px,3vw,32px);
+    /* The page asks for viewport-fit=cover, so on a notched phone the stage
+       runs under the notch and the home indicator. In a browser tab Safari's
+       own chrome hides that; in the native shell nothing does. env() is 0
+       wherever there is no inset, so this costs the desktop build nothing. */
+    padding:
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-top))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-right))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-bottom))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-left));
     text-align:center;
   }
   .hidden{display:none !important}
@@ -69,7 +78,13 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:clamp(10px,2vw,18px) clamp(14px,3vw,24px);
+    /* the mute and full-screen buttons sit here, so without the top inset
+       they land underneath the notch on a modern phone */
+    padding:
+      calc(clamp(10px,2vw,18px) + env(safe-area-inset-top))
+      calc(clamp(14px,3vw,24px) + env(safe-area-inset-right))
+      clamp(10px,2vw,18px)
+      calc(clamp(14px,3vw,24px) + env(safe-area-inset-left));
     z-index:5;
     pointer-events:none;
   }
@@ -451,7 +466,14 @@
     flex:1 1 0;
     min-width:0;      /* letters have an intrinsic width; without this a row
                          of four refuses to shrink and runs off a phone */
-    max-width:270px;
+    /* A card is a square, so whatever bounds its width bounds its height too.
+       Width alone is the wrong bound: a two-card round lets each one reach the
+       full 270px, which is 286px tall — more than a phone held sideways has
+       left once the prompt above it has taken its share, and the pictures end
+       up over the edge. Tying the cap to the viewport's height as well means
+       the fewer the cards, the bigger they get, but never bigger than the
+       screen can hold. On anything with room to spare the 270px still wins. */
+    max-width:min(270px, 44vh);
     aspect-ratio:1/1.06;
     background:var(--card);
     border:5px solid var(--card-edge);
@@ -524,6 +546,17 @@
   }
 
   /* ---------- victory screen ---------- */
+  /* The one screen tall enough to outgrow its stage. It carries the column's
+     own gap (rather than leaning on .stage's) so that scaling it scales the
+     spacing too — a shrunk column with full-size gaps looks broken. --fit is
+     written by fitVictory() and is 1 whenever the column already fits. */
+  .victory-fit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:clamp(12px,2.5vh,28px);
+    transform:scale(var(--fit,1));
+  }
   .victory-art{
     width:clamp(130px,24vh,210px);
     height:clamp(130px,24vh,210px);
@@ -548,10 +581,21 @@
     font-size:clamp(30px,7vw,60px);
     font-weight:900;
     line-height:1;
+    /* Every letter gets the same box. Left to the glyphs an I is two thirds
+       the width of an M, and the word reads as a row of mismatched offcuts
+       rather than one set of blocks. The width is stated in em and the side
+       padding dropped to nothing, so the box is the same 1.5em whatever
+       letter is in it — with border-box sizing, side padding would just eat
+       into that and let the wide letters push their tiles out again. The
+       blank tiles standing in for a space opt out inline. */
+    min-width:1.5em;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background:var(--card);
     border:4px solid var(--card-edge);
     border-radius:clamp(10px,2vw,16px);
-    padding:clamp(10px,2vh,18px) clamp(12px,2.4vh,22px);
+    padding:clamp(10px,2vh,18px) 0;
     box-shadow:0 5px 0 rgba(46,45,85,.22);
     animation:tile-pop .4s cubic-bezier(.2,1.6,.4,1) both;
   }
@@ -602,7 +646,17 @@
     .letter-block{font-size:clamp(56px,18vh,90px);padding:10px 26px}
     .prompt-text{display:none}
     .stage{gap:10px}
+    /* The victory column, retuned rather than merely scaled. fitVictory()
+       would shrink it to fit either way, but a ten-letter word laid out at
+       full size wraps onto a second row first, and then the whole thing has
+       to scale down twice as far to make room for it. Smaller tiles here mean
+       even WATERMELON stays on one line, and there is little left to scale. */
+    .victory-fit{gap:8px}
     .victory-art{width:clamp(80px,26vh,120px);height:clamp(80px,26vh,120px)}
+    .tile{font-size:clamp(24px,9vh,40px);padding:7px 0;border-width:3px;border-radius:10px}
+    .is-for{font-size:clamp(16px,5.5vh,26px)}
+    .victory-stars{font-size:clamp(22px,7vh,34px)}
+    #next-btn{font-size:clamp(18px,5vh,26px);padding:10px 36px}
     /* give the book back the room the chrome was eating, so more than one
        row of stickers is visible before it has to scroll */
     .book-panel{padding:10px 14px;gap:6px}
@@ -654,11 +708,17 @@
 
 <!-- VICTORY -->
 <div class="stage hidden" id="screen-victory">
-  <div class="victory-art" id="victory-art"></div>
-  <p class="is-for" id="is-for">B is for…</p>
-  <div class="word-tiles" id="word-tiles"></div>
-  <div class="victory-stars" id="victory-stars"></div>
-  <button class="big-btn next" id="next-btn">NEXT &nbsp;▶</button>
+  <!-- one wrapper so the whole column can be scaled as a unit; see
+       fitVictory(). Everything else on this screen is centred by the stage,
+       but this screen's height is content-driven — a ten-letter word is a
+       lot taller than a phone held sideways. -->
+  <div class="victory-fit" id="victory-fit">
+    <div class="victory-art" id="victory-art"></div>
+    <p class="is-for" id="is-for">B is for…</p>
+    <div class="word-tiles" id="word-tiles"></div>
+    <div class="victory-stars" id="victory-stars"></div>
+    <button class="big-btn next" id="next-btn">NEXT &nbsp;▶</button>
+  </div>
 </div>
 
 <!-- STICKER BOOK -->
@@ -700,6 +760,12 @@
      game's closure, because two things read them: the game below, and the
      voice-over build, which evaluates this block in plain Node with no
      browser and no DOM. Nothing in here may touch the document. -->
+<!-- Capacitor's plugin proxies. A copy of @capacitor/core's browser build,
+     refreshed by `npm run vendor` — the plugins' own npm packages are ESM and
+     this app has no bundler, so registerPlugin() is how it reaches them. In a
+     browser it loads, finds no native bridge, reports the platform as "web",
+     and nothing below asks it for anything. -->
+<script src="capacitor.js"></script>
 <!-- shared with number-friends; the original lives in voice-kit, don't edit this copy -->
 <script src="voice-player.js"></script>
 
@@ -891,6 +957,14 @@
       LINES = window.VOICE.LINES,
       line = window.VOICE.line,
       voiceManifest = window.VOICE.manifest;
+
+  // Running inside the iOS/Android shell rather than a browser tab. A handful
+  // of things the web build needs are wrong there — a full-screen button when
+  // the app is already full screen, a browser voice standing in for a clip
+  // that shipped inside the binary — so each of those asks this first.
+  var isNative = !!(window.Capacitor &&
+                    window.Capacitor.isNativePlatform &&
+                    window.Capacitor.isNativePlatform());
 
   // letters whose names/sounds collide with another letter's words when
   // heard aloud (Cat/Kite, Giraffe/Juice, X/Excavator, Zebra/Xylophone,
@@ -1092,12 +1166,16 @@
       }
     }catch(e){}
   }
+  // The packaged builds hang a second, durable copy off this — see the
+  // native shell at the bottom of the file. Nothing else sets it.
+  var onProgressSaved = null;
   function saveProgress(){
     try{
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         stars: stars, book: book, level: level, name: childName, letters: letterSet
       }));
     }catch(e){}
+    if(onProgressSaved) onProgressSaved();
   }
   // Re-finding a letter moves that word to the top of its pile, so the book
   // shows the most recent one and the child can discover that B is a bee
@@ -1675,7 +1753,18 @@
     });
     chosenVoice = best;
   }
-  if("speechSynthesis" in window){
+  // Whether the browser's synthesiser may stand in when the recorded pack is
+  // unreachable. Off in a store build: the pack ships inside the binary there,
+  // so a failure means something is wrong, and silence is a bug QA will catch —
+  // where a stranger's voice suddenly narrating your app is not. The web build
+  // keeps it, being all that stands between a child and a mute page when
+  // index.html is opened straight off disk. Declared up here because the voice
+  // picking below is the first thing that needs to ask.
+  var ALLOW_SYNTH_FALLBACK = !isNative;
+
+  // Picking a voice wakes the OS text-to-speech machinery, so don't bother
+  // where the synthesiser is never going to be allowed to speak.
+  if(ALLOW_SYNTH_FALLBACK && "speechSynthesis" in window){
     pickVoice();
     window.speechSynthesis.onvoiceschanged = pickVoice;
   }
@@ -1685,11 +1774,6 @@
   // index.html opened straight off disk, where fetch cannot reach the clips.
   // Better a browser voice than a mute game that teaches nothing.
   //
-  // For a store build set this to false. The pack ships inside the binary, so
-  // a missing clip means something is wrong, and silence is a bug QA will
-  // catch — where a stranger's voice suddenly narrating your app is not.
-  var ALLOW_SYNTH_FALLBACK = true;
-
   var voicePack = null;
   var useVoicePack = false;
   // Opened straight off disk, every fetch is refused before it is sent: a
@@ -1700,17 +1784,52 @@
   // double-clicking index.html during development. Run a local server to hear
   // the recorded voice:  python3 -m http.server 8000
   var canFetchLocalFiles = location.protocol !== "file:";
+
+  // The one source that needed headroom and didn't have any. The chimes run
+  // through sfxBus at 0.9 and the music through its own gain, but the clips
+  // were going straight out at unity — and they are mastered hot, a few of
+  // them peaking above full scale on their own (the worst is about 1.26).
+  // Played over the music that sum has nowhere to go but hard clipping, which
+  // a small speaker reproduces as crackle rather than as loudness. VoicePlayer
+  // already takes a destination for exactly this, so give it one.
+  var voiceBus = null;
+  function voiceDestination(){
+    var ctx = audio();
+    if(!ctx) return null;
+    if(!voiceBus){
+      voiceBus = ctx.createGain();
+      // 0.75 x the hottest clip (~1.26) is 0.94, which still leaves room for
+      // the music underneath it — that bus only ever reaches about 0.1.
+      voiceBus.gain.value = 0.75;
+      voiceBus.connect(ctx.destination);
+    }
+    return voiceBus;
+  }
+
   if(window.VoicePlayer && canFetchLocalFiles){
     voicePack = window.VoicePlayer({
       base: "voice/",
       context: audio,                 // the game's own AudioContext, so one unlock covers all
+      destination: voiceDestination,  // headroom, so the clips cannot clip the output
       missing: ALLOW_SYNTH_FALLBACK ? "speak" : "silent"
     });
     // One cheap request decides it, before any audio has to be decoded.
     // A dynamic line has no recording, so this also tells the line table to
     // start resolving those to their nameless twins.
-    fetch("voice/cheer.jar.m4a", { method: "HEAD" })
-      .then(function(r){ setVoicePack(r.ok); })
+    //
+    // Ask for the bytes rather than trusting the status line. A native
+    // WebView serves media files through its own scheme handler, and iOS
+    // replies to those with a bare URLResponse that has no status at all —
+    // so `ok` is false and `status` is 0 on a request that worked perfectly.
+    // "Did any bytes arrive" is the thing actually being asked, and unlike
+    // the status it means the same on every platform. A HEAD would be
+    // cheaper, but it comes back empty-bodied and tells us nothing.
+    fetch("voice/cheer.jar.m4a")
+      .then(function(r){
+        if(!r.ok && r.status !== 0) return null;
+        return r.arrayBuffer();
+      })
+      .then(function(bytes){ setVoicePack(!!bytes && bytes.byteLength > 0); })
       .catch(function(){ setVoicePack(false); });
   }else if(window.console && !canFetchLocalFiles){
     console.info("Alphabet Match: opened from disk, so the recorded voice is " +
@@ -1721,8 +1840,11 @@
   // The victory screen waits for narration to finish before moving on, so it
   // has to know the difference between "speaking" and "silent" — not between
   // "the browser has a synthesiser" and "it doesn't".
+  // Must stay in step with speakParts() below: if this claims narration is
+  // coming and none arrives, the victory screen waits on a callback that never
+  // fires and the child is stranded there.
   function willSpeak(){
-    return useVoicePack || ("speechSynthesis" in window);
+    return useVoicePack || (ALLOW_SYNTH_FALLBACK && "speechSynthesis" in window);
   }
   function setVoicePack(on){
     useVoicePack = !!(on && voicePack);
@@ -1775,6 +1897,10 @@
     if(muted) return;
     parts = parts.filter(function(p){ return !!p; });
     if(useVoicePack){ voicePack.say(parts, onDone); return; }
+    // The pack itself failed, not just one clip. On a store build that is a
+    // bug to be caught, not to be covered up by a stranger's voice — the
+    // matching willSpeak() above makes sure the caller expects the silence.
+    if(!ALLOW_SYNTH_FALLBACK) return;
     if(!("speechSynthesis" in window)) return;
     try{
       window.speechSynthesis.cancel();
@@ -2463,7 +2589,11 @@
     hintTimer = setTimeout(showHint, delay);
   }
 
-  function newRound(){
+  // Everything the round has in flight: the auto-advance, the narration it is
+  // waiting on, the bobbing hint, the scheduled victory chimes. Leave any of
+  // these running and they fire into whatever screen comes next — which is why
+  // the Android back button calls this before stepping back to the start.
+  function stopRound(){
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victoryDelayTimer);
     clearTimeout(victorySpeechTimer);
@@ -2473,6 +2603,10 @@
     victorySoundTimers.forEach(function(t){ clearTimeout(t); });
     victorySoundTimers.length = 0;
     settleJar();
+  }
+
+  function newRound(){
+    stopRound();
     solvedThisRound = false;
     filledJarThisRound = false;
     wrongTaps = 0;
@@ -2606,6 +2740,39 @@
     }
   }
 
+  /* ---------------- fitting the victory screen ----------------
+     Every other screen is short enough to centre and forget about. This one
+     isn't: the picture, the sentence, a row of letter tiles, three stars and
+     the NEXT button add up to more height than a phone held sideways has, and
+     a ten-letter word like WATERMELON overflows sideways too and wraps onto a
+     second row, making it taller still. A fixed, centred stage answers that
+     by hiding the overflow at *both* ends — picture off the top, button off
+     the bottom — which is how a child ends up with no way to move on.
+
+     So: measure what the column wants, and if that is more than there is,
+     scale the whole thing down by one factor. Scaling rather than restyling
+     keeps every proportion the designer chose, and a transform still hit-tests
+     where it is drawn, so the shrunken NEXT button is tappable where it looks.
+     Nothing happens on a screen with room — --fit stays exactly 1.          */
+  function fitVictory(){
+    var box = $("victory-fit"), stage = $("screen-victory");
+    if(!box || stage.classList.contains("hidden")) return;
+    box.style.setProperty("--fit", 1);          // measure unscaled
+    var pad = getComputedStyle(stage);
+    var availW = stage.clientWidth  - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight);
+    var availH = stage.clientHeight - parseFloat(pad.paddingTop)  - parseFloat(pad.paddingBottom);
+    var wantW = box.scrollWidth, wantH = box.scrollHeight;
+    if(!wantW || !wantH) return;
+    // never scale up: a big screen shows the artwork at its designed size
+    var fit = Math.min(1, availW / wantW, availH / wantH);
+    box.style.setProperty("--fit", fit);
+  }
+  // Turning the phone over changes both numbers at once. visualViewport is the
+  // one that moves when iOS shows and hides its own chrome mid-round.
+  window.addEventListener("resize", fitVictory);
+  window.addEventListener("orientationchange", function(){ setTimeout(fitVictory, 250); });
+  if(window.visualViewport) window.visualViewport.addEventListener("resize", fitVictory);
+
   function showVictory(){
     $("victory-art").innerHTML = ART[current.word];
     $("is-for").textContent = current.letter + " is for…";
@@ -2622,6 +2789,7 @@
         t.style.borderWidth = "0";
         t.style.boxShadow = "none";
         t.style.padding = "0 6px";
+        t.style.minWidth = "0";     // a gap, not a letter — don't pad it out
       } else if(shown === 0){
         t.className += " first";
       }
@@ -2658,6 +2826,7 @@
     }
 
     show("screen-victory");
+    fitVictory();          // has to come after show(), a hidden box measures 0
 
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victorySpeechTimer);
@@ -2688,6 +2857,17 @@
   $("start-art-2").innerHTML = ART.APPLE;
   window.ALPHABET_ART = ART;             // handy for eyeballing every drawing in devtools
   window.ALPHABET_SOUND = playPicture;   // ...and for auditioning any word's noise
+  // Jump straight to the victory screen for any word. The long ones (
+  // WATERMELON, HELICOPTER) are the ones whose layout goes wrong, and playing
+  // fairly until W comes up is no way to check them.
+  window.ALPHABET_VICTORY = function(word){
+    var letter = LETTERS.filter(function(l){ return WORDS[l].indexOf(word) !== -1; })[0];
+    if(!letter) return "no such word";
+    current = { letter: letter, word: word };
+    earnedThisRound = 3;
+    showVictory();
+    return letter + " is for " + word;
+  };
   window.ALPHABET_VOICE = {
     manifest: voiceManifest, lines: LINES, line: line,
     // what the narrator is doing right now, for poking at in devtools
@@ -2841,6 +3021,9 @@
     return document.fullscreenElement || document.webkitFullscreenElement || null;
   }
   function fullscreenAvailable(){
+    // the native shell is already full screen, so the button would be a
+    // control that visibly does nothing; paintFullscreenBtn() hides it
+    if(isNative) return false;
     var d = document.documentElement;
     return !!(d.requestFullscreen || d.webkitRequestFullscreen) &&
            document.fullscreenEnabled !== false && document.webkitFullscreenEnabled !== false;
@@ -2896,6 +3079,103 @@
     if(document.hidden){ actx.suspend(); }
     else if(actx.state === "suspended"){ actx.resume(); }
   });
+
+  /* ---------------- the native shell ----------------
+     Everything the packaged builds need and a browser tab does not. The
+     plugin proxies only answer where a native bridge injected itself, so
+     the whole section is skipped on the web rather than guarded call by
+     call — nothing below has a browser equivalent worth running.       */
+  if(isNative && window.Capacitor && window.Capacitor.registerPlugin){
+    var CapApp = window.Capacitor.registerPlugin("App");
+    var CapPrefs = window.Capacitor.registerPlugin("Preferences");
+    var CapBars = window.Capacitor.registerPlugin("StatusBar");
+    var CapSplash = window.Capacitor.registerPlugin("SplashScreen");
+
+    // The splash is held open by hand (launchAutoHide is off in
+    // capacitor.config.json) and dropped here, once the start screen has
+    // actually been painted. Left on its timer it hides after a fixed half
+    // second, which on a cold first launch is before the web view has drawn
+    // anything — and the seam between the two shows as a white flash.
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ CapSplash.hide().catch(function(){}); });
+    });
+
+    // A clock and a battery icon over a game played by aiming at big shapes
+    // are just two more things to poke. iOS hides it from Info.plist so
+    // there's no flash of one at launch; this is here for Android, and is a
+    // no-op where the plist already did it. The stage keeps padding itself
+    // by env(safe-area-inset-top), so a notch still gets its clearance.
+    if(CapBars.hide) CapBars.hide().catch(function(){});
+
+    /* ---- progress that survives the operating system ----
+       A web view's localStorage is not durable storage: iOS clears a web
+       view's data store when the device runs short of space, and Android
+       will do the same from the app's own storage settings. Losing the
+       sticker book is the one failure this game can't absorb — it's the
+       whole reason a child comes back. UserDefaults / SharedPreferences are
+       backed up and never evicted, so they hold a copy while localStorage
+       stays the live, synchronous store the rest of the file reads.     */
+    function mirrorProgress(){
+      var raw = null;
+      try{ raw = localStorage.getItem(SAVE_KEY); }catch(e){}
+      if(raw != null) CapPrefs.set({ key: SAVE_KEY, value: raw }).catch(function(){});
+    }
+    onProgressSaved = mirrorProgress;
+
+    // Restore only into an empty web view. A populated localStorage is
+    // always the fresher of the two, and this read is asynchronous — by the
+    // time it lands the child may already be playing, and rewinding them to
+    // a backup mid-round would look exactly like a bug.
+    (function restoreProgress(){
+      var have = null;
+      try{ have = localStorage.getItem(SAVE_KEY); }catch(e){}
+      if(have != null) return mirrorProgress();     // nothing lost; refresh the copy
+      CapPrefs.get({ key: SAVE_KEY }).then(function(res){
+        var raw = res && res.value;
+        if(!raw) return;
+        if($("screen-start").classList.contains("hidden")) return;   // too late, they've started
+        try{ localStorage.setItem(SAVE_KEY, raw); }catch(e){}
+        loadProgress();
+        shownStars = stars;
+        lastCelebrated = shownStars;
+        paintJar();
+        paintNames();
+      }).catch(function(){});
+    })();
+
+    /* ---- Android's back button ----
+       It has to do something, and quitting outright is the wrong something:
+       the button is at toddler height and gets found by accident. So it
+       unwinds whatever is on top — panel, then book, then the round itself
+       — and only once there's nothing left to close does it drop the app to
+       the background, which is recoverable, rather than exiting.        */
+    CapApp.addListener("backButton", function(){
+      if(!$("grownups").classList.contains("hidden")) return closeGrownups();
+      if(!$("book").classList.contains("hidden")) return closeBook();
+      if($("screen-start").classList.contains("hidden")){
+        stopRound();
+        if(voicePack) voicePack.cancel();
+        if("speechSynthesis" in window) window.speechSynthesis.cancel();
+        show("screen-start");
+        return;
+      }
+      CapApp.minimizeApp();
+    });
+
+    // The iOS audio session is a playback one (see AppDelegate), which left
+    // alone would happily keep the music going over whatever the parent
+    // switched to. visibilitychange covers this in a browser; inside a web
+    // view it is the less reliable of the two, so listen for both.
+    CapApp.addListener("appStateChange", function(s){
+      if(!actx) return;
+      if(s && s.isActive){
+        if(actx.state === "suspended") actx.resume();
+      }else{
+        if(voicePack) voicePack.cancel();
+        actx.suspend();
+      }
+    });
+  }
 })();
 </script>
 </body>
