@@ -18,6 +18,11 @@ essentially the entire app:
   a manifest of clip hash/duration/text metadata. There is no build script
   in this repo that (re)generates these clips — treat `voice/` as a checked-in
   asset pack, not something to regenerate from source.
+- `capacitor.js` — a **vendored copy** of `@capacitor/core`'s browser build,
+  committed so the buildless web flow keeps working. Refresh it with
+  `npm run vendor` (which `npm run build` runs first); never hand-edit it.
+  It is what supplies `Capacitor.registerPlugin()` — the plugins' own npm
+  packages are ESM and this app has no bundler.
 
 ## Running it
 
@@ -60,6 +65,19 @@ missing clip is audible silence — a bug QA catches — rather than a stranger'
 synthesised voice narrating a children's app. Prefer extending that flag over
 forking the file.
 
+Everything else native-only lives in one block, the `the native shell` section
+at the very bottom of the main script, which is skipped wholesale on the web:
+status bar hiding, the Android back button, the audio suspend on
+`appStateChange`, and the durable copy of saved progress (below). It reaches
+plugins through `Capacitor.registerPlugin("App" | "Preferences" | "StatusBar")`.
+
+Two things are set natively rather than in JS, because they have to be true
+before the first frame: `ios/App/App/Info.plist` hides the status bar
+(`UIStatusBarHidden`, with `UIViewControllerBasedStatusBarAppearance` false so
+the plugin can drive it too), and `AppDelegate.swift` sets the `AVAudioSession`
+category to `.playback` so the iPhone's ring/silent switch doesn't mute the
+narrator — the voice *is* the game, not a sound effect over it.
+
 ## Architecture (all inside `index.html`)
 
 The file is organized into commented sections (`/* ---------- name ---------- */`)
@@ -96,6 +114,12 @@ One large IIFE. Key subsystems, in file order:
   `level`, `mode`, etc.) — no framework, no reducer. `saved progress`
   persists `stars`/`book`/`childName`/`letterSet` to `localStorage`
   (`SAVE_KEY = "alphabet-match.v1"`), tolerating storage being unavailable.
+  `localStorage` stays the live, synchronous store everywhere; on native the
+  `onProgressSaved` hook mirrors the same JSON into Capacitor Preferences
+  (UserDefaults / SharedPreferences), because a web view's storage *can* be
+  evicted by the OS and the sticker book is the one thing that must survive.
+  The restore runs only into an empty web view and only before the child taps
+  Play — a populated `localStorage` is always the fresher of the two.
 - **Audio**: chimes/fanfare/ambient music are synthesized directly via
   Web Audio (`audio()`, `tone()`, oscillator/noise helpers) — no audio
   files for sound effects, only for voice.

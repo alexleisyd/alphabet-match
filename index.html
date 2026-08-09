@@ -715,6 +715,12 @@
      game's closure, because two things read them: the game below, and the
      voice-over build, which evaluates this block in plain Node with no
      browser and no DOM. Nothing in here may touch the document. -->
+<!-- Capacitor's plugin proxies. A copy of @capacitor/core's browser build,
+     refreshed by `npm run vendor` — the plugins' own npm packages are ESM and
+     this app has no bundler, so registerPlugin() is how it reaches them. In a
+     browser it loads, finds no native bridge, reports the platform as "web",
+     and nothing below asks it for anything. -->
+<script src="capacitor.js"></script>
 <!-- shared with number-friends; the original lives in voice-kit, don't edit this copy -->
 <script src="voice-player.js"></script>
 
@@ -1115,12 +1121,16 @@
       }
     }catch(e){}
   }
+  // The packaged builds hang a second, durable copy off this — see the
+  // native shell at the bottom of the file. Nothing else sets it.
+  var onProgressSaved = null;
   function saveProgress(){
     try{
       localStorage.setItem(SAVE_KEY, JSON.stringify({
         stars: stars, book: book, level: level, name: childName, letters: letterSet
       }));
     }catch(e){}
+    if(onProgressSaved) onProgressSaved();
   }
   // Re-finding a letter moves that word to the top of its pile, so the book
   // shows the most recent one and the child can discover that B is a bee
@@ -2978,6 +2988,93 @@
     if(document.hidden){ actx.suspend(); }
     else if(actx.state === "suspended"){ actx.resume(); }
   });
+
+  /* ---------------- the native shell ----------------
+     Everything the packaged builds need and a browser tab does not. The
+     plugin proxies only answer where a native bridge injected itself, so
+     the whole section is skipped on the web rather than guarded call by
+     call — nothing below has a browser equivalent worth running.       */
+  if(isNative && window.Capacitor && window.Capacitor.registerPlugin){
+    var CapApp = window.Capacitor.registerPlugin("App");
+    var CapPrefs = window.Capacitor.registerPlugin("Preferences");
+    var CapBars = window.Capacitor.registerPlugin("StatusBar");
+
+    // A clock and a battery icon over a game played by aiming at big shapes
+    // are just two more things to poke. iOS hides it from Info.plist so
+    // there's no flash of one at launch; this is here for Android, and is a
+    // no-op where the plist already did it. The stage keeps padding itself
+    // by env(safe-area-inset-top), so a notch still gets its clearance.
+    if(CapBars.hide) CapBars.hide().catch(function(){});
+
+    /* ---- progress that survives the operating system ----
+       A web view's localStorage is not durable storage: iOS clears a web
+       view's data store when the device runs short of space, and Android
+       will do the same from the app's own storage settings. Losing the
+       sticker book is the one failure this game can't absorb — it's the
+       whole reason a child comes back. UserDefaults / SharedPreferences are
+       backed up and never evicted, so they hold a copy while localStorage
+       stays the live, synchronous store the rest of the file reads.     */
+    function mirrorProgress(){
+      var raw = null;
+      try{ raw = localStorage.getItem(SAVE_KEY); }catch(e){}
+      if(raw != null) CapPrefs.set({ key: SAVE_KEY, value: raw }).catch(function(){});
+    }
+    onProgressSaved = mirrorProgress;
+
+    // Restore only into an empty web view. A populated localStorage is
+    // always the fresher of the two, and this read is asynchronous — by the
+    // time it lands the child may already be playing, and rewinding them to
+    // a backup mid-round would look exactly like a bug.
+    (function restoreProgress(){
+      var have = null;
+      try{ have = localStorage.getItem(SAVE_KEY); }catch(e){}
+      if(have != null) return mirrorProgress();     // nothing lost; refresh the copy
+      CapPrefs.get({ key: SAVE_KEY }).then(function(res){
+        var raw = res && res.value;
+        if(!raw) return;
+        if($("screen-start").classList.contains("hidden")) return;   // too late, they've started
+        try{ localStorage.setItem(SAVE_KEY, raw); }catch(e){}
+        loadProgress();
+        shownStars = stars;
+        lastCelebrated = shownStars;
+        paintJar();
+        paintNames();
+      }).catch(function(){});
+    })();
+
+    /* ---- Android's back button ----
+       It has to do something, and quitting outright is the wrong something:
+       the button is at toddler height and gets found by accident. So it
+       unwinds whatever is on top — panel, then book, then the round itself
+       — and only once there's nothing left to close does it drop the app to
+       the background, which is recoverable, rather than exiting.        */
+    CapApp.addListener("backButton", function(){
+      if(!$("grownups").classList.contains("hidden")) return closeGrownups();
+      if(!$("book").classList.contains("hidden")) return closeBook();
+      if($("screen-start").classList.contains("hidden")){
+        stopRound();
+        if(voicePack) voicePack.cancel();
+        if("speechSynthesis" in window) window.speechSynthesis.cancel();
+        show("screen-start");
+        return;
+      }
+      CapApp.minimizeApp();
+    });
+
+    // The iOS audio session is a playback one (see AppDelegate), which left
+    // alone would happily keep the music going over whatever the parent
+    // switched to. visibilitychange covers this in a browser; inside a web
+    // view it is the less reliable of the two, so listen for both.
+    CapApp.addListener("appStateChange", function(s){
+      if(!actx) return;
+      if(s && s.isActive){
+        if(actx.state === "suspended") actx.resume();
+      }else{
+        if(voicePack) voicePack.cancel();
+        actx.suspend();
+      }
+    });
+  }
 })();
 </script>
 </body>

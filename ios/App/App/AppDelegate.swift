@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,7 +8,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // The narrator saying "A is for apple" is the game, not a sound
+        // effect on top of it. Under the default session category iOS files
+        // it as incidental audio and the ring/silent switch silences it — so
+        // a parent who hands over an iPad with that switch flipped gets a
+        // phonics app that teaches nothing and looks broken. .playback keeps
+        // the voice audible either way, and is the category Apple documents
+        // for exactly this case.
+        //
+        // Deliberately not .mixWithOthers: the game brings its own music, and
+        // two soundtracks at once is worse than interrupting one. There is no
+        // UIBackgroundModes audio entitlement, so iOS still suspends us the
+        // moment the app leaves the screen.
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playback, mode: .default)
+        try? session.setActive(true)
         return true
     }
 
