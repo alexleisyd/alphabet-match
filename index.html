@@ -466,7 +466,14 @@
     flex:1 1 0;
     min-width:0;      /* letters have an intrinsic width; without this a row
                          of four refuses to shrink and runs off a phone */
-    max-width:270px;
+    /* A card is a square, so whatever bounds its width bounds its height too.
+       Width alone is the wrong bound: a two-card round lets each one reach the
+       full 270px, which is 286px tall — more than a phone held sideways has
+       left once the prompt above it has taken its share, and the pictures end
+       up over the edge. Tying the cap to the viewport's height as well means
+       the fewer the cards, the bigger they get, but never bigger than the
+       screen can hold. On anything with room to spare the 270px still wins. */
+    max-width:min(270px, 44vh);
     aspect-ratio:1/1.06;
     background:var(--card);
     border:5px solid var(--card-edge);
@@ -539,6 +546,17 @@
   }
 
   /* ---------- victory screen ---------- */
+  /* The one screen tall enough to outgrow its stage. It carries the column's
+     own gap (rather than leaning on .stage's) so that scaling it scales the
+     spacing too — a shrunk column with full-size gaps looks broken. --fit is
+     written by fitVictory() and is 1 whenever the column already fits. */
+  .victory-fit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:clamp(12px,2.5vh,28px);
+    transform:scale(var(--fit,1));
+  }
   .victory-art{
     width:clamp(130px,24vh,210px);
     height:clamp(130px,24vh,210px);
@@ -563,10 +581,21 @@
     font-size:clamp(30px,7vw,60px);
     font-weight:900;
     line-height:1;
+    /* Every letter gets the same box. Left to the glyphs an I is two thirds
+       the width of an M, and the word reads as a row of mismatched offcuts
+       rather than one set of blocks. The width is stated in em and the side
+       padding dropped to nothing, so the box is the same 1.5em whatever
+       letter is in it — with border-box sizing, side padding would just eat
+       into that and let the wide letters push their tiles out again. The
+       blank tiles standing in for a space opt out inline. */
+    min-width:1.5em;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background:var(--card);
     border:4px solid var(--card-edge);
     border-radius:clamp(10px,2vw,16px);
-    padding:clamp(10px,2vh,18px) clamp(12px,2.4vh,22px);
+    padding:clamp(10px,2vh,18px) 0;
     box-shadow:0 5px 0 rgba(46,45,85,.22);
     animation:tile-pop .4s cubic-bezier(.2,1.6,.4,1) both;
   }
@@ -617,7 +646,17 @@
     .letter-block{font-size:clamp(56px,18vh,90px);padding:10px 26px}
     .prompt-text{display:none}
     .stage{gap:10px}
+    /* The victory column, retuned rather than merely scaled. fitVictory()
+       would shrink it to fit either way, but a ten-letter word laid out at
+       full size wraps onto a second row first, and then the whole thing has
+       to scale down twice as far to make room for it. Smaller tiles here mean
+       even WATERMELON stays on one line, and there is little left to scale. */
+    .victory-fit{gap:8px}
     .victory-art{width:clamp(80px,26vh,120px);height:clamp(80px,26vh,120px)}
+    .tile{font-size:clamp(24px,9vh,40px);padding:7px 0;border-width:3px;border-radius:10px}
+    .is-for{font-size:clamp(16px,5.5vh,26px)}
+    .victory-stars{font-size:clamp(22px,7vh,34px)}
+    #next-btn{font-size:clamp(18px,5vh,26px);padding:10px 36px}
     /* give the book back the room the chrome was eating, so more than one
        row of stickers is visible before it has to scroll */
     .book-panel{padding:10px 14px;gap:6px}
@@ -669,11 +708,17 @@
 
 <!-- VICTORY -->
 <div class="stage hidden" id="screen-victory">
-  <div class="victory-art" id="victory-art"></div>
-  <p class="is-for" id="is-for">B is for…</p>
-  <div class="word-tiles" id="word-tiles"></div>
-  <div class="victory-stars" id="victory-stars"></div>
-  <button class="big-btn next" id="next-btn">NEXT &nbsp;▶</button>
+  <!-- one wrapper so the whole column can be scaled as a unit; see
+       fitVictory(). Everything else on this screen is centred by the stage,
+       but this screen's height is content-driven — a ten-letter word is a
+       lot taller than a phone held sideways. -->
+  <div class="victory-fit" id="victory-fit">
+    <div class="victory-art" id="victory-art"></div>
+    <p class="is-for" id="is-for">B is for…</p>
+    <div class="word-tiles" id="word-tiles"></div>
+    <div class="victory-stars" id="victory-stars"></div>
+    <button class="big-btn next" id="next-btn">NEXT &nbsp;▶</button>
+  </div>
 </div>
 
 <!-- STICKER BOOK -->
@@ -2695,6 +2740,39 @@
     }
   }
 
+  /* ---------------- fitting the victory screen ----------------
+     Every other screen is short enough to centre and forget about. This one
+     isn't: the picture, the sentence, a row of letter tiles, three stars and
+     the NEXT button add up to more height than a phone held sideways has, and
+     a ten-letter word like WATERMELON overflows sideways too and wraps onto a
+     second row, making it taller still. A fixed, centred stage answers that
+     by hiding the overflow at *both* ends — picture off the top, button off
+     the bottom — which is how a child ends up with no way to move on.
+
+     So: measure what the column wants, and if that is more than there is,
+     scale the whole thing down by one factor. Scaling rather than restyling
+     keeps every proportion the designer chose, and a transform still hit-tests
+     where it is drawn, so the shrunken NEXT button is tappable where it looks.
+     Nothing happens on a screen with room — --fit stays exactly 1.          */
+  function fitVictory(){
+    var box = $("victory-fit"), stage = $("screen-victory");
+    if(!box || stage.classList.contains("hidden")) return;
+    box.style.setProperty("--fit", 1);          // measure unscaled
+    var pad = getComputedStyle(stage);
+    var availW = stage.clientWidth  - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight);
+    var availH = stage.clientHeight - parseFloat(pad.paddingTop)  - parseFloat(pad.paddingBottom);
+    var wantW = box.scrollWidth, wantH = box.scrollHeight;
+    if(!wantW || !wantH) return;
+    // never scale up: a big screen shows the artwork at its designed size
+    var fit = Math.min(1, availW / wantW, availH / wantH);
+    box.style.setProperty("--fit", fit);
+  }
+  // Turning the phone over changes both numbers at once. visualViewport is the
+  // one that moves when iOS shows and hides its own chrome mid-round.
+  window.addEventListener("resize", fitVictory);
+  window.addEventListener("orientationchange", function(){ setTimeout(fitVictory, 250); });
+  if(window.visualViewport) window.visualViewport.addEventListener("resize", fitVictory);
+
   function showVictory(){
     $("victory-art").innerHTML = ART[current.word];
     $("is-for").textContent = current.letter + " is for…";
@@ -2711,6 +2789,7 @@
         t.style.borderWidth = "0";
         t.style.boxShadow = "none";
         t.style.padding = "0 6px";
+        t.style.minWidth = "0";     // a gap, not a letter — don't pad it out
       } else if(shown === 0){
         t.className += " first";
       }
@@ -2747,6 +2826,7 @@
     }
 
     show("screen-victory");
+    fitVictory();          // has to come after show(), a hidden box measures 0
 
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victorySpeechTimer);
@@ -2777,6 +2857,17 @@
   $("start-art-2").innerHTML = ART.APPLE;
   window.ALPHABET_ART = ART;             // handy for eyeballing every drawing in devtools
   window.ALPHABET_SOUND = playPicture;   // ...and for auditioning any word's noise
+  // Jump straight to the victory screen for any word. The long ones (
+  // WATERMELON, HELICOPTER) are the ones whose layout goes wrong, and playing
+  // fairly until W comes up is no way to check them.
+  window.ALPHABET_VICTORY = function(word){
+    var letter = LETTERS.filter(function(l){ return WORDS[l].indexOf(word) !== -1; })[0];
+    if(!letter) return "no such word";
+    current = { letter: letter, word: word };
+    earnedThisRound = 3;
+    showVictory();
+    return letter + " is for " + word;
+  };
   window.ALPHABET_VOICE = {
     manifest: voiceManifest, lines: LINES, line: line,
     // what the narrator is doing right now, for poking at in devtools
