@@ -45,7 +45,9 @@ npm run build          # mirror the shippable files into www/ (generated; gitign
 npm run sync           # build, then copy www/ into ios/ and android/
 npm run ios            # sync, then open Xcode
 npm run android        # sync, then open Android Studio
+npm run aab            # sync, then build the signed bundle Play wants
 npm run artwork        # re-cut the store icon and splash (rarely needed)
+npm run screenshots    # re-shoot the store screenshots (needs `npm run serve`)
 ```
 
 `www/` is generated output — never edit anything inside it, and never add a
@@ -56,13 +58,57 @@ native projects, not build artifacts.
 
 There is still no lint or test tooling.
 
+### Release signing
+
+`android/app/build.gradle` reads `android/keystore.properties` — gitignored,
+with a committed `.example` beside it that carries the `keytool` command. Both
+the signing config and `buildTypes.release` are guarded on that file existing,
+so a clone without it still builds `assembleRelease`; the bundle just comes out
+unsigned rather than the build erroring in a way that looks like breakage.
+
+`npm run aab` refuses to run without the properties file, and afterwards checks
+its own output. That check greps for the words `jar verified` rather than
+testing the exit status, because `jarsigner -verify` prints "jar is unsigned."
+and exits 0 — a status check there passes an artifact Play rejects.
+
+The key in that keystore is the **upload** key, not the app signing key: Play
+App Signing means Google holds the one installs are verified against. Do not
+disable that; it is the difference between a lost keystore being a support
+ticket and being the end of the listing.
+
+`minifyEnabled` stays false on release. Capacitor's bridge finds its plugin
+classes reflectively, which is what R8 strips, and there is almost no Java here
+to shrink — a WebView and one HTML file.
+
+### The store listing
+
+`store-listing.md` holds the listing copy and every form answer for both
+stores — content rating, Data Safety, target audience, Kids Category — with
+character counts against each store's limits. It is committed on purpose:
+the answers assert things about the app ("collects no data", "asks for no
+permissions") that are only true because of specific code, so they belong
+under the same review as that code. Changing any of those facts means changing
+this file, the console forms, `AndroidManifest.xml` and the privacy policy in
+one go.
+
 ### The store artwork
 
-`assets/source.html` **is** the icon and the splash — a web page drawn with the
-same hex values, the same tile geometry and the same apple path as the game, so
-the two cannot drift. `npm run artwork` screenshots it in headless Chrome at
-four sizes, hands the PNGs to `@capacitor/assets`, and that cuts the ~150
-platform files under `ios/` and `android/`. Edit the page, never the PNGs.
+`assets/source.html` **is** the icon, the splash and Play's feature graphic — a
+web page drawn with the same hex values, the same tile geometry and the same
+apple path as the game, so the two cannot drift. `npm run artwork` screenshots
+it in headless Chrome at six renders. Four go to `@capacitor/assets`, which
+cuts the ~150 platform files under `ios/` and `android/`. The other two are
+store uploads rather than app files and go straight to `store/`, beside the
+screenshots: the 1024×500 feature graphic, and Play's 512×512 store icon —
+re-rendered at 512 rather than downscaled from the 1024, so the type stays
+crisp. (Apple needs no icon upload; App Store Connect reads the 1024 out of
+the build's asset catalog.) Edit the page, never the PNGs.
+
+The feature graphic is the only non-square target and the only place the app's
+name is set rather than implied. Play may crop it toward the middle and lay its
+own title over the top, so nothing may sit in the outer tenth; the script
+measures the darkest pixel in that border and prints it, because ink is
+near-black and the sky is pale, so anything that strays in shows up at once.
 
 Three things in that pipeline are non-obvious and are commented where they
 live: every length is a fraction of the *lockup*, not of the canvas (otherwise
@@ -75,6 +121,30 @@ colour of its own choosing.
 The splash is held open by hand: `launchAutoHide` is false in
 `capacitor.config.json` and the native-shell section calls `SplashScreen.hide()`
 after the first paint, so there is no white seam between the two.
+
+### The store screenshots
+
+`npm run screenshots` (with `npm run serve` running) drives the real game in
+headless Chrome at each store's required viewport and captures five states into
+`store/`, which is generated and gitignored. `tools/screenshots.mjs` holds the
+device list and the states; it seeds a played-in save first, because an empty
+sticker jar photographs badly. Playwright is a devDependency and points at the
+system Chrome — the same renderer `artwork.sh` uses — rather than downloading a
+second browser.
+
+Which letter and round type a shot lands on is left to the game's own shuffle,
+so reruns differ; rerun until you like what you get rather than reaching in to
+pin it.
+
+### The privacy policy
+
+Both stores require a reachable URL. It lives in the *lion-force-web* repo at
+`src/app/privacy/alphabet-match/page.tsx` and publishes to
+`lionforce.com.au/privacy/alphabet-match`. It states that the app collects
+nothing and never uses the network — which is why `AndroidManifest.xml` asks
+for no permissions at all, `INTERNET` included. Any feature that changes either
+of those facts has to change the policy, the Data Safety form and the manifest
+together.
 
 ### Web vs. native differences
 

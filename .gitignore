@@ -1,3 +1,7 @@
+# Finder leaves these behind wherever anyone opens a folder, including inside
+# ios/ and android/, where they are easy to commit by accident.
+.DS_Store
+
 # Playwright MCP scratch: page snapshots and console logs from browser runs.
 .playwright-mcp/
 
@@ -19,6 +23,11 @@ assets/*.png
 
 # @capacitor/assets insists on emitting a PWA icon set; nothing here is a PWA.
 icons/
+
+# Store screenshots, rebuilt by `npm run screenshots` in a few seconds. They are
+# upload fodder for App Store Connect and Play Console — nothing in the repo
+# builds from them, and they would only go stale in here.
+store/
 
 # ios/ and android/ ARE committed — they are editable native projects, not build
 # output. Each carries its own .gitignore for the artifacts within.

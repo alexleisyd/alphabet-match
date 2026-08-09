@@ -11,11 +11,13 @@
   "scripts": {
     "vendor": "cp node_modules/@capacitor/core/dist/capacitor.js capacitor.js",
     "artwork": "tools/artwork.sh",
+    "screenshots": "node tools/screenshots.mjs",
     "build": "npm run vendor && rm -rf www && mkdir -p www/voice && cp index.html voice-player.js capacitor.js www/ && rsync -a --exclude='.*' voice/ www/voice/",
     "sync": "npm run build && npx cap sync",
     "serve": "python3 -m http.server 8000",
     "ios": "npm run sync && npx cap open ios",
-    "android": "npm run sync && npx cap open android"
+    "android": "npm run sync && npx cap open android",
+    "aab": "npm run sync && tools/aab.sh"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
@@ -26,5 +28,8 @@
     "@capacitor/preferences": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/status-bar": "^8.0.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
   }
 }

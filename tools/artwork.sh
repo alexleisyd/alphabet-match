@@ -36,6 +36,38 @@ shoot splash     2732 splash.png
 cp "$OUT/splash.png" "$OUT/splash-dark.png"
 echo "  splash-dark.png  2732x2732 (copy of splash.png — see comment)"
 
+mkdir -p "$ROOT/store"
+
+# Play wants the launcher icon uploaded separately, at exactly 512x512, and
+# shows it beside the listing. Rendered at that size rather than downscaled
+# from the 1024 above, so the type and the tile's edge stay crisp. (Apple needs
+# no equivalent upload: App Store Connect reads the 1024 icon out of the build's
+# asset catalog, which @capacitor/assets has already filled in below.)
+"$CHROME" --headless --disable-gpu --hide-scrollbars \
+  --force-device-scale-factor=1 --window-size=512,512 \
+  --screenshot="$ROOT/store/play-icon-512.png" \
+  "$SRC#icon" >/dev/null 2>&1
+echo "  store/play-icon-512.png  512x512"
+
+# Play's feature graphic. Not an icon and not a screenshot, so @capacitor/assets
+# never sees it — it goes straight to store/ alongside the screenshots, which
+# is the folder someone filling in the listing is already looking at. It is the
+# only target that isn't square and the only one carrying the app's name.
+"$CHROME" --headless --disable-gpu --hide-scrollbars \
+  --force-device-scale-factor=1 --window-size=1024,500 \
+  --screenshot="$ROOT/store/feature-graphic.png" \
+  "$SRC#feature" >/dev/null 2>&1
+echo "  store/feature-graphic.png  1024x500"
+
+# Play can crop this one toward the middle and lay its own title over it, so
+# nothing may sit in the outer tenth. Ink is near-black and the sky is pale, so
+# a darkest-pixel reading of the border says whether anything strayed into it.
+if command -v magick >/dev/null 2>&1; then
+  edge=$(magick "$ROOT/store/feature-graphic.png" -fill '#e9fbf0' \
+                -draw "rectangle 102,50 922,450" -colorspace Gray -format "%[fx:minima]" info:)
+  echo "  safe-area check: darkest pixel outside the middle 80% is $edge (want > 0.6)"
+fi
+
 # The lockup is lifted to compensate for its drop shadows; this is the check
 # that says whether the lift is still right. Top and bottom margins should be
 # within a few pixels of each other.

@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+// Release signing. The keystore and its passwords live outside the repo, in
+// android/keystore.properties (gitignored — see keystore.properties.example).
+// A clone without that file still builds: the release variant simply comes out
+// unsigned, which is a useless artifact but a working `assembleRelease`, rather
+// than a Gradle error that looks like the project is broken.
+def keystorePropsFile = rootProject.file("keystore.properties")
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace = "au.com.lionforce.alphabetmatch"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,8 +27,29 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (keystoreProps.containsKey("storeFile")) {
+                // Relative paths resolve against android/, so a keystore kept
+                // beside the project (not in it) is written as ../../keys/...
+                storeFile file(keystoreProps["storeFile"])
+                storePassword keystoreProps["storePassword"]
+                keyAlias keystoreProps["keyAlias"]
+                keyPassword keystoreProps["keyPassword"]
+            }
+        }
+    }
     buildTypes {
         release {
+            // Only claim the config when it was actually filled in; an empty
+            // signingConfig fails the build with a far less obvious message.
+            if (keystoreProps.containsKey("storeFile")) {
+                signingConfig signingConfigs.release
+            }
+            // Left off deliberately. There is no Java to shrink worth the risk
+            // — the app is one HTML file behind a WebView, and Capacitor's
+            // bridge reaches its plugin classes reflectively, which is exactly
+            // what R8 strips. The win would be a few hundred KB of a 12MB app.
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
