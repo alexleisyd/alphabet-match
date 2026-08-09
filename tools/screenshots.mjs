@@ -180,8 +180,14 @@ ${Object.entries(DEVICES).map(([key, d]) => `## ${d.label}\n\`store/${key}/\`\n\
   the 1024x500 feature graphic. Tablet screenshots (\`android-tablet\`) are
   optional but expected for a Families listing.
 
-\`store/feature-graphic.png\` is produced by \`npm run artwork\`, not by this
-script — it is drawn from the same source as the icon so the two stay in step.
+Two files in here come from \`npm run artwork\` rather than this script, both
+drawn from \`assets/source.html\` so they stay in step with the app's own icon:
+
+- \`store/play-icon-512.png\` — Play's 512x512 store icon, a required upload.
+  App Store Connect needs no equivalent; it reads the 1024 icon out of the
+  build.
+- \`store/feature-graphic.png\` — Play's 1024x500 banner, also required.
+
 Either command can be run first; neither clears the other's output.
 `;
 await writeFile(join(OUT, 'README.md'), readme);

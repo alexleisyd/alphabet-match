@@ -1,3 +1,7 @@
+# Finder leaves these behind wherever anyone opens a folder, including inside
+# ios/ and android/, where they are easy to commit by accident.
+.DS_Store
+
 # Playwright MCP scratch: page snapshots and console logs from browser runs.
 .playwright-mcp/
 

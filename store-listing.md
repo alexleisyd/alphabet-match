@@ -9,7 +9,17 @@ have to change together.
 Character limits are the stores'; the counts in brackets are what the text
 below actually is.
 
-Images come from `npm run screenshots` and `npm run artwork`, into `store/`.
+Images come from `npm run screenshots` and `npm run artwork`, into `store/`:
+
+| Upload slot | File | Required |
+| --- | --- | --- |
+| Play store icon | `store/play-icon-512.png` (512×512) | yes |
+| Play feature graphic | `store/feature-graphic.png` (1024×500) | yes |
+| Play phone screenshots | `store/android-phone/` (1236×2748) | yes, min 2 |
+| Play tablet screenshots | `store/android-tablet/` (1600×2560) | no, but expected |
+| App Store iPhone | `store/iphone-6.9/` (1320×2868) | yes |
+| App Store iPad | `store/ipad-13/` (2064×2752) | yes |
+| App Store app icon | — | reads it from the build |
 
 ---
 

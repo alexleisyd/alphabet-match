@@ -96,10 +96,13 @@ one go.
 `assets/source.html` **is** the icon, the splash and Play's feature graphic — a
 web page drawn with the same hex values, the same tile geometry and the same
 apple path as the game, so the two cannot drift. `npm run artwork` screenshots
-it in headless Chrome at five targets, hands four of them to
-`@capacitor/assets` (which cuts the ~150 platform files under `ios/` and
-`android/`), and writes the fifth, the 1024×500 feature graphic, straight to
-`store/`. Edit the page, never the PNGs.
+it in headless Chrome at six renders. Four go to `@capacitor/assets`, which
+cuts the ~150 platform files under `ios/` and `android/`. The other two are
+store uploads rather than app files and go straight to `store/`, beside the
+screenshots: the 1024×500 feature graphic, and Play's 512×512 store icon —
+re-rendered at 512 rather than downscaled from the 1024, so the type stays
+crisp. (Apple needs no icon upload; App Store Connect reads the 1024 out of
+the build's asset catalog.) Edit the page, never the PNGs.
 
 The feature graphic is the only non-square target and the only place the app's
 name is set rather than implied. Play may crop it toward the middle and lay its
