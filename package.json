@@ -16,7 +16,8 @@
     "sync": "npm run build && npx cap sync",
     "serve": "python3 -m http.server 8000",
     "ios": "npm run sync && npx cap open ios",
-    "android": "npm run sync && npx cap open android"
+    "android": "npm run sync && npx cap open android",
+    "aab": "npm run sync && tools/aab.sh"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
