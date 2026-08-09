@@ -45,6 +45,7 @@ npm run build          # mirror the shippable files into www/ (generated; gitign
 npm run sync           # build, then copy www/ into ios/ and android/
 npm run ios            # sync, then open Xcode
 npm run android        # sync, then open Android Studio
+npm run aab            # sync, then build the signed bundle Play wants
 npm run artwork        # re-cut the store icon and splash (rarely needed)
 npm run screenshots    # re-shoot the store screenshots (needs `npm run serve`)
 ```
@@ -56,6 +57,39 @@ shipped bundle. `ios/` and `android/` **are** committed: they are editable
 native projects, not build artifacts.
 
 There is still no lint or test tooling.
+
+### Release signing
+
+`android/app/build.gradle` reads `android/keystore.properties` — gitignored,
+with a committed `.example` beside it that carries the `keytool` command. Both
+the signing config and `buildTypes.release` are guarded on that file existing,
+so a clone without it still builds `assembleRelease`; the bundle just comes out
+unsigned rather than the build erroring in a way that looks like breakage.
+
+`npm run aab` refuses to run without the properties file, and afterwards checks
+its own output. That check greps for the words `jar verified` rather than
+testing the exit status, because `jarsigner -verify` prints "jar is unsigned."
+and exits 0 — a status check there passes an artifact Play rejects.
+
+The key in that keystore is the **upload** key, not the app signing key: Play
+App Signing means Google holds the one installs are verified against. Do not
+disable that; it is the difference between a lost keystore being a support
+ticket and being the end of the listing.
+
+`minifyEnabled` stays false on release. Capacitor's bridge finds its plugin
+classes reflectively, which is what R8 strips, and there is almost no Java here
+to shrink — a WebView and one HTML file.
+
+### The store listing
+
+`store-listing.md` holds the listing copy and every form answer for both
+stores — content rating, Data Safety, target audience, Kids Category — with
+character counts against each store's limits. It is committed on purpose:
+the answers assert things about the app ("collects no data", "asks for no
+permissions") that are only true because of specific code, so they belong
+under the same review as that code. Changing any of those facts means changing
+this file, the console forms, `AndroidManifest.xml` and the privacy policy in
+one go.
 
 ### The store artwork
 
