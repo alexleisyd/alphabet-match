@@ -59,11 +59,19 @@ There is still no lint or test tooling.
 
 ### The store artwork
 
-`assets/source.html` **is** the icon and the splash — a web page drawn with the
-same hex values, the same tile geometry and the same apple path as the game, so
-the two cannot drift. `npm run artwork` screenshots it in headless Chrome at
-four sizes, hands the PNGs to `@capacitor/assets`, and that cuts the ~150
-platform files under `ios/` and `android/`. Edit the page, never the PNGs.
+`assets/source.html` **is** the icon, the splash and Play's feature graphic — a
+web page drawn with the same hex values, the same tile geometry and the same
+apple path as the game, so the two cannot drift. `npm run artwork` screenshots
+it in headless Chrome at five targets, hands four of them to
+`@capacitor/assets` (which cuts the ~150 platform files under `ios/` and
+`android/`), and writes the fifth, the 1024×500 feature graphic, straight to
+`store/`. Edit the page, never the PNGs.
+
+The feature graphic is the only non-square target and the only place the app's
+name is set rather than implied. Play may crop it toward the middle and lay its
+own title over the top, so nothing may sit in the outer tenth; the script
+measures the darkest pixel in that border and prints it, because ink is
+near-black and the sky is pale, so anything that strays in shows up at once.
 
 Three things in that pipeline are non-obvious and are commented where they
 live: every length is a fraction of the *lockup*, not of the canvas (otherwise

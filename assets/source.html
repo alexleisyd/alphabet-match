@@ -107,6 +107,33 @@
     transform:rotate(8deg);
   }
   .answer svg{width:100%;height:100%;display:block}
+
+  /* ---------- the Play feature graphic ----------
+     The one target that isn't square: a 1024x500 banner, and the only place
+     the app's name is set rather than implied. Play may letterbox or crop it
+     and can lay its own title over the top, so the artwork sits in the middle
+     with generous margins and nothing important within a whisker of an edge. */
+  .wordmark{ display:none; }
+  body.feature .plate{
+    gap:calc(var(--unit) * .16);
+  }
+  body.feature .wordmark{
+    display:block;
+    text-align:left;
+    color:var(--ink);
+    font-weight:900;
+    line-height:1.02;
+    letter-spacing:-.025em;
+    font-size:calc(var(--unit) * .30);
+  }
+  .wordmark .sub{
+    display:block;
+    margin-top:.42em;
+    font-size:.34em;
+    font-weight:700;
+    letter-spacing:0;
+    color:#5b5a86;          /* --ink-soft from the game, a shade calmer */
+  }
 </style>
 </head>
 <body>
@@ -124,6 +151,11 @@
         </g>
       </svg>
     </div>
+  </div>
+
+  <div class="wordmark">
+    Alphabet<br>Match
+    <span class="sub">Letters and pictures, for little ones</span>
   </div>
 </div>
 
@@ -148,11 +180,16 @@
     background: { sky:true,  lockup:0,   scale:1 },
     // A splash is cropped to whatever shape the device is, so the artwork
     // stays small and dead centre and the sky does the rest.
-    splash:     { sky:true,  lockup:.34, scale:1 }
+    splash:     { sky:true,  lockup:.34, scale:1 },
+    // Play's 1024x500 banner: lockup and name side by side. `side` is the
+    // short edge here, so tying the lockup to it keeps the artwork sized off
+    // the banner's height rather than its width.
+    feature:    { sky:true,  lockup:.62, scale:1, wordmark:true }
   };
   var p = plans[target] || plans.icon;
 
   if(p.sky) body.classList.add("has-sky");
+  if(p.wordmark) body.classList.add("feature");
   var lock = document.querySelector(".lockup");
   if(!p.lockup) lock.style.display = "none";
   // one number drives the whole lockup, type and shadows included

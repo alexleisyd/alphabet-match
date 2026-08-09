@@ -106,8 +106,13 @@ const SHOTS = [
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 const chosen = only.length ? only : Object.keys(DEVICES);
 
-await rm(OUT, { recursive: true, force: true });
+// Clear only the device folders this script owns. store/ also holds the
+// feature graphic, which `npm run artwork` puts there — wiping the whole
+// directory would mean the two commands could only be run in one order.
 await mkdir(OUT, { recursive: true });
+for (const key of Object.keys(DEVICES)) {
+  await rm(join(OUT, key), { recursive: true, force: true });
+}
 
 // The system Chrome, not Playwright's own download: it is the same renderer
 // tools/artwork.sh uses, so the icon and these agree, and it saves every
@@ -172,9 +177,12 @@ ${Object.entries(DEVICES).map(([key, d]) => `## ${d.label}\n\`store/${key}/\`\n\
 - **App Store Connect** wants \`iphone-6.9\` and \`ipad-13\` at minimum;
   \`iphone-6.5\` is optional and accepted for older device families.
 - **Play Console** wants at least two phone screenshots (\`android-phone\`) plus
-  a 1024x500 feature graphic, which is not a screenshot and is not generated
-  here. Tablet screenshots (\`android-tablet\`) are optional but expected for a
-  Families listing.
+  the 1024x500 feature graphic. Tablet screenshots (\`android-tablet\`) are
+  optional but expected for a Families listing.
+
+\`store/feature-graphic.png\` is produced by \`npm run artwork\`, not by this
+script — it is drawn from the same source as the icon so the two stay in step.
+Either command can be run first; neither clears the other's output.
 `;
 await writeFile(join(OUT, 'README.md'), readme);
 
