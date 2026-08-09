@@ -29,7 +29,18 @@
         </provider>
     </application>
 
-    <!-- Permissions -->
+    <!-- Permissions: none, deliberately.
 
-    <uses-permission android:name="android.permission.INTERNET" />
+         Capacitor's scaffold asks for INTERNET, and the game has no use for
+         it. Everything it loads — the page, the drawings, all 458 voice clips
+         — is bundled in the APK and served by Capacitor's own local handler,
+         which never touches the network. Nothing is fetched, reported or
+         phoned home.
+
+         Leaving the permission in would have been harmless at runtime and
+         wrong everywhere else: Play lists it on the store page, and a
+         children's app that claims to collect no data reads better when the
+         manifest cannot ask for any. If a future feature genuinely needs the
+         network, the Data Safety declaration and the privacy policy at
+         lionforce.com.au/privacy/alphabet-match have to change with it. -->
 </manifest>

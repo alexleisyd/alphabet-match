@@ -46,6 +46,7 @@ npm run sync           # build, then copy www/ into ios/ and android/
 npm run ios            # sync, then open Xcode
 npm run android        # sync, then open Android Studio
 npm run artwork        # re-cut the store icon and splash (rarely needed)
+npm run screenshots    # re-shoot the store screenshots (needs `npm run serve`)
 ```
 
 `www/` is generated output — never edit anything inside it, and never add a
@@ -75,6 +76,30 @@ colour of its own choosing.
 The splash is held open by hand: `launchAutoHide` is false in
 `capacitor.config.json` and the native-shell section calls `SplashScreen.hide()`
 after the first paint, so there is no white seam between the two.
+
+### The store screenshots
+
+`npm run screenshots` (with `npm run serve` running) drives the real game in
+headless Chrome at each store's required viewport and captures five states into
+`store/`, which is generated and gitignored. `tools/screenshots.mjs` holds the
+device list and the states; it seeds a played-in save first, because an empty
+sticker jar photographs badly. Playwright is a devDependency and points at the
+system Chrome — the same renderer `artwork.sh` uses — rather than downloading a
+second browser.
+
+Which letter and round type a shot lands on is left to the game's own shuffle,
+so reruns differ; rerun until you like what you get rather than reaching in to
+pin it.
+
+### The privacy policy
+
+Both stores require a reachable URL. It lives in the *lion-force-web* repo at
+`src/app/privacy/alphabet-match/page.tsx` and publishes to
+`lionforce.com.au/privacy/alphabet-match`. It states that the app collects
+nothing and never uses the network — which is why `AndroidManifest.xml` asks
+for no permissions at all, `INTERNET` included. Any feature that changes either
+of those facts has to change the policy, the Data Safety form and the manifest
+together.
 
 ### Web vs. native differences
 
