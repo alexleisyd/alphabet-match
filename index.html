@@ -2998,6 +2998,16 @@
     var CapApp = window.Capacitor.registerPlugin("App");
     var CapPrefs = window.Capacitor.registerPlugin("Preferences");
     var CapBars = window.Capacitor.registerPlugin("StatusBar");
+    var CapSplash = window.Capacitor.registerPlugin("SplashScreen");
+
+    // The splash is held open by hand (launchAutoHide is off in
+    // capacitor.config.json) and dropped here, once the start screen has
+    // actually been painted. Left on its timer it hides after a fixed half
+    // second, which on a cold first launch is before the web view has drawn
+    // anything — and the seam between the two shows as a white flash.
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ CapSplash.hide().catch(function(){}); });
+    });
 
     // A clock and a battery icon over a game played by aiming at big shapes
     // are just two more things to poke. iOS hides it from Info.plist so

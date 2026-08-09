@@ -45,6 +45,7 @@ npm run build          # mirror the shippable files into www/ (generated; gitign
 npm run sync           # build, then copy www/ into ios/ and android/
 npm run ios            # sync, then open Xcode
 npm run android        # sync, then open Android Studio
+npm run artwork        # re-cut the store icon and splash (rarely needed)
 ```
 
 `www/` is generated output — never edit anything inside it, and never add a
@@ -54,6 +55,26 @@ shipped bundle. `ios/` and `android/` **are** committed: they are editable
 native projects, not build artifacts.
 
 There is still no lint or test tooling.
+
+### The store artwork
+
+`assets/source.html` **is** the icon and the splash — a web page drawn with the
+same hex values, the same tile geometry and the same apple path as the game, so
+the two cannot drift. `npm run artwork` screenshots it in headless Chrome at
+four sizes, hands the PNGs to `@capacitor/assets`, and that cuts the ~150
+platform files under `ios/` and `android/`. Edit the page, never the PNGs.
+
+Three things in that pipeline are non-obvious and are commented where they
+live: every length is a fraction of the *lockup*, not of the canvas (otherwise
+the type bursts out of the tile at splash size); the lockup is lifted slightly
+because both cards drop their shadow downwards; and `tools/artwork.sh` rewrites
+the adaptive-icon XML afterwards to strip the insets `@capacitor/assets` puts
+on both layers — an inset *background* leaves a ring that Android fills with a
+colour of its own choosing.
+
+The splash is held open by hand: `launchAutoHide` is false in
+`capacitor.config.json` and the native-shell section calls `SplashScreen.hide()`
+after the first paint, so there is no white seam between the two.
 
 ### Web vs. native differences
 
@@ -71,12 +92,13 @@ status bar hiding, the Android back button, the audio suspend on
 `appStateChange`, and the durable copy of saved progress (below). It reaches
 plugins through `Capacitor.registerPlugin("App" | "Preferences" | "StatusBar")`.
 
-Two things are set natively rather than in JS, because they have to be true
+Some things are set natively rather than in JS, because they have to be true
 before the first frame: `ios/App/App/Info.plist` hides the status bar
 (`UIStatusBarHidden`, with `UIViewControllerBasedStatusBarAppearance` false so
-the plugin can drive it too), and `AppDelegate.swift` sets the `AVAudioSession`
-category to `.playback` so the iPhone's ring/silent switch doesn't mute the
-narrator — the voice *is* the game, not a sound effect over it.
+the plugin can drive it too), `android/.../values/styles.xml` does the same with
+`android:windowFullscreen` on both themes, and `AppDelegate.swift` sets the
+`AVAudioSession` category to `.playback` so the iPhone's ring/silent switch
+doesn't mute the narrator — the voice *is* the game, not a sound effect over it.
 
 ## Architecture (all inside `index.html`)
 

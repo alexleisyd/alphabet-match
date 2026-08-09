@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Alphabet Match — store artwork source</title>
+<!--
+  The store artwork, drawn rather than painted: this page renders the icon and
+  splash, and `npm run artwork` screenshots it at the sizes @capacitor/assets
+  wants. Keeping it as markup rather than a .psd means the icon is built from
+  the same hex values, the same tile geometry and the same apple path as the
+  game itself, so the two can't drift apart — change --sunshine in index.html
+  and the icon is one command away from matching again.
+
+  Targets are chosen by the URL hash: #icon, #foreground, #background, #splash.
+  See tools/artwork.sh for the sizes each one is captured at.
+-->
+<style>
+  :root{
+    /* lifted verbatim from index.html's :root — do not "tidy" these */
+    --sky-top:#c9ecff;
+    --sky-bottom:#e9fbf0;
+    --card:#ffffff;
+    --card-edge:#2e2d55;
+    --sunshine:#ffd23f;
+    --sunshine-edge:#e8a800;
+    --ink:#2e2d55;
+
+    /* The game's sky is nearly white at the bottom, which is right behind a
+       game and wrong for a 60px icon sitting on someone's wallpaper. The icon
+       deepens the top of the same gradient rather than picking a new colour. */
+    --icon-sky-top:#8ed6f8;
+
+    /* The side of the *lockup*, not of the canvas. Every length below is a
+       fraction of this one number, so the artwork is identical whether it is
+       drawn 1024px wide for an icon or a third of that in the middle of a
+       2732px splash. (It used to be the canvas, which meant the type kept its
+       canvas-relative size while the card shrank with the lockup — on the
+       splash the letters burst straight out of the tile.) */
+    --unit: 768px;
+    --lockup-scale: 1;     /* shrunk for the adaptive-icon safe zone */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:transparent}
+  body{
+    font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold",system-ui,sans-serif;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .plate{
+    position:relative;
+    width:100vw;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  /* the ground, drawn only for the targets that want one */
+  body.has-sky .plate{
+    background:linear-gradient(165deg,var(--icon-sky-top) 0%,var(--sky-top) 46%,var(--sky-bottom) 100%);
+  }
+  /* No cloud, no sun, nothing else on the ground: an icon is read at 60px on
+     a home screen, and at 60px a cloud is a white smudge under the tile.
+     Everything here has to survive that size or it doesn't earn its place. */
+  .lockup{
+    position:relative;
+    display:block;
+    width:var(--unit);
+    aspect-ratio:1/1;
+    /* Both cards throw their shadow downwards, so centring the box leaves the
+       ink sitting low. Lifting it by this much puts equal air above and below
+       what you actually see — measured, not guessed: see the -trim check in
+       tools/artwork.sh. */
+    transform:translateY(calc(var(--unit) * -.0493)) scale(var(--lockup-scale));
+  }
+
+  /* The question tile, wearing exactly what .letter-block wears in the game:
+     the same yellow gradient, the same hard bottom edge in --sunshine-edge. */
+  .tile{
+    position:absolute;
+    left:0;top:2%;
+    width:74%;height:74%;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,#ffe07a 0%,var(--sunshine) 100%);
+    border:calc(var(--unit) * .0254) solid var(--sunshine-edge);
+    border-radius:22%;
+    box-shadow:0 calc(var(--unit) * .0347) 0 var(--sunshine-edge),
+               0 calc(var(--unit) * .0453) calc(var(--unit) * .0533) rgba(46,45,85,.20);
+    transform:rotate(-7deg);
+    color:var(--ink);
+    font-weight:900;
+    line-height:1;
+    letter-spacing:-.02em;
+  }
+  .tile .big{font-size:calc(var(--unit) * .40)}
+  .tile .small{font-size:calc(var(--unit) * .288);margin-left:.06em}
+
+  /* The answer card, wearing what .card wears. Two cards, one yellow and one
+     white, is the whole game in one picture: this asks, that answers. */
+  .answer{
+    position:absolute;
+    right:0;bottom:0;
+    width:54%;height:54%;
+    padding:8%;
+    background:var(--card);
+    border:calc(var(--unit) * .0254) solid var(--card-edge);
+    border-radius:20%;
+    box-shadow:0 calc(var(--unit) * .0347) 0 rgba(46,45,85,.22),
+               0 calc(var(--unit) * .0453) calc(var(--unit) * .0533) rgba(46,45,85,.18);
+    transform:rotate(8deg);
+  }
+  .answer svg{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<div class="plate">
+  <div class="lockup">
+    <div class="tile"><span class="big">A</span><span class="small">a</span></div>
+    <div class="answer">
+      <!-- ART.APPLE, copied path for path from index.html -->
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <g stroke="#2e2d55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M50 35 Q49 22 40 16" fill="none"/>
+          <path d="M52 30 Q58 14 74 18 Q70 34 52 30 Z" fill="#8ad8a5"/>
+          <path d="M50 38 C34 26 18 38 20 58 C22 76 36 86 50 84 C64 86 78 76 80 58 C82 38 66 26 50 38 Z" fill="#ff6b6b"/>
+          <circle cx="36" cy="54" r="5" fill="#ffffff" opacity=".55" stroke="none"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.documentElement, body = document.body;
+  var target = (location.hash || "#icon").slice(1);
+
+  var side = Math.min(innerWidth, innerHeight);   // the square being drawn
+
+  var plans = {
+    // iOS masks the corners itself and never parallaxes, so it gets the
+    // finished square and can fill it.
+    icon:       { sky:true,  lockup:.75, scale:1 },
+    // Android's two layers fill the whole 108dp adaptive canvas (the insets
+    // @capacitor/assets writes into the XML are stripped again by
+    // tools/artwork.sh — see the comment there). A launcher's mask shows only
+    // the middle 72dp, and it may be a circle: a square of artwork 62% wide
+    // still pokes its corners out of a circle that size, which is exactly what
+    // it did. Half the canvas is what actually fits, sky to the edges.
+    foreground: { sky:false, lockup:.50, scale:1 },
+    background: { sky:true,  lockup:0,   scale:1 },
+    // A splash is cropped to whatever shape the device is, so the artwork
+    // stays small and dead centre and the sky does the rest.
+    splash:     { sky:true,  lockup:.34, scale:1 }
+  };
+  var p = plans[target] || plans.icon;
+
+  if(p.sky) body.classList.add("has-sky");
+  var lock = document.querySelector(".lockup");
+  if(!p.lockup) lock.style.display = "none";
+  // one number drives the whole lockup, type and shadows included
+  root.style.setProperty("--unit", (p.lockup * side) + "px");
+  root.style.setProperty("--lockup-scale", p.scale);
+})();
+</script>
+</body>
+</html>

@@ -10,5 +10,15 @@ node_modules/
 # edit index.html / voice-player.js / voice/ at the repo root instead.
 www/
 
+# Intermediates that `npm run artwork` renders out of assets/source.html on its
+# way to the platform files. The page is the source and is committed; these are
+# handed straight to @capacitor/assets and are of no use on their own. The icons
+# and splashes it cuts under ios/ and android/ are committed, so a clone that
+# never runs the script still builds a properly badged app.
+assets/*.png
+
+# @capacitor/assets insists on emitting a PWA icon set; nothing here is a PWA.
+icons/
+
 # ios/ and android/ ARE committed — they are editable native projects, not build
 # output. Each carries its own .gitignore for the artifacts within.

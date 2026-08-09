@@ -1,5 +1,13 @@
 {
   "appId": "au.com.lionforce.alphabetmatch",
   "appName": "Alphabet Match",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#c9ecff",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  }
 }

@@ -10,6 +10,7 @@
   },
   "scripts": {
     "vendor": "cp node_modules/@capacitor/core/dist/capacitor.js capacitor.js",
+    "artwork": "tools/artwork.sh",
     "build": "npm run vendor && rm -rf www && mkdir -p www/voice && cp index.html voice-player.js capacitor.js www/ && rsync -a --exclude='.*' voice/ www/voice/",
     "sync": "npm run build && npx cap sync",
     "serve": "python3 -m http.server 8000",
