@@ -68,11 +68,10 @@ actually looking at.)
 > No ads. No in-app purchases. No accounts, no sign-in, no email address. No
 > videos, no links out, nothing to buy and nowhere to wander off to.
 >
-> It doesn't use the internet at all. The app asks Android for no permissions
-> whatsoever — not even network access — so it works the same on a plane as it
-> does at home. Nothing your child does is sent anywhere, because there is no
-> "anywhere" for it to go: the stars and stickers are saved on the device and
-> stay there.
+> It doesn't use the internet at all. The app asks for no network access — the
+> permission isn't in it — so it works the same on a plane as it does at home.
+> Nothing your child does is sent anywhere, because there is no "anywhere" for
+> it to go: the stars and stickers are saved on the device and stay there.
 
 [~1,890]
 
@@ -112,6 +111,15 @@ if a parent types one in, plus the stars and sticker book. Play's definition of
 it lives in the app's own storage and goes when the app does. So the answer is
 genuinely No, not a technicality. The empty `<uses-permission>` list in
 `AndroidManifest.xml` is the evidence.
+
+One thing that looks like a contradiction if you go looking: `aapt2 dump
+permissions` on a release build reports a permission called
+`au.com.lionforce.alphabetmatch.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`.
+That is not a platform permission and grants nothing outside the app — it is
+declared *by* the app, at `signature` protection level, by androidx.core, so
+that a broadcast receiver it registers can't be reached by other apps. Every
+androidx app has one. No `android.permission.*` is requested; INTERNET in
+particular is absent, which is the claim that matters here.
 
 ### Target audience and content
 

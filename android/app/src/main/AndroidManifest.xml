@@ -37,6 +37,13 @@
          which never touches the network. Nothing is fetched, reported or
          phoned home.
 
+         The merged manifest is not quite empty, and that is expected:
+         androidx.core adds a DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION named
+         after our own applicationId, at signature protection level, to keep a
+         receiver it registers unreachable by other apps. It grants nothing and
+         requests nothing from the user. No android.permission.* survives the
+         merge — check with `aapt2 dump permissions` on the release APK.
+
          Leaving the permission in would have been harmless at runtime and
          wrong everywhere else: Play lists it on the store page, and a
          children's app that claims to collect no data reads better when the
