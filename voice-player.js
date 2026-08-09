@@ -42,7 +42,13 @@
 
       var p = fetch(base + clip + ext)
         .then(function (r) {
-          if (!r.ok) throw new Error(r.status + ' ' + r.statusText);
+          // status 0 is not a failure here. An iOS WKWebView answers requests
+          // for media files through a scheme handler that replies with a bare
+          // URLResponse, which carries no status line at all — so `ok` is
+          // false and `status` is 0 even though the bytes arrived intact.
+          // Rejecting on that alone makes every clip look missing, and a
+          // packaged build then plays nothing.
+          if (!r.ok && r.status !== 0) throw new Error(r.status + ' ' + r.statusText);
           return r.arrayBuffer();
         })
         .then(function (bytes) {
@@ -122,7 +128,10 @@
         var c = ctx();
         var src = c.createBufferSource();
         src.buffer = buf;
-        src.connect(getDestination ? getDestination() : c.destination);
+        // a destination getter that comes back empty must not take the chain
+        // down with it: connect(null) throws inside this promise, and the
+        // caller waiting on onDone would never hear back
+        src.connect((getDestination && getDestination()) || c.destination);
         var advanced = false;
         var once = function () { if (!advanced) { advanced = true; next(); } };
         src.onended = once;

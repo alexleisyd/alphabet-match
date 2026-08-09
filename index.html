@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Alphabet Match</title>
@@ -54,7 +55,15 @@
     align-items:center;
     justify-content:center;
     gap:clamp(12px,2.5vh,28px);
-    padding:clamp(12px,3vw,32px);
+    /* The page asks for viewport-fit=cover, so on a notched phone the stage
+       runs under the notch and the home indicator. In a browser tab Safari's
+       own chrome hides that; in the native shell nothing does. env() is 0
+       wherever there is no inset, so this costs the desktop build nothing. */
+    padding:
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-top))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-right))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-bottom))
+      calc(clamp(12px,3vw,32px) + env(safe-area-inset-left));
     text-align:center;
   }
   .hidden{display:none !important}
@@ -69,7 +78,13 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:clamp(10px,2vw,18px) clamp(14px,3vw,24px);
+    /* the mute and full-screen buttons sit here, so without the top inset
+       they land underneath the notch on a modern phone */
+    padding:
+      calc(clamp(10px,2vw,18px) + env(safe-area-inset-top))
+      calc(clamp(14px,3vw,24px) + env(safe-area-inset-right))
+      clamp(10px,2vw,18px)
+      calc(clamp(14px,3vw,24px) + env(safe-area-inset-left));
     z-index:5;
     pointer-events:none;
   }
@@ -892,6 +907,14 @@
       line = window.VOICE.line,
       voiceManifest = window.VOICE.manifest;
 
+  // Running inside the iOS/Android shell rather than a browser tab. A handful
+  // of things the web build needs are wrong there — a full-screen button when
+  // the app is already full screen, a browser voice standing in for a clip
+  // that shipped inside the binary — so each of those asks this first.
+  var isNative = !!(window.Capacitor &&
+                    window.Capacitor.isNativePlatform &&
+                    window.Capacitor.isNativePlatform());
+
   // letters whose names/sounds collide with another letter's words when
   // heard aloud (Cat/Kite, Giraffe/Juice, X/Excavator, Zebra/Xylophone,
   // Unicorn/Yo-yo...) — never pair them as target and distractor, or a
@@ -1675,7 +1698,18 @@
     });
     chosenVoice = best;
   }
-  if("speechSynthesis" in window){
+  // Whether the browser's synthesiser may stand in when the recorded pack is
+  // unreachable. Off in a store build: the pack ships inside the binary there,
+  // so a failure means something is wrong, and silence is a bug QA will catch —
+  // where a stranger's voice suddenly narrating your app is not. The web build
+  // keeps it, being all that stands between a child and a mute page when
+  // index.html is opened straight off disk. Declared up here because the voice
+  // picking below is the first thing that needs to ask.
+  var ALLOW_SYNTH_FALLBACK = !isNative;
+
+  // Picking a voice wakes the OS text-to-speech machinery, so don't bother
+  // where the synthesiser is never going to be allowed to speak.
+  if(ALLOW_SYNTH_FALLBACK && "speechSynthesis" in window){
     pickVoice();
     window.speechSynthesis.onvoiceschanged = pickVoice;
   }
@@ -1685,11 +1719,6 @@
   // index.html opened straight off disk, where fetch cannot reach the clips.
   // Better a browser voice than a mute game that teaches nothing.
   //
-  // For a store build set this to false. The pack ships inside the binary, so
-  // a missing clip means something is wrong, and silence is a bug QA will
-  // catch — where a stranger's voice suddenly narrating your app is not.
-  var ALLOW_SYNTH_FALLBACK = true;
-
   var voicePack = null;
   var useVoicePack = false;
   // Opened straight off disk, every fetch is refused before it is sent: a
@@ -1700,17 +1729,52 @@
   // double-clicking index.html during development. Run a local server to hear
   // the recorded voice:  python3 -m http.server 8000
   var canFetchLocalFiles = location.protocol !== "file:";
+
+  // The one source that needed headroom and didn't have any. The chimes run
+  // through sfxBus at 0.9 and the music through its own gain, but the clips
+  // were going straight out at unity — and they are mastered hot, a few of
+  // them peaking above full scale on their own (the worst is about 1.26).
+  // Played over the music that sum has nowhere to go but hard clipping, which
+  // a small speaker reproduces as crackle rather than as loudness. VoicePlayer
+  // already takes a destination for exactly this, so give it one.
+  var voiceBus = null;
+  function voiceDestination(){
+    var ctx = audio();
+    if(!ctx) return null;
+    if(!voiceBus){
+      voiceBus = ctx.createGain();
+      // 0.75 x the hottest clip (~1.26) is 0.94, which still leaves room for
+      // the music underneath it — that bus only ever reaches about 0.1.
+      voiceBus.gain.value = 0.75;
+      voiceBus.connect(ctx.destination);
+    }
+    return voiceBus;
+  }
+
   if(window.VoicePlayer && canFetchLocalFiles){
     voicePack = window.VoicePlayer({
       base: "voice/",
       context: audio,                 // the game's own AudioContext, so one unlock covers all
+      destination: voiceDestination,  // headroom, so the clips cannot clip the output
       missing: ALLOW_SYNTH_FALLBACK ? "speak" : "silent"
     });
     // One cheap request decides it, before any audio has to be decoded.
     // A dynamic line has no recording, so this also tells the line table to
     // start resolving those to their nameless twins.
-    fetch("voice/cheer.jar.m4a", { method: "HEAD" })
-      .then(function(r){ setVoicePack(r.ok); })
+    //
+    // Ask for the bytes rather than trusting the status line. A native
+    // WebView serves media files through its own scheme handler, and iOS
+    // replies to those with a bare URLResponse that has no status at all —
+    // so `ok` is false and `status` is 0 on a request that worked perfectly.
+    // "Did any bytes arrive" is the thing actually being asked, and unlike
+    // the status it means the same on every platform. A HEAD would be
+    // cheaper, but it comes back empty-bodied and tells us nothing.
+    fetch("voice/cheer.jar.m4a")
+      .then(function(r){
+        if(!r.ok && r.status !== 0) return null;
+        return r.arrayBuffer();
+      })
+      .then(function(bytes){ setVoicePack(!!bytes && bytes.byteLength > 0); })
       .catch(function(){ setVoicePack(false); });
   }else if(window.console && !canFetchLocalFiles){
     console.info("Alphabet Match: opened from disk, so the recorded voice is " +
@@ -1721,8 +1785,11 @@
   // The victory screen waits for narration to finish before moving on, so it
   // has to know the difference between "speaking" and "silent" — not between
   // "the browser has a synthesiser" and "it doesn't".
+  // Must stay in step with speakParts() below: if this claims narration is
+  // coming and none arrives, the victory screen waits on a callback that never
+  // fires and the child is stranded there.
   function willSpeak(){
-    return useVoicePack || ("speechSynthesis" in window);
+    return useVoicePack || (ALLOW_SYNTH_FALLBACK && "speechSynthesis" in window);
   }
   function setVoicePack(on){
     useVoicePack = !!(on && voicePack);
@@ -1775,6 +1842,10 @@
     if(muted) return;
     parts = parts.filter(function(p){ return !!p; });
     if(useVoicePack){ voicePack.say(parts, onDone); return; }
+    // The pack itself failed, not just one clip. On a store build that is a
+    // bug to be caught, not to be covered up by a stranger's voice — the
+    // matching willSpeak() above makes sure the caller expects the silence.
+    if(!ALLOW_SYNTH_FALLBACK) return;
     if(!("speechSynthesis" in window)) return;
     try{
       window.speechSynthesis.cancel();
@@ -2463,7 +2534,11 @@
     hintTimer = setTimeout(showHint, delay);
   }
 
-  function newRound(){
+  // Everything the round has in flight: the auto-advance, the narration it is
+  // waiting on, the bobbing hint, the scheduled victory chimes. Leave any of
+  // these running and they fire into whatever screen comes next — which is why
+  // the Android back button calls this before stepping back to the start.
+  function stopRound(){
     clearTimeout(autoAdvanceTimer);
     clearTimeout(victoryDelayTimer);
     clearTimeout(victorySpeechTimer);
@@ -2473,6 +2548,10 @@
     victorySoundTimers.forEach(function(t){ clearTimeout(t); });
     victorySoundTimers.length = 0;
     settleJar();
+  }
+
+  function newRound(){
+    stopRound();
     solvedThisRound = false;
     filledJarThisRound = false;
     wrongTaps = 0;
@@ -2841,6 +2920,9 @@
     return document.fullscreenElement || document.webkitFullscreenElement || null;
   }
   function fullscreenAvailable(){
+    // the native shell is already full screen, so the button would be a
+    // control that visibly does nothing; paintFullscreenBtn() hides it
+    if(isNative) return false;
     var d = document.documentElement;
     return !!(d.requestFullscreen || d.webkitRequestFullscreen) &&
            document.fullscreenEnabled !== false && document.webkitFullscreenEnabled !== false;
