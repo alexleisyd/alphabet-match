@@ -10,7 +10,7 @@ iOS/Android app via Capacitor. The game itself has no framework and no
 bundler — npm exists only to drive the native shells. Two files hold
 essentially the entire app:
 
-- `index.html` (~2900 lines) — markup, `<style>`, and all game logic in inline
+- `index.html` (~3200 lines) — markup, `<style>`, and all game logic in inline
   `<script>` blocks.
 - `voice-player.js` — standalone `VoicePlayer` module that plays the
   pre-rendered voice pack via Web Audio buffers.
@@ -56,7 +56,16 @@ that deliberately excludes dotfiles, so `voice/.build.json` stays out of the
 shipped bundle. `ios/` and `android/` **are** committed: they are editable
 native projects, not build artifacts.
 
-There is still no lint or test tooling.
+The appId in `capacitor.config.json` — `au.com.lionforce.alphabetmatch` — is
+the identity both stores key their listing on. It is not a name that can be
+tidied later: changing it makes a *new* app on both, with no path from the old
+one, so treat it as fixed.
+
+There is still no lint or test tooling. The nearest thing to an automated check
+is `npm run screenshots` (below), which drives the real game through five
+states in headless Chrome — if a change breaks the start screen, a round or
+the sticker book, that script fails or photographs the damage. Run it after
+anything structural, rather than trusting a read of the diff.
 
 ### Release signing
 
@@ -75,6 +84,12 @@ The key in that keystore is the **upload** key, not the app signing key: Play
 App Signing means Google holds the one installs are verified against. Do not
 disable that; it is the difference between a lost keystore being a support
 ticket and being the end of the listing.
+
+Only Android has a scripted path to a shippable artifact. iOS has no `npm run
+ipa` and is not missing one: `npm run ios` syncs and opens Xcode, and the
+archive, the signing and the upload to App Store Connect all happen there,
+against the Apple ID's own certificates rather than anything in this repo. So
+nothing under `ios/` needs a gitignored secrets file the way `android/` does.
 
 `minifyEnabled` stays false on release. Capacitor's bridge finds its plugin
 classes reflectively, which is what R8 strips, and there is almost no Java here
@@ -173,8 +188,8 @@ doesn't mute the narrator — the voice *is* the game, not a sound effect over i
 ## Architecture (all inside `index.html`)
 
 The file is organized into commented sections (`/* ---------- name ---------- */`)
-in this order: stage/sky/topbar/jar/book CSS → grown-ups panel CSS → play/
-victory screen CSS → **voice-data script** → **main game script**.
+in this order: stage/sky/topbar/jar/book CSS → grown-ups panel CSS → start/
+play/victory screen CSS → **voice-data script** → **main game script**.
 
 ### `<script id="voice-data">` — content and voice line tables
 Self-contained IIFE exposing `window.GAME_DATA` (word bank) and
@@ -214,26 +229,29 @@ One large IIFE. Key subsystems, in file order:
   Play — a populated `localStorage` is always the fresher of the two.
 - **Audio**: chimes/fanfare/ambient music are synthesized directly via
   Web Audio (`audio()`, `tone()`, oscillator/noise helpers) — no audio
-  files for sound effects, only for voice.
+  files for sound effects, only for voice. The largest piece of this is
+  `picture sounds`: `SOUND` maps a word to the cartoon noise its card makes
+  when tapped (the moo, the bleat, the siren), built from the same `slide()`
+  primitive and defaulting to `"pop"` for anything unlisted.
 - **Narrator** (`the recorded narrator` / `speech: the fallback` sections):
   tries the recorded pack first (`voicePack` from `voice-player.js`); a
   missing pack or `file://` origin falls back to `speechSynthesis`.
   `ALLOW_SYNTH_FALLBACK` is the flag to flip to `false` for a packaged
   store build where a missing clip should be a loud bug, not a silent
   fallback to a different voice.
-- **Difficulty** (`difficulty` / `round type` sections): `level` (2-4 cards)
-  widens after `STEP_UP_AFTER` clean rounds and narrows on repeated misses;
-  `beginner()` (fewer than 8 letters collected) gates an `EASY` letter
-  subset and keeps rounds in `"normal"` mode. `"reverse"` mode (picture
-  asks, letter answers) only turns on past the beginner stage and never
-  runs twice in a row. `CONFUSABLE` prevents pairing letters that sound
-  alike (C/K, G/J, etc.) as target vs. distractor.
-- **Rounds** (`newRound()`): picks letter + word, builds distractor options,
-  renders cards, and both prompts and preloads their voice clips.
 - **Sticker jar / book**: per-round star animation and the persistent
   collection screen shown between rounds.
 - **Painted sky**: an animated canvas background with tappable scenery
   (clouds, sun, plane, kite, birds) between rounds.
+- **Difficulty** (`difficulty` / `stuck detection` / `round type` sections):
+  `level` (2-4 cards) widens after `STEP_UP_AFTER` clean rounds and narrows
+  on repeated misses; `beginner()` (fewer than 8 letters collected) gates an
+  `EASY` letter subset and keeps rounds in `"normal"` mode. `"reverse"` mode
+  (picture asks, letter answers) only turns on past the beginner stage and
+  never runs twice in a row. `CONFUSABLE` prevents pairing letters that sound
+  alike (C/K, G/J, etc.) as target vs. distractor.
+- **Rounds** (`newRound()`): picks letter + word, builds distractor options,
+  renders cards, and both prompts and preloads their voice clips.
 - **Grown-ups panel** (`grown-ups panel` section): opened via a long-press
   on the sticker-book title (`armGrownups`/1.5s hold) — deliberately not
   discoverable by a mashing toddler. Lets a parent set the child's name and
@@ -247,3 +265,11 @@ One large IIFE. Key subsystems, in file order:
   put user-facing strings directly in DOM-building code.
 - New words must be added to both `WORDS` and `ART` together, and (if
   recordings are ever regenerated) will need matching clips in `voice/`.
+  A `SOUND` entry is optional — without one the card falls back to `"pop"` —
+  but a picture that makes no noise of its own is the flattest card on the
+  board, so add one unless the word genuinely has no sound.
+- Commit messages are a plain-English sentence in the imperative, saying what
+  the change is *for* rather than what it touches ("Make the game fit a phone
+  held sideways", "Sign the release bundle with a key that never enters the
+  repo"). No `feat:`/`fix:` prefixes, no scope tags, no trailing full stop.
+  Match that; the log is meant to read as a narrative of the app.
