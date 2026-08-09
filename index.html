@@ -858,8 +858,13 @@
       var L = LINES[id];
       if(L.dynamic) return;
       VOICE_DOMAINS[L.over].all().forEach(function(slots){
+        // `flow` says where a fragment sits in the sentence it is heard
+        // in, so the recording is not read as a line said on its own.
+        // Nothing here is spliced, so nothing sets it — it is carried
+        // anyway, so that the day a line does get split the build
+        // already knows what to do with it.
         out.push({ clip: clipId(id, slots), line: id, text: L.text(slots),
-                   pitch: L.pitch, rate: L.rate });
+                   pitch: L.pitch, rate: L.rate, flow: L.flow });
       });
     });
     return out;
